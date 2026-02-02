@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Kiểm tra Tin học 5 – Bài 5 (54 câu)</title>
+<style>
+body{
+ margin:0;
+ font-family:"Comic Sans MS", Arial;
+ background:linear-gradient(135deg,#a1c4fd,#c2e9fb);
+}
+.container{max-width:1000px;margin:auto;padding:20px;}
+.card{
+ background:#fff;
+ border-radius:20px;
+ padding:25px;
+ box-shadow:0 8px 20px rgba(0,0,0,.25);
+}
+h1{text-align:center;color:#0b5394;}
+.input-box{text-align:center;margin-bottom:20px;}
+input{
+ padding:10px;font-size:18px;margin:5px;
+ border-radius:10px;border:1px solid #ccc;
+}
+button{
+ padding:10px 22px;border:none;border-radius:20px;
+ font-size:18px;cursor:pointer;
+ background:#0b5394;color:white;
+}
+button:hover{background:#073763;}
+.status{
+ display:flex;justify-content:space-between;
+ font-size:20px;margin-bottom:15px;
+}
+.timer{color:#c62828;font-weight:bold;}
+.question{font-size:22px;font-weight:bold;margin-bottom:15px;}
+.answer{
+ background:#f3f9ff;padding:12px;margin:8px 0;
+ border-radius:15px;cursor:pointer;font-size:18px;
+}
+.answer:hover{background:#d9eaf7;}
+.msg{text-align:center;font-size:22px;margin-top:10px;}
+.hidden{display:none;}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<!-- START -->
+<div class="card" id="start">
+<h1>📝 KIỂM TRA TIN HỌC 5 – BÀI 5</h1>
+<p style="text-align:center">
+Bản quyền nội dung thông tin – Thông tin riêng tư – Đạo đức số
+</p>
+<div class="input-box">
+<input id="student" placeholder="Nhập tên học sinh">
+<input id="class" placeholder="Nhập lớp">
+<br><br>
+<button onclick="startQuiz()">▶️ BẮT ĐẦU LÀM BÀI</button>
+</div>
+</div>
+
+<!-- QUIZ -->
+<div class="card hidden" id="quizBox">
+<div class="status">
+<div>📘 Câu: <span id="num">1</span>/54</div>
+<div>⭐ Điểm: <span id="score">0</span></div>
+<div class="timer">⏱️ <span id="time">60:00</span></div>
+</div>
+<div class="question" id="question"></div>
+<div id="answers"></div>
+<div class="msg" id="msg"></div>
+</div>
+
+</div>
+
+<script>
+// ================= DATA ĐỦ 54 CÂU =================
+let quiz = [
+/* 1–20: BẢN QUYỀN */
+["Người sáng tạo ra tác phẩm gọi là gì?",["Tác nhân","Tác quyền","Tác vụ","Tác giả"],3],
+["Sản phẩm trí tuệ của tác giả là:",["Chữ viết","Kí tự","Nội dung và cách thể hiện","Từ ngữ"],2],
+["Quyền tác giả KHÔNG bao gồm:",["Đặt tên","Bảo vệ nội dung","Phổ biến","Sử dụng tác phẩm người khác"],3],
+["Sao chép bài người khác là:",["Bình thường","Không sao","Vi phạm bản quyền","Được phép"],2],
+["Sao chép và chỉnh sửa bài người khác là:",["Đúng","Không vi phạm","Vi phạm bản quyền","Được khuyến khích"],2],
+["Ghi tên tác giả khi dùng tài liệu là:",["Không cần","Sai","Tôn trọng bản quyền","Gian dối"],2],
+["Tự sáng tạo nội dung mới là:",["Vi phạm","Sai","Đúng","Không cần"],2],
+["Bản quyền giúp:",["Cấm học","Bảo vệ tác giả","Gây khó","Không lợi ích"],1],
+["Vi phạm bản quyền có thể gây:",["Không ảnh hưởng","Ảnh hưởng xấu","Được khen","Có lợi"],1],
+["Quyền công bố tác phẩm thuộc về:",["Người đọc","Tác giả","Bạn bè","Nhà trường"],1],
+
+["Khi sử dụng bài viết trên mạng, em nên:",["Nhận là của mình","Ghi nguồn","Xóa tên","Không cần"],1],
+["Dùng hình ảnh người khác cần:",["Không cần","Xin phép","Cắt ghép","Nhận là của mình"],1],
+["Tải tài liệu lậu là:",["Tiết kiệm","Vi phạm","Học tốt","Được phép"],1],
+["Tôn trọng bản quyền thể hiện ở:",["Sao chép","Ghi nguồn","Xóa tên","Nhận là của mình"],1],
+["Vi phạm bản quyền là hành vi:",["Đúng","Được khuyến khích","Sai trái","Cần học theo"],2],
+["Học sinh vi phạm bản quyền là:",["Trung thực","Gian dối","Gương mẫu","Đáng khen"],1],
+["Không ghi nguồn khi dùng tài liệu là:",["Đúng","Sai","Không quan trọng","Nên làm"],1],
+["Sử dụng tác phẩm người khác đúng là:",["Nhận là của mình","Xin phép & ghi nguồn","Xóa tên","Chép"],1],
+["Bản quyền bảo vệ:",["Máy tính","Tác phẩm","Internet","Trò chơi"],1],
+["Bài học bản quyền giúp em:",["Sao chép","Tôn trọng","Gian dối","Lười học"],1],
+
+/* 21–45: THÔNG TIN RIÊNG TƯ */
+["Thông tin riêng tư là:",["Tin tức","Thông tin cá nhân","Thời tiết","Thông báo"],1],
+["Ví dụ thông tin riêng tư:",["Điểm thi","Lịch học","Bản tin","Thời khóa biểu"],0],
+["Số điện thoại cá nhân là:",["Công khai","Riêng tư","Không quan trọng","Tin tức"],1],
+["Tài khoản mạng xã hội là:",["Thông tin chung","Riêng tư","Công khai","Không cần bảo vệ"],1],
+["Mật khẩu tài khoản cần:",["Chia sẻ","Giữ bí mật","Đăng mạng","Ghi cho bạn"],1],
+["Chia sẻ mật khẩu cho bạn là:",["An toàn","Nguy hiểm","Không sao","Tốt"],1],
+["Giữ bí mật thông tin riêng tư vì:",["Sợ bị la","Có thể bị lợi dụng","Không được chia sẻ","Không cần"],1],
+["Đăng ảnh bạn khi chưa xin phép là:",["Đúng","Bình thường","Xâm phạm riêng tư","Được khen"],2],
+["Thông tin gia đình nên:",["Chia sẻ","Đăng mạng","Giữ kín","Gửi người lạ"],2],
+["Bảo mật thông tin giúp:",["Nguy hiểm","An toàn","Phiền phức","Không cần"],1],
+
+["Chia sẻ thông tin riêng tư trên mạng là:",["An toàn","Nguy hiểm","Có lợi","Bình thường"],1],
+["Giữ bí mật thông tin của người khác là:",["Không cần","Tôn trọng","Phiền","Không quan trọng"],1],
+["Đăng số điện thoại người khác là:",["Đúng","Sai","Không sao","Nên làm"],1],
+["Thông tin riêng tư cần được:",["Công khai","Bảo vệ","Chia sẻ","Đăng mạng"],1],
+["Bảo mật thông tin giúp tránh:",["Nguy hiểm","Bị lợi dụng","Học tốt","Được khen"],1],
+["Không nên chia sẻ thông tin nào?",["Thời tiết","Số điện thoại","Tin tức","Lịch học"],1],
+["Thông tin cá nhân là tài sản của:",["Nhà trường","Bản thân","Internet","Bạn bè"],1],
+["Giữ bí mật thông tin là hành vi:",["Sai","Đúng","Không cần","Không quan trọng"],1],
+["Thông tin riêng tư bị lộ có thể:",["Có lợi","Bị lợi dụng","Được khen","Không sao"],1],
+["Tôn trọng thông tin riêng tư là:",["Đạo đức","Sai","Không cần","Phiền"],0],
+
+/* 46–54: ĐẠO ĐỨC – GIAN DỐI */
+["Gian dối trong học tập là:",["Tự làm bài","Hỏi thầy cô","Chép bài","Thảo luận"],2],
+["Chép bài trong giờ kiểm tra là:",["Giỏi","Trung thực","Gian dối","Được phép"],2],
+["Thấy bạn gian dối, em nên:",["Làm theo","Không quan tâm","Không đồng tình","Cổ vũ"],2],
+["Trung thực trong học tập là:",["Chép bài","Tự làm bài","Gian lận","Nhờ làm hộ"],1],
+["Gian dối trong đời sống là:",["Nói thật","Lừa dối","Giúp đỡ","Chia sẻ"],1],
+
+["Đạo đức trong môi trường số là:",["Chơi game","Cư xử đúng","Hack","Tải nhanh"],1],
+["Hành vi đúng trên mạng:",["Nói xấu","Tôn trọng","Gian lận","Xúc phạm"],1],
+["Hành vi sai trên mạng:",["Lịch sự","Giúp đỡ","Gian lận","Chia sẻ kiến thức"],2],
+["Tôn trọng người khác trên mạng là:",["Xúc phạm","Lợi dụng","Lịch sự","Chép bài"],2],
+["Đăng thông tin sai sự thật là:",["Đúng","Bình thường","Sai trái","Tốt"],2],
+
+["Gian dối khi học online là:",["Tự làm","Nhờ làm hộ","Hỏi cô","Thảo luận"],1],
+["Hành vi tốt khi học online:",["Gian lận","Trung thực","Chép bài","Nhờ làm"],1],
+["Học sinh tốt cần:",["Gian lận","Trung thực","Sao chép","Lười học"],1],
+["Thực hiện tốt đạo đức số là:",["Xúc phạm","Tôn trọng","Gian lận","Lừa dối"],1],
+["Bài học này giúp em:",["Gian dối","Không quan tâm","Sống đúng","Chép bài"],2]
+];
+
+// ================= SHUFFLE =================
+function shuffle(a){
+ for(let i=a.length-1;i>0;i--){
+  let j=Math.floor(Math.random()*(i+1));
+  [a[i],a[j]]=[a[j],a[i]];
+ }
+}
+shuffle(quiz);
+
+// ================= START =================
+let name="", cls="";
+function startQuiz(){
+ name=student.value.trim();
+ cls=document.getElementById("class").value.trim();
+ if(!name||!cls){alert("Vui lòng nhập Tên và Lớp");return;}
+ start.classList.add("hidden");
+ quizBox.classList.remove("hidden");
+ startTimer(); load();
+}
+
+// ================= TIMER =================
+let totalTime=3600, timer;
+function startTimer(){
+ timer=setInterval(()=>{
+  let m=Math.floor(totalTime/60);
+  let s=totalTime%60;
+  time.innerText=`${m}:${s<10?"0"+s:s}`;
+  totalTime--;
+  if(totalTime<0){clearInterval(timer);end();}
+ },1000);
+}
+
+// ================= QUIZ =================
+let i=0,score=0,correct=0,wrong=0;
+function load(){
+ if(i>=quiz.length){end();return;}
+ num.innerText=i+1;
+ let q=quiz[i];
+ question.innerText=q[0];
+ answers.innerHTML="";
+ let opts=q[1].map((t,idx)=>({t,idx}));
+ shuffle(opts);
+ opts.forEach(o=>{
+  let d=document.createElement("div");
+  d.className="answer";
+  d.innerText=o.t;
+  d.onclick=()=>{
+   if(o.idx===q[2]){score++;correct++;msg.innerText="🎉 ĐÚNG!";}
+   else{wrong++;msg.innerText="❌ SAI!";}
+   scoreEl.innerText=score;
+   i++;
+   setTimeout(()=>{msg.innerText="";load();},600);
+  };
+  answers.appendChild(d);
+ });
+}
+const scoreEl=document.getElementById("score");
+
+// ================= END =================
+function end(){
+ clearInterval(timer);
+ question.innerText="🏁 HOÀN THÀNH BÀI KIỂM TRA";
+ answers.innerHTML=
+ `<pre>
+Học sinh: ${name}
+Lớp: ${cls}
+Điểm: ${score}/54
+Đúng: ${correct}
+Sai: ${wrong}
+</pre>`;
+}
+</script>
+
+</body>
+</html>
