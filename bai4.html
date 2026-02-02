@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>🎮 Game kiểm tra – Tìm kiếm thông tin trên Internet (Lớp 4)</title>
+<style>
+body{margin:0;font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#74b9ff,#55efc4)}
+#app{max-width:1200px;margin:20px auto;background:#fff;border-radius:18px;padding:25px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+h1{text-align:center;color:#2d3436}
+#top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+#progress{flex:1;height:12px;background:#dfe6e9;border-radius:10px;overflow:hidden;margin:0 15px}
+#bar{height:100%;width:0%;background:linear-gradient(90deg,#ffeaa7,#00b894);transition:.4s}
+#timer{font-weight:bold;color:#d63031}
+.question{font-size:20px;margin:20px 0}
+.answers button{display:block;width:100%;margin:10px 0;padding:12px;border:none;border-radius:14px;font-size:16px;cursor:pointer;background:#f1f2f6;transition:.25s}
+.answers button:hover{background:#dff9fb;transform:scale(1.02)}
+.correct{background:#c8e6c9 !important}
+.wrong{background:#ffcdd2 !important}
+#next{display:none;margin:20px auto;padding:10px 40px;font-size:16px;border:none;border-radius:20px;background:#0984e3;color:#fff;cursor:pointer}
+#result{display:none;text-align:center;font-size:22px}
+#report{display:none;margin-top:20px}
+#report table{width:100%;border-collapse:collapse}
+#report th,#report td{border:1px solid #ccc;padding:6px;text-align:center}
+</style>
+</head>
+<body>
+<div id="app">
+<h1>🎮 GAME KIỂM TRA – TÌM KIẾM THÔNG TIN TRÊN INTERNET (LỚP 4)</h1>
+<div id="top">
+  <div id="timer">⏱️ 15:00</div>
+  <div id="progress"><div id="bar"></div></div>
+</div>
+<div id="quiz">
+  <div class="question" id="question"></div>
+  <div class="answers" id="answers"></div>
+</div>
+<button id="next">Câu tiếp theo ▶</button>
+<div id="result"></div>
+<div id="report"></div>
+</div>
+<script>
+// ====== 70 CÂU KHÔNG TRÙNG – TÌM KIẾM THÔNG TIN TRÊN INTERNET ======
+const questions=[
+{q:"Internet là gì?",a:["Kho thông tin khổng lồ","Một máy tính","Một phần mềm","Một trò chơi"],c:0},
+{q:"Muốn tìm thông tin trên Internet, em thường dùng gì?",a:["Máy tìm kiếm","Máy in","Phần mềm vẽ","Trình soạn thảo"],c:0},
+{q:"Google là gì?",a:["Máy tìm kiếm","Trang trò chơi","Phần mềm vẽ","Ứng dụng nghe nhạc"],c:0},
+{q:"Địa chỉ trang web của Google là gì?",a:["google.com.vn","facebook.com","yahoo.com","wikipedia.org"],c:0},
+{q:"Từ khóa tìm kiếm là gì?",a:["Từ hoặc cụm từ nhập vào ô tìm kiếm","Địa chỉ trang web","Tên máy tính","Tên trình duyệt"],c:0},
+{q:"Muốn tìm thông tin về Hồ Hoàn Kiếm, em nên gõ gì?",a:["Hồ Hoàn Kiếm","Hồ","Kiếm","Hà Nội"],c:0},
+{q:"Bước đầu tiên khi tìm kiếm thông tin là gì?",a:["Mở trình duyệt web","Gõ từ khóa","Xem kết quả","Đóng máy"],c:0},
+{q:"Sau khi nhập địa chỉ google.com.vn, em làm gì tiếp?",a:["Gõ từ khóa","Tắt máy","In","Vẽ"],c:0},
+{q:"Phím nào dùng để bắt đầu tìm kiếm?",a:["Enter","Ctrl","Shift","Alt"],c:0},
+{q:"Kết quả tìm kiếm thường hiển thị gì?",a:["Các bài viết liên quan","Trò chơi","Phần mềm","Hình nền"],c:0},
+
+{q:"Tiêu đề bài viết trong kết quả tìm kiếm cho biết điều gì?",a:["Nội dung chính","Tên tác giả","Ngày đăng","Màu sắc"],c:0},
+{q:"Phần nội dung in đậm trong kết quả tìm kiếm thể hiện gì?",a:["Từ khóa tìm kiếm","Tên trang web","Hình ảnh","Quảng cáo"],c:0},
+{q:"Muốn tìm thông tin chính xác hơn, từ khóa nên như thế nào?",a:["Cụ thể","Chung chung","Ngắn","Dài"],c:0},
+{q:"Từ khóa 'Bảo tàng Phụ nữ Nam Bộ' cho kết quả thế nào?",a:["Chính xác","Rộng","Không liên quan","Sai"],c:0},
+{q:"Từ khóa càng chung chung thì kết quả tìm kiếm sẽ thế nào?",a:["Kém chính xác","Chính xác","Không có","Giống nhau"],c:0},
+{q:"Có thể chỉnh sửa từ khóa để làm gì?",a:["Có kết quả phù hợp hơn","Xóa Internet","Tắt máy","In"],c:0},
+{q:"Ngoài máy tìm kiếm, còn cách nào tìm thông tin?",a:["Truy cập trang web","Hỏi mạng xã hội","Cả hai","Không có"],c:2},
+{q:"Đặt câu hỏi trên mạng xã hội để làm gì?",a:["Nhờ cộng đồng hỗ trợ","Chơi game","Xem phim","Nghe nhạc"],c:0},
+{q:"Khi tìm thông tin, cần chú ý điều gì?",a:["Chọn nguồn phù hợp","Chọn màu sắc","Chọn phông chữ","Không cần"],c:0},
+{q:"Kết quả tìm kiếm có thể rất nhiều vì sao?",a:["Internet có nhiều thông tin","Máy chậm","Từ khóa sai","Không biết"],c:0},
+
+{q:"Vườn quốc gia Cát Tiên thuộc những tỉnh nào?",a:["Đồng Nai, Lâm Đồng, Bình Phước","Hà Nội, Huế","Quảng Ninh","TP.HCM"],c:0},
+{q:"Muốn tìm thông tin về Sao la, từ khóa phù hợp là gì?",a:["Sao la","Động vật","Kì lân","Rừng"],c:0},
+{q:"'Kì lân Châu Á' liên quan đến loài vật nào?",a:["Sao la","Hổ","Voi","Gấu"],c:0},
+{q:"Chủ đề của thông tin cần tìm là gì?",a:["Nội dung chính","Màu sắc","Số lượng","Hình ảnh"],c:0},
+{q:"Từ đặc trưng của thông tin dùng để làm gì?",a:["Làm từ khóa","Trang trí","In","Xóa"],c:0},
+{q:"Trong kết quả tìm kiếm, địa chỉ trang web cho biết điều gì?",a:["Nơi chứa bài viết","Tên tác giả","Màu sắc","Số trang"],c:0},
+{q:"Có nên mở tất cả kết quả tìm kiếm không?",a:["Không, chọn kết quả phù hợp","Có","Bắt buộc","Không biết"],c:0},
+{q:"Khi mở kết quả tìm kiếm, em cần đọc phần nào?",a:["Tiêu đề và nội dung","Quảng cáo","Chân trang","Không cần"],c:0},
+{q:"Nếu kết quả không đúng, em nên làm gì?",a:["Chỉnh sửa từ khóa","Tắt máy","In","Xóa"],c:0},
+{q:"Tìm kiếm thông tin giúp ích gì cho học tập?",a:["Hiểu bài hơn","Làm bài nhanh","Có thêm kiến thức","Tất cả đều đúng"],c:3},
+
+{q:"Máy tìm kiếm trả về kết quả dựa trên điều gì?",a:["Từ khóa","Màu sắc","Thời gian","Tên máy"],c:0},
+{q:"Có thể tìm hình ảnh bằng máy tìm kiếm không?",a:["Có","Không","Chỉ văn bản","Chỉ video"],c:0},
+{q:"Có thể tìm video bằng máy tìm kiếm không?",a:["Có","Không","Chỉ hình ảnh","Chỉ văn bản"],c:0},
+{q:"Khi tìm kiếm, cần sử dụng Internet hay không?",a:["Cần","Không cần","Tùy lúc","Không biết"],c:0},
+{q:"Tìm kiếm thông tin trên Internet có cần cẩn thận không?",a:["Có","Không","Không quan trọng","Tùy ý"],c:0},
+{q:"Vì sao cần chọn thông tin phù hợp với lứa tuổi?",a:["An toàn","Dễ hiểu","Phù hợp học tập","Tất cả đều đúng"],c:3},
+{q:"Nên tin tưởng mọi thông tin trên Internet không?",a:["Không","Có","Bắt buộc","Không biết"],c:0},
+{q:"Khi tìm thông tin, nên hỏi ai nếu không hiểu?",a:["Thầy cô, bố mẹ","Bạn bè","Người lạ","Không ai"],c:0},
+{q:"Tìm kiếm thông tin là kĩ năng gì?",a:["Kĩ năng học tập","Kĩ năng chơi","Kĩ năng vẽ","Kĩ năng in"],c:0},
+{q:"Bài học này thuộc chủ đề nào?",a:["Tổ chức, tìm kiếm thông tin","Soạn thảo","Vẽ","Âm nhạc"],c:0},
+
+{q:"Khi tìm kiếm, không nên làm gì?",a:["Nhấn vào link lạ","Chọn trang uy tín","Đọc kĩ","Chỉnh từ khóa"],c:0},
+{q:"Máy tìm kiếm giúp tiết kiệm điều gì?",a:["Thời gian","Công sức","Dễ tìm","Tất cả đều đúng"],c:3},
+{q:"Khi kết quả quá nhiều, nên làm gì?",a:["Cụ thể hóa từ khóa","Xem hết","Tắt máy","In"],c:0},
+{q:"Tìm kiếm thông tin giúp em làm gì trong cuộc sống?",a:["Học tốt hơn","Biết nhiều điều","Giải quyết vấn đề","Tất cả đều đúng"],c:3},
+{q:"Có thể tìm thông tin về danh lam thắng cảnh không?",a:["Có","Không","Chỉ sách","Chỉ báo"],c:0},
+{q:"Ví dụ danh lam thắng cảnh Việt Nam là gì?",a:["Vịnh Hạ Long","Tháp Eiffel","Kim Tự Tháp","Núi Phú Sĩ"],c:0},
+{q:"Có thể tìm thông tin về danh nhân không?",a:["Có","Không","Chỉ địa điểm","Không biết"],c:0},
+{q:"Khi tìm thông tin về địa phương, em nên dùng từ khóa gì?",a:["Tên địa phương","Internet","Trang web","Máy tính"],c:0},
+{q:"Sau khi học bài này, em làm được gì?",a:["Tìm kiếm thông tin","Chọn từ khóa","Đọc kết quả","Tất cả đều đúng"],c:3},
+{q:"Mục tiêu chính của bài học là gì?",a:["Biết tìm kiếm thông tin trên Internet","Chơi game","Vẽ","Soạn thảo"],c:0}
+];
+
+// TRỘN CÂU HỎI
+questions.sort(()=>Math.random()-0.5);
+let index=0,score=0;let details=[];
+const qEl=document.getElementById('question');
+const aEl=document.getElementById('answers');
+const bar=document.getElementById('bar');
+const next=document.getElementById('next');
+const result=document.getElementById('result');
+const report=document.getElementById('report');
+
+// ĐẾM NGƯỢC 15 PHÚT
+let total=15*60;const timerEl=document.getElementById('timer');
+const countdown=setInterval(()=>{total--;let m=Math.floor(total/60),s=total%60;timerEl.textContent=`⏱️ ${m}:${s.toString().padStart(2,'0')}`;if(total<=0){clearInterval(countdown);finish();}},1000);
+
+function shuffle(arr){return arr.map(v=>[Math.random(),v]).sort((a,b)=>a[0]-b[0]).map(v=>v[1]);}
+function load(){next.style.display='none';const q=questions[index];qEl.textContent=`Câu ${index+1}: ${q.q}`;aEl.innerHTML='';const answers=shuffle(q.a.map((t,i)=>({t,i})));answers.forEach(obj=>{const b=document.createElement('button');b.textContent=obj.t;b.onclick=()=>choose(b,obj.i,q.c,q.q,obj.t);aEl.appendChild(b)});bar.style.width=(index/questions.length*100)+'%';}
+function choose(btn,choice,correct,qtext,ans){[...aEl.children].forEach(b=>b.disabled=true);const ok=choice===correct;btn.classList.add(ok?'correct':'wrong');if(!ok){[...aEl.children].find(b=>b.textContent===questions[index].a[correct]).classList.add('correct');}if(ok)score++;details.push({q:qtext,choose:ans,correct:questions[index].a[correct],ok});next.style.display='block';}
+next.onclick=()=>{index++;if(index<questions.length)load();else finish();};
+function finish(){clearInterval(countdown);document.getElementById('quiz').style.display='none';next.style.display='none';bar.style.width='100%';result.style.display='block';result.innerHTML=`🎉 Hoàn thành!<br>Điểm: <b>${score}/${questions.length}</b>`;report.style.display='block';let html='<h3>📊 BÁO CÁO CHI TIẾT</h3><table><tr><th>Câu</th><th>Đáp án HS</th><th>Đáp án đúng</th><th>Kết quả</th></tr>';details.forEach((d,i)=>{html+=`<tr><td>${i+1}</td><td>${d.choose}</td><td>${d.correct}</td><td>${d.ok?'✔':'✘'}</td></tr>`});html+='</table>';report.innerHTML=html;}
+load();
+</script>
+</body>
+</html>

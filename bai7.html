@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>🎮 Game kiểm tra Tin học – Soạn thảo văn bản tiếng Việt</title>
+<style>
+body{margin:0;font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#74b9ff,#a29bfe)}
+#app{max-width:1000px;margin:20px auto;background:#fff;border-radius:18px;padding:25px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+h1{text-align:center;color:#2d3436}
+#top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+#progress{flex:1;height:12px;background:#dfe6e9;border-radius:10px;overflow:hidden;margin:0 15px}
+#bar{height:100%;width:0%;background:linear-gradient(90deg,#ffeaa7,#00b894);transition:.4s}
+#timer{font-weight:bold;color:#d63031}
+.question{font-size:20px;margin:20px 0}
+.answers button{display:block;width:100%;margin:10px 0;padding:12px;border:none;border-radius:14px;font-size:16px;cursor:pointer;background:#f1f2f6;transition:.25s}
+.answers button:hover{background:#dff9fb;transform:scale(1.02)}
+.correct{background:#c8e6c9 !important}
+.wrong{background:#ffcdd2 !important}
+#next{display:none;margin:20px auto;padding:10px 40px;font-size:16px;border:none;border-radius:20px;background:#0984e3;color:#fff;cursor:pointer}
+#result{display:none;text-align:center;font-size:22px}
+#report{display:none;margin-top:20px}
+#report table{width:100%;border-collapse:collapse}
+#report th,#report td{border:1px solid #ccc;padding:6px;text-align:center}
+</style>
+</head>
+<body>
+<div id="app">
+<h1>🎮 GAME KIỂM TRA – SOẠN THẢO VĂN BẢN TIẾNG VIỆT</h1>
+<div id="top">
+  <div id="timer">⏱️ 15:00</div>
+  <div id="progress"><div id="bar"></div></div>
+</div>
+<div id="quiz">
+  <div class="question" id="question"></div>
+  <div class="answers" id="answers"></div>
+</div>
+<button id="next">Câu tiếp theo ▶</button>
+<div id="result"></div>
+<div id="report"></div>
+</div>
+<script>
+// ====== NGÂN HÀNG 70 CÂU (KHÔNG TRÙNG – KHÔNG CÂU MẪU) ======
+const questions=[
+{q:"Hình 1 trong bài học là cửa sổ làm việc của phần mềm nào?",a:["Word","Excel","Paint","PowerPoint"],c:0},
+{q:"Để khởi động phần mềm Word bằng chuột, em cần làm gì?",a:["Nháy đúp chuột vào biểu tượng Word","Nháy chuột phải","Nhấn phím Enter","Giữ chuột trái"],c:0},
+{q:"Khi Word được mở, con trỏ soạn thảo có dạng gì?",a:["Mũi tên","Vạch đứng nhấp nháy","Dấu cộng","Bàn tay"],c:1},
+{q:"Khi gõ phím kí tự, kí tự sẽ xuất hiện ở đâu?",a:["Đầu trang","Cuối trang","Vị trí con trỏ soạn thảo","Bất kì vị trí nào"],c:2},
+{q:"Khi gõ phím kí tự, con trỏ soạn thảo sẽ di chuyển như thế nào?",a:["Sang trái","Sang phải","Lên trên","Xuống dưới"],c:1},
+{q:"Để di chuyển con trỏ soạn thảo trong văn bản, em có thể làm cách nào?",a:["Nháy chuột vào vị trí cần đến","Tắt Word","Đổi phông chữ","In văn bản"],c:0},
+{q:"Phím Enter có tác dụng gì trong soạn thảo văn bản?",a:["Xóa kí tự","Xuống dòng mới","Lưu văn bản","In văn bản"],c:1},
+{q:"Phím Backspace dùng để làm gì?",a:["Xóa kí tự bên phải con trỏ","Xóa kí tự bên trái con trỏ","Xuống dòng","Đổi màu chữ"],c:1},
+{q:"Phím Delete dùng để làm gì?",a:["Xóa kí tự bên trái con trỏ","Xóa kí tự bên phải con trỏ","Lưu văn bản","In văn bản"],c:1},
+{q:"Thiết bị chính dùng để nhập văn bản vào máy tính là gì?",a:["Chuột","Màn hình","Bàn phím","Máy in"],c:2},
+
+{q:"Phần mềm nào hỗ trợ gõ tiếng Việt phổ biến hiện nay?",a:["Word","Excel","Unikey","Paint"],c:2},
+{q:"Muốn gõ được văn bản tiếng Việt, em cần làm gì trước?",a:["Mở Word","Bật phần mềm gõ tiếng Việt","Lưu văn bản","Đổi phông chữ"],c:1},
+{q:"Biểu tượng của Unikey thường xuất hiện ở đâu trên màn hình?",a:["Giữa màn hình","Góc trên bên trái","Khay hệ thống (góc dưới bên phải)","Trong cửa sổ Word"],c:2},
+{q:"Trong bài học, kiểu gõ tiếng Việt nào được khuyến khích sử dụng?",a:["VNI","Telex","ABC","Unicode"],c:1},
+{q:"Trong kiểu gõ Telex, gõ dd sẽ cho ra chữ gì?",a:["d","đ","D","Đ"],c:1},
+{q:"Trong kiểu gõ Telex, gõ aw sẽ cho ra chữ gì?",a:["a","ă","â","á"],c:1},
+{q:"Trong kiểu gõ Telex, gõ aa sẽ cho ra chữ gì?",a:["a","ă","â","á"],c:2},
+{q:"Trong kiểu gõ Telex, gõ ee sẽ cho ra chữ gì?",a:["e","ê","é","è"],c:1},
+{q:"Trong kiểu gõ Telex, dấu sắc được gõ bằng phím nào?",a:["s","f","r","x"],c:0},
+{q:"Trong kiểu gõ Telex, dấu huyền được gõ bằng phím nào?",a:["f","s","x","j"],c:0},
+
+{q:"Trong kiểu gõ Telex, dấu hỏi được gõ bằng phím nào?",a:["r","s","x","j"],c:0},
+{q:"Trong kiểu gõ Telex, dấu ngã được gõ bằng phím nào?",a:["x","r","s","f"],c:0},
+{q:"Trong kiểu gõ Telex, dấu nặng được gõ bằng phím nào?",a:["j","f","s","x"],c:0},
+{q:"Gõ hocj theo kiểu Telex sẽ cho ra từ nào?",a:["học","họ","hóc","hộc"],c:0},
+{q:"Gõ khieem toonr theo kiểu Telex sẽ cho ra từ nào?",a:["khiêm tốn","khiểm tốn","khiêm tón","khiem ton"],c:0},
+{q:"Gõ mays tinhs theo kiểu Telex sẽ cho ra từ nào?",a:["máy tính","may tính","máy tĩnh","mày tính"],c:0},
+{q:"Muốn chuyển từ chế độ gõ tiếng Anh sang tiếng Việt trong Unikey, em làm gì?",a:["Nháy chuột vào biểu tượng Unikey","Đóng Word","Khởi động lại máy","Lưu văn bản"],c:0},
+{q:"Khi Unikey ở chế độ gõ tiếng Việt, biểu tượng thường có màu gì?",a:["Đỏ","Xanh","Vàng","Đen"],c:0},
+{q:"Khi Unikey ở chế độ gõ tiếng Anh, biểu tượng thường có màu gì?",a:["Đỏ","Xanh","Vàng","Đen"],c:1},
+
+{q:"Khi gõ tiếng Việt theo kiểu Telex, dấu thanh thường được gõ khi nào?",a:["Đầu từ","Giữa từ","Cuối từ","Không cần gõ"],c:2},
+{q:"Để lưu văn bản lần đầu trong Word, em thường dùng lệnh nào?",a:["Save","Save As","Open","New"],c:1},
+{q:"Phím tắt dùng để lưu văn bản là tổ hợp nào?",a:["Ctrl + C","Ctrl + V","Ctrl + S","Ctrl + X"],c:2},
+{q:"Khi lưu văn bản, em cần đặt tên cho đối tượng nào?",a:["Thư mục","Tệp","Ổ đĩa","Máy tính"],c:1},
+{q:"Để thoát khỏi phần mềm Word, em có thể làm cách nào?",a:["Nhấn nút X","Nhấn Ctrl + S","Nhấn Enter","Đổi phông chữ"],c:0},
+{q:"Nếu thoát Word khi chưa lưu văn bản, điều gì có thể xảy ra?",a:["Mất dữ liệu chưa lưu","Tăng tốc máy","Không ảnh hưởng","Đổi màu chữ"],c:0},
+{q:"Nhóm lệnh dùng để định dạng chữ nằm ở thẻ nào của Word?",a:["Home","Insert","View","File"],c:0},
+{q:"Nhóm lệnh Font dùng để làm gì?",a:["Định dạng chữ","Chèn hình ảnh","Lưu văn bản","In văn bản"],c:0},
+{q:"Nhóm lệnh Paragraph dùng để làm gì?",a:["Định dạng đoạn văn","Định dạng chữ","Sao chép","Lưu"],c:0},
+
+{q:"Nhóm lệnh Clipboard liên quan đến thao tác nào?",a:["Sao chép – cắt – dán","In văn bản","Lưu văn bản","Định dạng chữ"],c:0},
+{q:"Phím tắt dùng để in văn bản là tổ hợp nào?",a:["Ctrl + P","Ctrl + S","Ctrl + C","Ctrl + V"],c:0},
+{q:"Muốn chọn toàn bộ văn bản, em dùng tổ hợp phím nào?",a:["Ctrl + A","Ctrl + C","Ctrl + V","Ctrl + X"],c:0},
+{q:"Muốn sao chép văn bản đã chọn, em dùng tổ hợp phím nào?",a:["Ctrl + C","Ctrl + V","Ctrl + X","Ctrl + P"],c:0},
+{q:"Muốn dán văn bản đã sao chép, em dùng tổ hợp phím nào?",a:["Ctrl + V","Ctrl + C","Ctrl + X","Ctrl + A"],c:0},
+{q:"Muốn cắt văn bản đã chọn, em dùng tổ hợp phím nào?",a:["Ctrl + X","Ctrl + C","Ctrl + V","Ctrl + P"],c:0},
+{q:"Con trỏ chuột khi đặt trong vùng soạn thảo Word thường có dạng gì?",a:["Chữ I","Mũi tên","Bàn tay","Dấu cộng"],c:0},
+{q:"Khi kéo chuột để bôi đen một đoạn văn bản, em đang làm gì?",a:["Chọn văn bản","Xóa văn bản","In văn bản","Lưu văn bản"],c:0},
+{q:"Để thay đổi phông chữ của văn bản, em sử dụng lệnh nào?",a:["Font","Paragraph","Clipboard","Styles"],c:0},
+
+{q:"Để thay đổi cỡ chữ của văn bản, em thao tác ở đâu?",a:["Font Size","Paragraph","Clipboard","View"],c:0},
+{q:"Để thay đổi màu chữ của văn bản, em sử dụng lệnh nào?",a:["Font Color","Bold","Italic","Underline"],c:0},
+{q:"Để làm chữ đậm, em sử dụng lệnh nào?",a:["Bold","Italic","Underline","Font Color"],c:0},
+{q:"Để làm chữ nghiêng, em sử dụng lệnh nào?",a:["Italic","Bold","Underline","Font Color"],c:0},
+{q:"Để gạch chân chữ, em sử dụng lệnh nào?",a:["Underline","Bold","Italic","Font Color"],c:0},
+{q:"Để căn lề trái đoạn văn, em dùng lệnh nào?",a:["Align Left","Align Center","Align Right","Justify"],c:0},
+{q:"Để căn lề giữa đoạn văn, em dùng lệnh nào?",a:["Align Center","Align Left","Align Right","Justify"],c:0},
+{q:"Để căn lề phải đoạn văn, em dùng lệnh nào?",a:["Align Right","Align Left","Align Center","Justify"],c:0},
+{q:"Để căn đều hai bên đoạn văn, em dùng lệnh nào?",a:["Justify","Align Left","Align Center","Align Right"],c:0},
+{q:"Khi lưu văn bản Word, phần mở rộng của tệp thường là gì?",a:[".docx",".txt",".jpg",".ppt"],c:0},
+{q:"Mục đích chính của việc học soạn thảo văn bản tiếng Việt là gì?",a:["Soạn thảo văn bản đúng và đẹp","Chơi trò chơi","Vẽ tranh","Nghe nhạc"],c:0}
+];
+// TRỘN CÂU HỎI
+questions.sort(()=>Math.random()-0.5);
+
+let index=0,score=0;
+let details=[];
+const qEl=document.getElementById('question');
+const aEl=document.getElementById('answers');
+const bar=document.getElementById('bar');
+const next=document.getElementById('next');
+const result=document.getElementById('result');
+const report=document.getElementById('report');
+
+// ====== ĐẾM NGƯỢC 15 PHÚT ======
+let total=15*60;
+const timerEl=document.getElementById('timer');
+const countdown=setInterval(()=>{
+  total--;
+  let m=Math.floor(total/60), s=total%60;
+  timerEl.textContent=`⏱️ ${m}:${s.toString().padStart(2,'0')}`;
+  if(total<=0){clearInterval(countdown);finish();}
+},1000);
+
+function shuffle(arr){return arr.map(v=>[Math.random(),v]).sort((a,b)=>a[0]-b[0]).map(v=>v[1]);}
+
+function load(){
+  next.style.display='none';
+  const q=questions[index];
+  qEl.textContent=`Câu ${index+1}: ${q.q}`;
+  aEl.innerHTML='';
+  const answers=shuffle(q.a.map((t,i)=>({t,i})));
+  answers.forEach(obj=>{
+    const b=document.createElement('button');
+    b.textContent=obj.t;
+    b.onclick=()=>choose(b,obj.i,q.c,q.q,obj.t);
+    aEl.appendChild(b);
+  });
+  bar.style.width=(index/questions.length*100)+'%';
+}
+
+function choose(btn,choice,correct,qtext,ans){
+  [...aEl.children].forEach(b=>b.disabled=true);
+  const ok=choice===correct;
+  btn.classList.add(ok?'correct':'wrong');
+  if(!ok){[...aEl.children].find(b=>b.textContent===questions[index].a[correct]).classList.add('correct');}
+  if(ok) score++;
+  details.push({q:qtext,choose:ans,correct:questions[index].a[correct],ok});
+  next.style.display='block';
+}
+
+next.onclick=()=>{index++;if(index<questions.length)load();else finish();};
+
+function finish(){
+  clearInterval(countdown);
+  document.getElementById('quiz').style.display='none';
+  next.style.display='none';
+  bar.style.width='100%';
+  result.style.display='block';
+  result.innerHTML=`🎉 Hoàn thành!<br>Điểm: <b>${score}/${questions.length}</b>`;
+  // BÁO CÁO GIÁO VIÊN
+  report.style.display='block';
+  let html='<h3>📊 BÁO CÁO CHI TIẾT</h3><table><tr><th>Câu</th><th>Đáp án HS</th><th>Đáp án đúng</th><th>Kết quả</th></tr>';
+  details.forEach((d,i)=>{html+=`<tr><td>${i+1}</td><td>${d.choose}</td><td>${d.correct}</td><td>${d.ok?'✔':'✘'}</td></tr>`});
+  html+='</table>';
+  report.innerHTML=html;
+}
+load();
+</script>
+</body>
+</html>

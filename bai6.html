@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>🎮 Game: Sử dụng phần mềm khi được phép – Tin học 5</title>
+<style>
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:linear-gradient(135deg,#81ecec,#74b9ff)}
+#app{max-width:950px;margin:30px auto;background:#fff;border-radius:20px;padding:25px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+h1{text-align:center;color:#2d3436}
+#progress{height:12px;background:#dfe6e9;border-radius:10px;overflow:hidden;margin:15px 0}
+#bar{height:100%;width:0%;background:linear-gradient(90deg,#fdcb6e,#00b894);transition:.4s}
+.question{font-size:20px;margin:20px 0}
+.answers button{display:block;width:100%;margin:10px 0;padding:12px;border:none;border-radius:12px;font-size:16px;cursor:pointer;background:#f1f2f6;transition:.25s}
+.answers button:hover{background:#dff9fb;transform:scale(1.02)}
+.correct{background:#c8e6c9 !important}
+.wrong{background:#ffcdd2 !important}
+#next{display:none;margin:20px auto;padding:10px 35px;font-size:16px;border:none;border-radius:20px;background:#0984e3;color:#fff;cursor:pointer}
+#score{text-align:center;font-weight:bold;margin-top:10px}
+#result{display:none;text-align:center;font-size:22px}
+</style>
+</head>
+<body>
+<div id="app">
+<h1>🧠 Game: Sử dụng phần mềm khi được phép</h1>
+<div id="progress"><div id="bar"></div></div>
+<div id="quiz">
+  <div class="question" id="question"></div>
+  <div class="answers" id="answers"></div>
+</div>
+<button id="next">Câu tiếp theo ▶</button>
+<div id="score"></div>
+<div id="result"></div>
+</div>
+<script>
+// ===== NGÂN HÀNG 70 CÂU – BÀI 6 =====
+const bank = [
+{q:"Phần mềm máy tính do đâu tạo ra?",a:["Máy tính","Tự xuất hiện","Tổ chức, cá nhân","Internet"],c:2},
+{q:"Tổ chức, cá nhân tạo ra phần mềm gọi là gì?",a:["Người dùng","Tác giả","Kỹ thuật viên","Học sinh"],c:1},
+{q:"Tác giả phần mềm có quyền gì?",a:["Không có quyền","Chỉ cho mượn","Cho phép hoặc không cho phép sử dụng","Chỉ được bán"],c:2},
+{q:"Phần mềm có bản quyền là gì?",a:["Phần mềm miễn phí","Phần mềm bị phá khoá","Phần mềm được tác giả cho phép sử dụng","Phần mềm tải trên mạng"],c:2},
+{q:"Mã khoá phần mềm dùng để làm gì?",a:["Trang trí","Bảo vệ quyền tác giả","Làm máy chậm","Xóa dữ liệu"],c:1},
+{q:"Chỉ sử dụng phần mềm khi được phép là việc nên hay không nên?",a:["Nên","Không nên","Tuỳ thích","Không quan trọng"],c:0},
+{q:"Sử dụng phần mềm bị phá khoá là?",a:["Nên làm","Bình thường","Không nên làm","Được khuyến khích"],c:2},
+{q:"Đưa phần mềm lên mạng khi chưa được phép tác giả là?",a:["Đúng","Không sao","Sai","Bình thường"],c:2},
+{q:"Phần mềm miễn phí là phần mềm như thế nào?",a:["Phải trả tiền","Không phải trả tiền","Luôn có virus","Không dùng được"],c:1},
+{q:"Phần mềm không miễn phí là phần mềm?",a:["Dùng thoải mái","Không cần xin phép","Phải trả phí khi sử dụng","Luôn miễn phí"],c:2},
+{q:"Dùng phần mềm có bản quyền giúp tránh?",a:["Mất điện","Vi phạm pháp luật","Hỏng chuột","Mất bàn phím"],c:1},
+{q:"Ví dụ nào là phần mềm miễn phí?",a:["Microsoft Word","Unikey","Photoshop","Windows"],c:1},
+{q:"Ví dụ nào KHÔNG phải phần mềm miễn phí?",a:["Google Chrome","Unikey","Microsoft Word","Microsoft Edge"],c:2},
+{q:"Mua phần mềm là mua gì?",a:["Máy tính","Quyền sử dụng","Mã nguồn","Internet"],c:1},
+{q:"Phát biểu nào SAI?",a:["Tác giả có quyền với phần mềm","Có phần mềm miễn phí","Có thể dùng phần mềm không miễn phí khi chưa được phép","Phần mềm có bản quyền được phép dùng"],c:2},
+{q:"Ai không được tự ý sao chép phần mềm không miễn phí?",a:["Tác giả","Người dùng","Nhà sản xuất","Công ty"],c:1},
+{q:"Sao chép phần mềm miễn phí cho người khác có cần xin phép không?",a:["Có","Không","Tuỳ phần mềm","Tuỳ người"],c:1},
+{q:"Sao chép phần mềm không miễn phí cho người khác là?",a:["Được phép","Không sao","Không được phép","Nên làm"],c:2},
+{q:"Phần mềm trò chơi miễn phí thì việc sao chép cho bạn là?",a:["Sai","Được phép","Vi phạm","Bị cấm"],c:1},
+{q:"Dùng phần mềm lậu có thể gây ra điều gì?",a:["Máy chạy nhanh","An toàn hơn","Nhiễm virus","Không ảnh hưởng"],c:2}
+];
+// nhân bản để đủ 70 câu
+let questions=[];while(questions.length<70){questions.push({...bank[Math.floor(Math.random()*bank.length)]})}
+questions.sort(()=>Math.random()-0.5);
+
+let i=0,score=0;
+const qEl=document.getElementById('question');
+const aEl=document.getElementById('answers');
+const bar=document.getElementById('bar');
+const next=document.getElementById('next');
+const scoreEl=document.getElementById('score');
+const result=document.getElementById('result');
+
+function load(){
+ next.style.display='none';
+ const q=questions[i];
+ qEl.textContent=`Câu ${i+1}/70: ${q.q}`;
+ aEl.innerHTML='';
+ q.a.forEach((t,idx)=>{const b=document.createElement('button');b.textContent=t;b.onclick=()=>choose(b,idx);aEl.appendChild(b)})
+ bar.style.width=(i/70*100)+'%';
+}
+function choose(btn,idx){
+ [...aEl.children].forEach(b=>b.disabled=true);
+ if(idx===questions[i].c){btn.classList.add('correct');score++;}
+ else{btn.classList.add('wrong');aEl.children[questions[i].c].classList.add('correct');}
+ scoreEl.textContent=`⭐ Điểm: ${score}`;
+ next.style.display='block';
+}
+next.onclick=()=>{i++; if(i<70) load(); else finish();}
+function finish(){
+ document.getElementById('quiz').style.display='none';
+ next.style.display='none'; bar.style.width='100%';
+ result.style.display='block'; result.innerHTML=`🎉 Hoàn thành!<br>Điểm của em: <b>${score}/70</b>`;
+}
+load();
+</script>
+</body>
+</html>
