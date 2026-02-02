@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>🎮 Game kiểm tra – Cấu trúc tuần tự (Tin học 5)</title>
+<style>
+body{margin:0;font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#81ecec,#6c5ce7)}
+#app{max-width:1200px;margin:20px auto;background:#fff;border-radius:18px;padding:25px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+h1{text-align:center;color:#2d3436}
+#top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+#progress{flex:1;height:12px;background:#dfe6e9;border-radius:10px;overflow:hidden;margin:0 15px}
+#bar{height:100%;width:0%;background:linear-gradient(90deg,#ffeaa7,#00b894);transition:.4s}
+#timer{font-weight:bold;color:#d63031}
+.question{font-size:20px;margin:20px 0}
+.answers button{display:block;width:100%;margin:10px 0;padding:12px;border:none;border-radius:14px;font-size:16px;cursor:pointer;background:#f1f2f6;transition:.25s}
+.answers button:hover{background:#dff9fb;transform:scale(1.02)}
+.correct{background:#c8e6c9 !important}
+.wrong{background:#ffcdd2 !important}
+#next{display:none;margin:20px auto;padding:10px 40px;font-size:16px;border:none;border-radius:20px;background:#0984e3;color:#fff;cursor:pointer}
+#result{display:none;text-align:center;font-size:22px}
+#report{display:none;margin-top:20px}
+#report table{width:100%;border-collapse:collapse}
+#report th,#report td{border:1px solid #ccc;padding:6px;text-align:center}
+</style>
+</head>
+<body>
+<div id="app">
+<h1>🎮 GAME KIỂM TRA – CẤU TRÚC TUẦN TỰ (TIN HỌC 5 – BÀI 9)</h1>
+<div id="top">
+  <div id="timer">⏱️ 15:00</div>
+  <div id="progress"><div id="bar"></div></div>
+</div>
+<div id="quiz">
+  <div class="question" id="question"></div>
+  <div class="answers" id="answers"></div>
+</div>
+<button id="next">Câu tiếp theo ▶</button>
+<div id="result"></div>
+<div id="report"></div>
+</div>
+<script>
+// ====== 70 CÂU KHÔNG TRÙNG – BÀI 9: CẤU TRÚC TUẦN TỰ ======
+const questions=[
+{q:"Cấu trúc tuần tự là gì?",a:["Các bước thực hiện theo đúng thứ tự","Các bước thực hiện ngẫu nhiên","Thực hiện song song","Thực hiện lặp lại"],c:0},
+{q:"Trong cấu trúc tuần tự, các bước có thể đổi chỗ cho nhau không?",a:["Có","Không","Tuỳ trường hợp","Không biết"],c:1},
+{q:"Ví dụ nào sau đây mô tả cấu trúc tuần tự?",a:["Nấu cơm theo từng bước","Chơi nhiều trò cùng lúc","Vừa ăn vừa học","Làm hai việc song song"],c:0},
+{q:"Nếu thay đổi thứ tự các bước trong cấu trúc tuần tự thì điều gì có thể xảy ra?",a:["Kết quả sai","Kết quả đúng","Không ảnh hưởng","Máy nhanh hơn"],c:0},
+{q:"Cấu trúc tuần tự thường dùng khi nào?",a:["Khi các bước phụ thuộc nhau","Khi các bước độc lập","Khi cần lặp","Khi cần rẽ nhánh"],c:0},
+
+{q:"Trong Scratch, chương trình chạy theo nguyên tắc nào?",a:["Tuần tự từ trên xuống","Ngẫu nhiên","Từ dưới lên","Song song"],c:0},
+{q:"Khi nháy vào cờ xanh trong Scratch, điều gì xảy ra?",a:["Chương trình bắt đầu chạy","Chương trình dừng","Xóa chương trình","Thoát Scratch"],c:0},
+{q:"Khối lệnh nào thường đặt ở đầu chương trình Scratch?",a:["Khi bấm cờ xanh","Nói","Di chuyển","Đợi"],c:0},
+{q:"Trong Scratch, lệnh nào được thực hiện trước?",a:["Lệnh ở trên","Lệnh ở dưới","Lệnh bất kì","Lệnh cuối"],c:0},
+{q:"Sắp xếp lệnh đúng thể hiện điều gì?",a:["Cấu trúc tuần tự","Cấu trúc lặp","Cấu trúc rẽ nhánh","Không có cấu trúc"],c:0},
+
+{q:"Chương trình Scratch có cấu trúc tuần tự khi nào?",a:["Các lệnh nối liên tiếp","Có lệnh lặp","Có lệnh rẽ nhánh","Có nhiều nhân vật"],c:0},
+{q:"Nếu đổi thứ tự các khối lệnh Scratch thì kết quả sẽ như thế nào?",a:["Có thể thay đổi","Luôn giống nhau","Không đổi","Không chạy"],c:0},
+{q:"Cấu trúc tuần tự trong Scratch giúp điều gì?",a:["Chương trình chạy đúng","Chạy nhanh hơn","Đẹp hơn","Ít lệnh hơn"],c:0},
+{q:"Sắp xếp lệnh sai thứ tự có thể gây ra điều gì?",a:["Sai kết quả","Không chạy","Chạy sai","Tất cả đều đúng"],c:3},
+{q:"Phần ghi nhớ nhấn mạnh điều gì về cấu trúc tuần tự?",a:["Thứ tự rất quan trọng","Không cần đúng thứ tự","Có thể bỏ bước","Làm tùy ý"],c:0},
+
+{q:"Biến trong Scratch dùng để làm gì?",a:["Lưu trữ giá trị","Trang trí","Điều khiển chuột","Vẽ hình"],c:0},
+{q:"Muốn tạo biến mới trong Scratch, em chọn nhóm lệnh nào?",a:["Các biến số","Chuyển động","Hiển thị","Âm thanh"],c:0},
+{q:"Sau khi chọn 'Tạo một biến', bước tiếp theo là gì?",a:["Gõ tên biến","Chạy chương trình","Xóa biến","Thoát"],c:0},
+{q:"Sau khi gõ tên biến, em cần làm gì để hoàn tất?",a:["Chọn OK","Nhấn Delete","Nhấn Esc","Thoát"],c:0},
+{q:"Biến a và S thường dùng để làm gì trong bài học?",a:["Lưu chiều dài và diện tích","Lưu tên","Lưu màu","Lưu thời gian"],c:0},
+
+{q:"Trong chương trình tính diện tích hình chữ nhật, bước đầu tiên là gì?",a:["Nhập chiều dài và rộng","Tính diện tích","Hiển thị kết quả","Kết thúc"],c:0},
+{q:"Muốn tính diện tích hình chữ nhật cần công thức nào?",a:["Dài × Rộng","Dài + Rộng","2 × (Dài + Rộng)","Dài − Rộng"],c:0},
+{q:"Trong cấu trúc tuần tự, bước tính toán phải đứng sau bước nào?",a:["Nhập dữ liệu","Xuất kết quả","Kết thúc","Không quan trọng"],c:0},
+{q:"Xuất kết quả trong Scratch thường dùng khối lệnh nào?",a:["Nói","Đợi","Di chuyển","Quay"],c:0},
+{q:"Nếu chưa nhập dữ liệu mà đã tính toán thì điều gì xảy ra?",a:["Sai kết quả","Đúng kết quả","Không chạy","Không ảnh hưởng"],c:0},
+
+{q:"Cấu trúc tuần tự có dùng cho bài toán chào hỏi không?",a:["Có","Không","Chỉ dùng cho toán","Không biết"],c:0},
+{q:"Trong bài toán chào hỏi, bước đầu tiên là gì?",a:["Nhập tên người dùng","Hiển thị lời chào","Kết thúc","Xóa dữ liệu"],c:0},
+{q:"Sau khi nhập tên, bước tiếp theo là gì?",a:["Nhân vật nói lời chào","Tạo biến","Tính toán","Thoát"],c:0},
+{q:"Nếu đảo ngược hai bước nhập tên và chào hỏi thì kết quả thế nào?",a:["Không đúng yêu cầu","Đúng","Không đổi","Không chạy"],c:0},
+{q:"Cấu trúc tuần tự giúp chương trình như thế nào?",a:["Dễ hiểu","Dễ thiết kế","Chạy đúng","Tất cả đều đúng"],c:3},
+
+{q:"Trong Scratch, các lệnh được thực hiện theo thứ tự nào?",a:["Từ trên xuống dưới","Từ dưới lên","Ngẫu nhiên","Song song"],c:0},
+{q:"Khối lệnh 'đợi' trong cấu trúc tuần tự có tác dụng gì?",a:["Tạm dừng","Kết thúc","Lặp","Rẽ nhánh"],c:0},
+{q:"Nếu bỏ qua một bước trong cấu trúc tuần tự thì điều gì xảy ra?",a:["Chương trình sai","Không ảnh hưởng","Chạy nhanh","Đẹp hơn"],c:0},
+{q:"Cấu trúc tuần tự khác cấu trúc lặp ở điểm nào?",a:["Không lặp lại","Có lặp lại","Có rẽ nhánh","Có điều kiện"],c:0},
+{q:"Cấu trúc tuần tự khác cấu trúc rẽ nhánh ở điểm nào?",a:["Không có điều kiện","Có điều kiện","Có lặp","Không biết"],c:0},
+
+{q:"Cấu trúc tuần tự thường là cấu trúc nào trong chương trình?",a:["Cơ bản nhất","Phức tạp nhất","Ít dùng","Không dùng"],c:0},
+{q:"Khi thiết kế chương trình, nên làm gì trước?",a:["Xác định các bước","Viết lệnh ngay","Chạy thử","Xóa"],c:0},
+{q:"Đánh số thứ tự các bước giúp điều gì?",a:["Dễ sắp xếp","Dễ hiểu","Không nhầm","Tất cả đều đúng"],c:3},
+{q:"Cấu trúc tuần tự có thể áp dụng trong đời sống không?",a:["Có","Không","Chỉ trong máy tính","Không biết"],c:0},
+{q:"Ví dụ đời sống về cấu trúc tuần tự là gì?",a:["Mặc quần áo","Chơi nhiều trò","Nghe nhạc","Xem TV"],c:0},
+
+{q:"Trong chương trình Scratch, biến phải được tạo trước hay sau khi dùng?",a:["Trước khi dùng","Sau khi dùng","Không cần tạo","Tùy ý"],c:0},
+{q:"Nếu chưa tạo biến mà đã dùng biến thì điều gì xảy ra?",a:["Không chạy đúng","Chạy bình thường","Đẹp hơn","Nhanh hơn"],c:0},
+{q:"Cấu trúc tuần tự có thể kết hợp với biến không?",a:["Có","Không","Chỉ biến","Chỉ tuần tự"],c:0},
+{q:"Trong bài tính chu vi hình tròn, bước nào cần trước?",a:["Nhập đường kính","Tính chu vi","Xuất kết quả","Kết thúc"],c:0},
+{q:"Nếu nhập sai dữ liệu đầu vào thì kết quả thế nào?",a:["Sai","Đúng","Không đổi","Không chạy"],c:0},
+
+{q:"Thực hành Scratch giúp em điều gì?",a:["Hiểu cấu trúc tuần tự","Viết chương trình đơn giản","Rèn tư duy","Tất cả đều đúng"],c:3},
+{q:"Cấu trúc tuần tự phù hợp nhất với bài toán nào?",a:["Các bước rõ ràng","Có điều kiện phức tạp","Lặp nhiều lần","Song song"],c:0},
+{q:"Sau khi học bài này, em có thể làm gì?",a:["Tạo chương trình tuần tự","Tạo biến","Giải quyết bài toán đơn giản","Tất cả đều đúng"],c:3},
+{q:"Mục tiêu chính của bài học là gì?",a:["Hiểu và sử dụng cấu trúc tuần tự","Chơi game","Vẽ","Soạn thảo"],c:0},
+{q:"Cấu trúc tuần tự là nền tảng cho cấu trúc nào sau đây?",a:["Lặp và rẽ nhánh","Chỉ lặp","Chỉ rẽ nhánh","Không liên quan"],c:0}
+];
+
+// TRỘN CÂU HỎI
+questions.sort(()=>Math.random()-0.5);
+let index=0,score=0;let details=[];
+const qEl=document.getElementById('question');
+const aEl=document.getElementById('answers');
+const bar=document.getElementById('bar');
+const next=document.getElementById('next');
+const result=document.getElementById('result');
+const report=document.getElementById('report');
+
+// ĐẾM NGƯỢC 15 PHÚT
+let total=15*60;const timerEl=document.getElementById('timer');
+const countdown=setInterval(()=>{total--;let m=Math.floor(total/60),s=total%60;timerEl.textContent=`⏱️ ${m}:${s.toString().padStart(2,'0')}`;if(total<=0){clearInterval(countdown);finish();}},1000);
+
+function shuffle(arr){return arr.map(v=>[Math.random(),v]).sort((a,b)=>a[0]-b[0]).map(v=>v[1]);}
+function load(){next.style.display='none';const q=questions[index];qEl.textContent=`Câu ${index+1}: ${q.q}`;aEl.innerHTML='';const answers=shuffle(q.a.map((t,i)=>({t,i})));answers.forEach(obj=>{const b=document.createElement('button');b.textContent=obj.t;b.onclick=()=>choose(b,obj.i,q.c,q.q,obj.t);aEl.appendChild(b)});bar.style.width=(index/questions.length*100)+'%';}
+function choose(btn,choice,correct,qtext,ans){[...aEl.children].forEach(b=>b.disabled=true);const ok=choice===correct;btn.classList.add(ok?'correct':'wrong');if(!ok){[...aEl.children].find(b=>b.textContent===questions[index].a[correct]).classList.add('correct');}if(ok)score++;details.push({q:qtext,choose:ans,correct:questions[index].a[correct],ok});next.style.display='block';}
+next.onclick=()=>{index++;if(index<questions.length)load();else finish();};
+function finish(){clearInterval(countdown);document.getElementById('quiz').style.display='none';next.style.display='none';bar.style.width='100%';result.style.display='block';result.innerHTML=`🎉 Hoàn thành!<br>Điểm: <b>${score}/${questions.length}</b>`;report.style.display='block';let html='<h3>📊 BÁO CÁO CHI TIẾT</h3><table><tr><th>Câu</th><th>Đáp án HS</th><th>Đáp án đúng</th><th>Kết quả</th></tr>';details.forEach((d,i)=>{html+=`<tr><td>${i+1}</td><td>${d.choose}</td><td>${d.correct}</td><td>${d.ok?'✔':'✘'}</td></tr>`});html+='</table>';report.innerHTML=html;}
+load();
+</script>
+</body>
+</html>
