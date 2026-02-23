@@ -29,6 +29,15 @@ body{margin:0;font-family:Arial;background:#0f172a;color:white}
 100%{transform:translateX(0)}
 }
 
+.strongShake{animation:strongShake .3s infinite}
+@keyframes strongShake{
+0%{transform:translateX(0)}
+25%{transform:translateX(-15px)}
+50%{transform:translateX(15px)}
+75%{transform:translateX(-15px)}
+100%{transform:translateX(0)}
+}
+
 .progress{height:10px;background:#334155;border-radius:5px;overflow:hidden;margin-bottom:10px}
 .bar{height:100%;background:#22c55e;width:0%}
 
@@ -37,17 +46,35 @@ body{margin:0;font-family:Arial;background:#0f172a;color:white}
 #remain{margin-top:10px;font-size:18px}
 
 button{padding:10px 25px;border-radius:10px;border:none;background:#22c55e;font-size:16px;cursor:pointer;margin-top:15px}
+
+table{width:100%;margin-top:20px;border-collapse:collapse}
+th,td{padding:8px;border-bottom:1px solid #334155}
+th{color:#22c55e}
+
+canvas{position:fixed;top:0;left:0;pointer-events:none}
+
+.gold{color:#facc15;font-weight:bold;animation:glowGold 1.5s infinite}
+.silver{color:#cbd5e1;font-weight:bold;animation:glowSilver 1.5s infinite}
+.bronze{color:#f97316;font-weight:bold;animation:glowBronze 1.5s infinite}
+
+@keyframes glowGold{0%{text-shadow:0 0 5px #facc15}50%{text-shadow:0 0 25px #facc15}100%{text-shadow:0 0 5px #facc15}}
+@keyframes glowSilver{0%{text-shadow:0 0 5px #cbd5e1}50%{text-shadow:0 0 20px #cbd5e1}100%{text-shadow:0 0 5px #cbd5e1}}
+@keyframes glowBronze{0%{text-shadow:0 0 5px #f97316}50%{text-shadow:0 0 20px #f97316}100%{text-shadow:0 0 5px #f97316}}
+
+.bigMedal{font-size:80px;margin:15px;animation:pulse 1s infinite}
+@keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.2)}100%{transform:scale(1)}}
 </style>
 </head>
 
 <body>
 
+<canvas id="fx"></canvas>
+
 <div class="screen">
 
 <div id="start" class="card">
 <h2>🧠 TIN HỌC 5 – BÀI 7</h2>
-<input id="name" placeholder="Tên HS">
-<input id="cls" placeholder="Lớp"><br><br>
+<input id="name" placeholder="Tên HS"><br><br>
 <button onclick="begin()">BẮT ĐẦU</button>
 </div>
 
@@ -75,6 +102,10 @@ stroke-dasharray="314" stroke-dashoffset="0"/>
 <div id="end" class="card" style="display:none">
 <h2>🎉 HOÀN THÀNH</h2>
 <p id="res"></p>
+
+<h3>🏆 BẢNG XẾP HẠNG</h3>
+<table id="leaderboard"></table>
+
 <button onclick="restart()">LÀM LẠI</button>
 </div>
 
@@ -82,15 +113,34 @@ stroke-dasharray="314" stroke-dashoffset="0"/>
 
 <script>
 
-// ===== SECURITY =====
-document.addEventListener("contextmenu",e=>e.preventDefault());
-document.addEventListener("keydown",e=>{
-if(e.ctrlKey&&e.key=="u")e.preventDefault();
-if(e.key=="F12")e.preventDefault();
-if(e.ctrlKey&&e.shiftKey&&["i","j"].includes(e.key.toLowerCase()))e.preventDefault();
-});
+// ===== CONFETTI + FIREWORK =====
+const canvas=document.getElementById("fx");
+const ctx=canvas.getContext("2d");
+canvas.width=innerWidth; canvas.height=innerHeight;
 
-// ===== QUESTIONS =====
+function fireworks(){
+for(let i=0;i<150;i++){
+ctx.fillStyle=`hsl(${Math.random()*360},100%,50%)`;
+ctx.beginPath();
+ctx.arc(Math.random()*canvas.width,Math.random()*canvas.height,4,0,6);
+ctx.fill();
+}
+setTimeout(()=>ctx.clearRect(0,0,canvas.width,canvas.height),800);
+}
+
+function confetti(){
+for(let i=0;i<200;i++){
+ctx.fillStyle=`hsl(${Math.random()*360},100%,60%)`;
+ctx.fillRect(Math.random()*canvas.width,Math.random()*canvas.height,6,10);
+}
+setTimeout(()=>ctx.clearRect(0,0,canvas.width,canvas.height),1000);
+}
+
+// tick sound
+const tickSound=new Audio("https://assets.mixkit.co/sfx/preview/mixkit-clock-ticking-1053.mp3");
+const winSound=new Audio("https://assets.mixkit.co/sfx/preview/mixkit-achievement-bell-600.mp3");
+
+// QUESTIONS
 let questions=[
 ["Trước khi định dạng kí tự phải làm gì?",["Chọn văn bản","Đóng Word","Lưu tệp","In"],0],
 ["Font Size là gì?",["Cỡ chữ","Màu chữ","Phông chữ","Kiểu chữ"],0],
@@ -144,20 +194,10 @@ let questions=[
 ];
 while(questions.length<50)questions.push(...questions.slice(0));
 
-let total=50;
-let i=parseInt(localStorage.idx||0);
-let score=parseInt(localStorage.score||0);
-let lock=localStorage.lock||"";
-
-let time=20,clock;
-
-if(lock=="doing"){start.style.display="none";quiz.style.display="block";load();}
+let total=50,i=0,score=0,time=20,clock;
 
 function begin(){
 questions.sort(()=>Math.random()-0.5);
-localStorage.lock="doing";
-localStorage.idx=0;
-localStorage.score=0;
 i=0;score=0;
 start.style.display="none";
 quiz.style.display="block";
@@ -166,8 +206,6 @@ load();
 
 function load(){
 if(i>=total){finish();return;}
-localStorage.idx=i;localStorage.score=score;
-
 bar.style.width=(i/total*100)+"%";
 remain.innerText="Còn lại: "+(total-i)+" câu";
 q.innerText="Câu "+(i+1)+": "+questions[i][0];
@@ -181,11 +219,41 @@ arr.forEach((o,k)=>ans.innerHTML+=`<div class="answer a${k}" data-i="${o.i}" onc
 reset();
 }
 
-function reset(){clearInterval(clock);time=20;updateCircle();clock=setInterval(tick,1000);}
-function tick(){time--;updateCircle();if(time<=0)show(null);}
-function updateCircle(){time=Math.max(time,0);timeElem.innerText=time;ring.style.strokeDashoffset=314*(1-time/20);}
+function reset(){
+clearInterval(clock);
+time=20;
+quiz.classList.remove("strongShake");
+updateCircle();
+clock=setInterval(tick,1000);
+}
 
-function check(el){clearInterval(clock);show(el);}
+function tick(){
+time--;
+updateCircle();
+
+if(time<=5 && time>0){ tickSound.currentTime=0; tickSound.play(); }
+if(time<=3 && time>0){ quiz.classList.add("strongShake"); }
+
+if(time<=0){
+quiz.classList.remove("strongShake");
+show(null);
+}
+}
+
+function updateCircle(){
+time=Math.max(time,0);
+timeElem.innerText=time;
+if(time<=3) ring.style.stroke="#ef4444";
+else if(time<=5) ring.style.stroke="#facc15";
+else ring.style.stroke="#22c55e";
+ring.style.strokeDashoffset=314*(1-time/20);
+}
+
+function check(el){
+clearInterval(clock);
+quiz.classList.remove("strongShake");
+show(el);
+}
 
 function show(clicked){
 document.querySelectorAll(".answer").forEach(e=>{
@@ -196,21 +264,46 @@ else e.classList.add("zoomWrong");
 if(clicked&&clicked.dataset.i==0){score++;feedback.innerHTML="✅ ĐÚNG!";}
 else{feedback.innerHTML="❌ SAI";quiz.classList.add("shake");setTimeout(()=>quiz.classList.remove("shake"),300);}
 
-setTimeout(()=>{i++;load()},1600);
+setTimeout(()=>{i++;load()},1500);
 }
 
 function finish(){
-localStorage.lock="done";
-let board=JSON.parse(localStorage.board||"[]");
-board.push({name:name.value||"HS",score});
-localStorage.board=JSON.stringify(board);
-
 quiz.style.display="none";
 end.style.display="block";
+
 res.innerText=name.value+" đạt "+score+"/"+total+" điểm";
+
+confetti();
+if(score>=40){
+fireworks();
+setTimeout(fireworks,800);
 }
 
-function restart(){localStorage.clear();location.reload();}
+let board=JSON.parse(localStorage.board||"[]");
+board.push({name:name.value||"HS",score});
+board.sort((a,b)=>b.score-a.score);
+board=board.slice(0,10);
+localStorage.board=JSON.stringify(board);
+
+let html="<tr><th>Hạng</th><th>Tên</th><th>Điểm</th></tr>";
+board.forEach((b,index)=>{
+let medal="",cls="";
+if(index==0){medal="🥇";cls="gold"}
+else if(index==1){medal="🥈";cls="silver"}
+else if(index==2){medal="🥉";cls="bronze"}
+html+=`<tr class="${cls}"><td>${medal} ${index+1}</td><td>${b.name}</td><td>${b.score}</td></tr>`;
+});
+leaderboard.innerHTML=html;
+
+let myRank=board.findIndex(b=>b.name==(name.value||"HS")&&b.score==score);
+if(myRank>=0&&myRank<3){
+winSound.play();
+res.innerHTML+=`<div class="bigMedal">${["🥇","🥈","🥉"][myRank]}</div>`;
+if(myRank==0){fireworks();setTimeout(fireworks,800);}
+}
+}
+
+function restart(){location.reload();}
 
 </script>
 
