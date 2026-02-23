@@ -8,11 +8,10 @@
 body{margin:0;font-family:Arial;background:#0f172a;color:white}
 .screen{max-width:1000px;margin:auto;padding:20px}
 .card{background:#020617;border-radius:20px;padding:25px;text-align:center}
-
 input{padding:10px;border-radius:10px;border:none;margin:5px;width:200px}
 
 .answers{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:20px}
-.answer{padding:20px;border-radius:15px;font-size:18px;cursor:pointer;transition:.3s}
+.answer{padding:20px;border-radius:15px;font-size:18px;cursor:pointer}
 
 .a0{background:#ef4444}
 .a1{background:#3b82f6}
@@ -23,13 +22,7 @@ input{padding:10px;border-radius:10px;border:none;margin:5px;width:200px}
 .zoomWrong{opacity:.3}
 
 .strongShake{animation:shake .3s infinite}
-@keyframes shake{
-0%{transform:translateX(0)}
-25%{transform:translateX(-10px)}
-50%{transform:translateX(10px)}
-75%{transform:translateX(-10px)}
-100%{transform:translateX(0)}
-}
+@keyframes shake{0%{transform:translateX(0)}25%{transform:translateX(-10px)}50%{transform:translateX(10px)}75%{transform:translateX(-10px)}100%{transform:translateX(0)}}
 
 .progress{height:10px;background:#334155;border-radius:5px;overflow:hidden;margin-bottom:10px}
 .bar{height:100%;background:#22c55e;width:0%}
@@ -37,15 +30,16 @@ input{padding:10px;border-radius:10px;border:none;margin:5px;width:200px}
 #circleBox{position:relative;width:120px;margin:auto}
 #time{position:absolute;top:42px;left:0;width:120px;text-align:center;font-size:22px}
 
-table{width:100%;margin-top:20px;border-collapse:collapse}
-th,td{padding:8px;border-bottom:1px solid #334155}
-th{color:#22c55e}
-
-.gold{color:#facc15;font-weight:bold}
-.silver{color:#cbd5e1;font-weight:bold}
-.bronze{color:#f97316;font-weight:bold}
+#countdown{position:fixed;inset:0;background:#000c;display:none;align-items:center;justify-content:center;font-size:120px;z-index:99}
 
 canvas{position:fixed;top:0;left:0;pointer-events:none}
+
+table{width:100%;margin-top:20px;border-collapse:collapse}
+th,td{padding:8px;border-bottom:1px solid #334155}
+
+.gold{color:#facc15}
+.silver{color:#cbd5e1}
+.bronze{color:#f97316}
 
 button{padding:10px 25px;border-radius:10px;border:none;background:#22c55e;font-size:16px;cursor:pointer;margin-top:15px}
 </style>
@@ -54,6 +48,7 @@ button{padding:10px 25px;border-radius:10px;border:none;background:#22c55e;font-
 <body>
 
 <canvas id="fx"></canvas>
+<div id="countdown"></div>
 
 <div class="screen">
 
@@ -71,10 +66,8 @@ button{padding:10px 25px;border-radius:10px;border:none;background:#22c55e;font-
 <div id="circleBox">
 <svg width="120" height="120">
 <circle cx="60" cy="60" r="50" stroke="#334155" stroke-width="8" fill="none"/>
-<circle id="ring" cx="60" cy="60" r="50"
-stroke="#22c55e" stroke-width="8"
-stroke-dasharray="314" stroke-dashoffset="0"
-fill="none"/>
+<circle id="ring" cx="60" cy="60" r="50" stroke="#22c55e" stroke-width="8"
+stroke-dasharray="314" stroke-dashoffset="0" fill="none"/>
 </svg>
 <div id="time">20</div>
 </div>
@@ -82,53 +75,65 @@ fill="none"/>
 <h3 id="question"></h3>
 <div id="remain"></div>
 <div class="answers" id="answers"></div>
-<div id="feedback"></div>
 
 </div>
 
 <div id="end" class="card" style="display:none">
-<h2>🎉 HOÀN THÀNH</h2>
+<h2>HOÀN THÀNH</h2>
 <p id="result"></p>
 
-<h3>🏆 BẢNG XẾP HẠNG</h3>
+<h3>BẢNG XẾP HẠNG</h3>
 <table id="leaderboard"></table>
 
-<button onclick="location.reload()">LÀM LẠI</button>
+<button onclick="restart()">LÀM LẠI</button>
 </div>
 
 </div>
 
 <script>
 
-// ===== CANVAS EFFECT =====
-const canvas=document.getElementById("fx");
-const ctx=canvas.getContext("2d");
-canvas.width=innerWidth;
-canvas.height=innerHeight;
+/* ===== ANTI CHEAT + LOCK ===== */
 
-function fireworks(){
-for(let i=0;i<150;i++){
-ctx.fillStyle=`hsl(${Math.random()*360},100%,50%)`;
-ctx.beginPath();
-ctx.arc(Math.random()*canvas.width,Math.random()*canvas.height,4,0,6);
-ctx.fill();
+document.addEventListener("contextmenu",e=>{alert("KHÔNG ĐƯỢC LOAD LẠI");punish("Chuột phải");e.preventDefault();});
+
+document.addEventListener("keydown",function(e){
+if(e.key==="F5"){alert("KHÔNG ĐƯỢC LOAD LẠI");punish("F5");e.preventDefault();}
+if(e.ctrlKey&&e.key.toLowerCase()=="r"){alert("KHÔNG ĐƯỢC LOAD LẠI");punish("Ctrl+R");e.preventDefault();}
+if(e.ctrlKey&&e.key.toLowerCase()=="u"){alert("KHÔNG ĐƯỢC LOAD LẠI");punish("Ctrl+U");e.preventDefault();}
+if(e.ctrlKey&&e.shiftKey&&e.key.toLowerCase()=="i"){alert("KHÔNG ĐƯỢC LOAD LẠI");punish("DevTools");e.preventDefault();}
+if(e.ctrlKey&&e.key.toLowerCase()=="c"){punish("Copy");e.preventDefault();}
+});
+
+document.addEventListener("selectstart",e=>e.preventDefault());
+
+function cheatLog(type){
+let logs=JSON.parse(localStorage.cheatlog||"[]");
+logs.push({time:new Date().toLocaleTimeString(),type,question:current+1,score});
+localStorage.cheatlog=JSON.stringify(logs);
 }
+
+function punish(reason){
+score=Math.max(0,score-1);
+localStorage.score=score;
+cheatLog(reason);
+}
+
+/* ===== EFFECT ===== */
+const canvas=document.getElementById("fx"),ctx=canvas.getContext("2d");
+canvas.width=innerWidth;canvas.height=innerHeight;
+
+function confetti(){
+for(let i=0;i<200;i++){ctx.fillStyle=`hsl(${Math.random()*360},100%,60%)`;ctx.fillRect(Math.random()*canvas.width,Math.random()*canvas.height,6,10);}
+setTimeout(()=>ctx.clearRect(0,0,canvas.width,canvas.height),1000);
+}
+function fireworks(){
+for(let i=0;i<150;i++){ctx.fillStyle=`hsl(${Math.random()*360},100%,50%)`;ctx.beginPath();ctx.arc(Math.random()*canvas.width,Math.random()*canvas.height,4,0,6);ctx.fill();}
 setTimeout(()=>ctx.clearRect(0,0,canvas.width,canvas.height),800);
 }
 
-function confetti(){
-for(let i=0;i<200;i++){
-ctx.fillStyle=`hsl(${Math.random()*360},100%,60%)`;
-ctx.fillRect(Math.random()*canvas.width,Math.random()*canvas.height,6,10);
-}
-setTimeout(()=>ctx.clearRect(0,0,canvas.width,canvas.height),1000);
-}
-
-// ===== SOUND =====
 const tickSound=new Audio("https://assets.mixkit.co/sfx/preview/mixkit-clock-ticking-1053.mp3");
-const winSound=new Audio("https://assets.mixkit.co/sfx/preview/mixkit-achievement-bell-600.mp3");
 
-// ===== QUESTIONS =====
+/* ===== QUESTIONS ===== */
 let questions=[
 ["Trước khi định dạng kí tự phải làm gì?",["Chọn văn bản","Đóng Word","Lưu tệp","In"],0],
 ["Font Size là gì?",["Cỡ chữ","Màu chữ","Phông chữ","Kiểu chữ"],0],
@@ -183,36 +188,54 @@ let questions=[
 while(questions.length<50)questions.push(...questions.slice(0));
 
 let total=50;
-let current=0;
-let score=0;
-let time=20;
-let timer;
+let current=parseInt(localStorage.idx||0);
+let score=parseInt(localStorage.score||0);
+let lock=localStorage.lock||"";
+let time=20,timer;
 
-// ===== GAME =====
+/* resume */
+if(lock=="doing"){start.style.display="none";quiz.style.display="block";loadQuestion();}
+
 function begin(){
+if(!name.value||!cls.value){alert("Nhập TÊN và LỚP");return;}
 questions.sort(()=>Math.random()-0.5);
 current=0;score=0;
+localStorage.lock="doing";
+localStorage.idx=0;
+localStorage.score=0;
 start.style.display="none";
 quiz.style.display="block";
 loadQuestion();
 }
 
+function show321(cb){
+let c=3;
+countdown.style.display="flex";
+countdown.innerText=c;
+let iv=setInterval(()=>{
+c--;
+if(c==0){clearInterval(iv);countdown.style.display="none";cb();}
+else countdown.innerText=c;
+},800);
+}
+
 function loadQuestion(){
 if(current>=total){finish();return;}
+
+localStorage.idx=current;
+localStorage.score=score;
 
 bar.style.width=(current/total*100)+"%";
 remain.innerText="Còn lại: "+(total-current)+" câu";
 question.innerText="Câu "+(current+1)+": "+questions[current][0];
 
-let answersData=[...questions[current][1]].map((a,i)=>({text:a,index:i}));
-answersData.sort(()=>Math.random()-0.5);
+let arr=[...questions[current][1]].map((a,i)=>({t:a,i}));
+arr.sort(()=>Math.random()-0.5);
 
 answers.innerHTML="";
-answersData.forEach((a,k)=>{
-answers.innerHTML+=`<div class="answer a${k}" onclick="selectAnswer(${a.index},this)">${a.text}</div>`;
-});
+arr.forEach((o,k)=>answers.innerHTML+=`<div class="answer a${k}" onclick="select(${o.i})">${o.t}</div>`);
 
-startTimer();
+show321(startTimer);
 }
 
 function startTimer(){
@@ -222,73 +245,38 @@ updateCircle();
 timer=setInterval(()=>{
 time--;
 updateCircle();
-
-if(time<=5 && time>0){
-tickSound.currentTime=0;
-tickSound.play();
-}
-
-if(time<=3 && time>0){
-quiz.classList.add("strongShake");
-}
-
-if(time<=0){
-clearInterval(timer);
-quiz.classList.remove("strongShake");
-showAnswer(null);
-}
+if(time<=5&&time>0){tickSound.currentTime=0;tickSound.play();}
+if(time<=3&&time>0)quiz.classList.add("strongShake");
+if(time<=0){clearInterval(timer);quiz.classList.remove("strongShake");showAnswer(null);}
 },1000);
 }
 
 function updateCircle(){
-const ring=document.getElementById("ring");
-const timeText=document.getElementById("time");
-
-timeText.innerText=time;
-
-if(time<=3) ring.style.stroke="#ef4444";
-else if(time<=5) ring.style.stroke="#facc15";
+time=Math.max(time,0);
+timeElem.innerText=time;
+if(time<=3)ring.style.stroke="#ef4444";
+else if(time<=5)ring.style.stroke="#facc15";
 else ring.style.stroke="#22c55e";
-
 ring.style.strokeDashoffset=314*(1-time/20);
 }
 
-function selectAnswer(index,element){
-clearInterval(timer);
-quiz.classList.remove("strongShake");
-showAnswer(index,element);
-}
+function select(i){clearInterval(timer);quiz.classList.remove("strongShake");showAnswer(i);}
 
-function showAnswer(index,element){
-let correct=questions[current][2];
-
-document.querySelectorAll(".answer").forEach((el,i)=>{
-if(i===[...document.querySelectorAll(".answer")].indexOf(element) && index==correct){
-score++;
-}
-});
-
-document.querySelectorAll(".answer").forEach(el=>{
-if(el.innerText===questions[current][1][correct]) el.classList.add("zoomCorrect");
-else el.classList.add("zoomWrong");
-});
-
-setTimeout(()=>{
-current++;
-loadQuestion();
-},1500);
+function showAnswer(i){
+if(i===questions[current][2])score++;
+setTimeout(()=>{current++;loadQuestion();},1200);
 }
 
 function finish(){
+localStorage.lock="done";
 quiz.style.display="none";
 end.style.display="block";
 
-let n=name.value||"HS";
-let c=cls.value||"";
-result.innerText=n+" ("+c+") đạt "+score+"/"+total+" điểm";
+let n=name.value,c=cls.value;
+result.innerText=n+" ("+c+") đạt "+score+"/"+total;
 
 confetti();
-if(score>=40) fireworks();
+if(score>=40)fireworks();
 
 let board=JSON.parse(localStorage.board||"[]");
 board.push({name:n,cls:c,score});
@@ -298,19 +286,16 @@ localStorage.board=JSON.stringify(board);
 
 let html="<tr><th>Hạng</th><th>Tên</th><th>Lớp</th><th>Điểm</th></tr>";
 board.forEach((b,i)=>{
-let medal="",clsCss="";
-if(i==0){medal="🥇";clsCss="gold"}
-else if(i==1){medal="🥈";clsCss="silver"}
-else if(i==2){medal="🥉";clsCss="bronze"}
-html+=`<tr class="${clsCss}"><td>${medal}${i+1}</td><td>${b.name}</td><td>${b.cls}</td><td>${b.score}</td></tr>`;
+let m="",cl="";
+if(i==0){m="🥇";cl="gold"}
+else if(i==1){m="🥈";cl="silver"}
+else if(i==2){m="🥉";cl="bronze"}
+html+=`<tr class="${cl}"><td>${m}${i+1}</td><td>${b.name}</td><td>${b.cls}</td><td>${b.score}</td></tr>`;
 });
 leaderboard.innerHTML=html;
+}
 
-let myRank=board.findIndex(b=>b.name==n&&b.score==score);
-if(myRank>=0 && myRank<3){
-winSound.play();
-}
-}
+function restart(){localStorage.clear();location.reload();}
 
 </script>
 
