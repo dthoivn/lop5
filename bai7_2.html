@@ -36,7 +36,6 @@ border-radius:12px;
 border:none;
 cursor:pointer;
 background:#22c55e;
-color:black;
 }
 
 .answers{
@@ -64,9 +63,11 @@ cursor:pointer;
 .progress{height:8px;background:#334155;border-radius:5px;overflow:hidden}
 .bar{height:100%;background:#22c55e;width:0%}
 
-#timer{font-size:24px;margin:10px}
+#timer{font-size:26px;margin:10px}
 
-img{width:140px;margin:10px}
+#feedback{font-size:22px;margin-top:15px}
+
+img{width:130px;margin:10px}
 </style>
 </head>
 
@@ -88,10 +89,11 @@ img{width:140px;margin:10px}
 <img id="pic">
 <h2 id="q"></h2>
 <div class="answers" id="ans"></div>
+<div id="feedback"></div>
 </div>
 
 <div id="end" class="card" style="display:none">
-<h2>HOÀN THÀNH</h2>
+<h2>🎉 HOÀN THÀNH</h2>
 <p id="res"></p>
 </div>
 
@@ -156,24 +158,28 @@ let questions=[
 ["Hoàn thành bài cần?",["Tự đánh giá","Tắt máy","In","Xóa"],0]
 ];
 
-// shuffle
 questions.sort(()=>Math.random()-0.5);
 
-let i=0,score=0,time=20,clock;
+let i=0,score=0,time=20,clock,correctText="";
 
 function begin(){
+document.documentElement.requestFullscreen();
 start.style.display="none";
 quiz.style.display="block";
 load();
 }
 
 function load(){
+feedback.innerHTML="";
 if(i>=50){finish();return;}
 bar.style.width=(i/50*100)+"%";
 q.innerText="Câu "+(i+1)+": "+questions[i][0];
 pic.src=icons[i%3];
+
 let arr=[...questions[i][1]].map((a,j)=>({t:a,i:j}));
+correctText=questions[i][1][0];
 arr.sort(()=>Math.random()-0.5);
+
 ans.innerHTML="";
 arr.forEach((o,k)=>{
 ans.innerHTML+=`<div class="answer a${k}" onclick="check(this,${o.i})">${o.t}</div>`;
@@ -188,16 +194,27 @@ timer.innerText=time;
 clock=setInterval(()=>{
 time--;
 timer.innerText=time;
-if(time<=0){i++;load();}
+if(time<=0){
+feedback.innerHTML="⏰ Hết giờ! Đáp án đúng: "+correctText;
+setTimeout(()=>{i++;load()},1500);
+}
 },1000);
 }
 
 function check(el,n){
 clearInterval(clock);
 document.querySelectorAll(".answer").forEach(e=>e.onclick=null);
-if(n==0){score++;el.classList.add("correct")}
-else el.classList.add("wrong");
-setTimeout(()=>{i++;load()},900);
+
+if(n==0){
+score++;
+el.classList.add("correct");
+feedback.innerHTML="✅ ĐÚNG!";
+}else{
+el.classList.add("wrong");
+feedback.innerHTML="❌ SAI – Đáp án đúng: "+correctText;
+}
+
+setTimeout(()=>{i++;load()},1500);
 }
 
 function finish(){
@@ -208,5 +225,4 @@ res.innerText=name.value+" đạt "+score+"/50 điểm";
 </script>
 
 </body>
-
 </html>
