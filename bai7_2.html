@@ -29,15 +29,14 @@ body{margin:0;font-family:Arial;background:#0f172a;color:white}
 100%{transform:translateX(0)}
 }
 
-.progress{height:6px;background:#334155;border-radius:5px;overflow:hidden}
+.progress{height:10px;background:#334155;border-radius:5px;overflow:hidden;margin-bottom:10px}
 .bar{height:100%;background:#22c55e;width:0%}
 
 #circle{width:120px;margin:auto}
 #feedback{font-size:22px;margin-top:10px}
+#remain{margin-top:10px;font-size:18px}
 
-button{padding:10px 25px;border-radius:10px;border:none;background:#22c55e;font-size:16px;cursor:pointer}
-
-.teacher{margin-top:15px;background:#020617;padding:10px;border-radius:12px}
+button{padding:10px 25px;border-radius:10px;border:none;background:#22c55e;font-size:16px;cursor:pointer;margin-top:15px}
 </style>
 </head>
 
@@ -54,6 +53,11 @@ button{padding:10px 25px;border-radius:10px;border:none;background:#22c55e;font-
 
 <div id="quiz" class="card" style="display:none">
 
+<div class="progress">
+<div class="bar" id="bar"></div>
+</div>
+<div id="percent"></div>
+
 <div id="circle">
 <svg width="120" height="120">
 <circle cx="60" cy="60" r="50" stroke="#334155" stroke-width="8" fill="none"/>
@@ -64,29 +68,24 @@ stroke-dasharray="314" stroke-dashoffset="0"/>
 </div>
 
 <h3 id="q"></h3>
+<div id="remain"></div>
 
 <div class="answers" id="ans"></div>
 <div id="feedback"></div>
 
-<div class="teacher">
-<b>👨‍🏫 CHẾ ĐỘ GIÁO VIÊN</b><br><br>
-<button onclick="teacherStart()">▶ Bắt đầu câu</button>
-<button onclick="teacherNext()">⏭ Sang câu</button>
-<button onclick="toggle()">⏸ / ▶</button>
-</div>
-
 </div>
 
 <div id="end" class="card" style="display:none">
-<h2>HOÀN THÀNH</h2>
+<h2>🎉 HOÀN THÀNH</h2>
 <p id="res"></p>
+<button onclick="restart()">LÀM LẠI</button>
 </div>
 
 </div>
 
 <script>
 
-// ==== QUESTIONS (50 – giữ nội dung cũ) ====
+// ==== QUESTIONS (50 câu) ====
 let questions=[
 ["Trước khi định dạng kí tự phải làm gì?",["Chọn văn bản","Đóng Word","Lưu tệp","In"],0],
 ["Font Size là gì?",["Cỡ chữ","Màu chữ","Phông chữ","Kiểu chữ"],0],
@@ -140,28 +139,35 @@ let questions=[
 ];
 while(questions.length<50)questions.push(...questions.slice(0));
 
-// random mỗi lượt
-questions.sort(()=>Math.random()-0.5);
-
-let i=0,score=0,time=20,run=false,clock;
+let i=0,score=0,time=20,clock,total=50;
 
 function begin(){
-document.documentElement.requestFullscreen();
+questions.sort(()=>Math.random()-0.5);
 start.style.display="none";
 quiz.style.display="block";
+i=0;score=0;
 load();
 }
 
 function load(){
 feedback.innerHTML="";
+if(i>=total){finish();return;}
+
+let progress=Math.floor((i/total)*100);
+bar.style.width=progress+"%";
+percent.innerText="Tiến trình: "+progress+"%";
+remain.innerText="Còn lại: "+(total-i)+" câu";
+
 q.innerText="Câu "+(i+1)+": "+questions[i][0];
 
 let arr=[...questions[i][1]].map((a,j)=>({t:a,i:j}));
 arr.sort(()=>Math.random()-0.5);
+
 ans.innerHTML="";
 arr.forEach((o,k)=>{
 ans.innerHTML+=`<div class="answer a${k}" data-i="${o.i}" onclick="check(this)">${o.t}</div>`;
 });
+
 reset();
 }
 
@@ -169,42 +175,24 @@ function reset(){
 clearInterval(clock);
 time=20;
 updateCircle();
-}
-
-function teacherStart(){
-if(run)return;
-run=true;
 clock=setInterval(tick,1000);
 }
 
-function toggle(){
-run=!run;
-if(run)clock=setInterval(tick,1000);
-else clearInterval(clock);
-}
-
-function teacherNext(){
-i++;
-if(i>=50){finish();return;}
-load();
-}
-
 function tick(){
-if(!run)return;
 time--;
 updateCircle();
-if(time<=0){show(null)}
+if(time<=0){show(null);}
 }
 
 function updateCircle(){
 time=Math.max(time,0);
-document.getElementById("time").innerText=time;
+timeElem=document.getElementById("time");
+timeElem.innerText=time;
 document.getElementById("ring").style.strokeDashoffset=314*(1-time/20);
 }
 
 function check(el){
-if(!run)return;
-run=false;clearInterval(clock);
+clearInterval(clock);
 show(el);
 }
 
@@ -221,13 +209,24 @@ feedback.innerHTML="❌ SAI";
 quiz.classList.add("shake");
 setTimeout(()=>quiz.classList.remove("shake"),300);
 }
+
+setTimeout(()=>{
+i++;
+load();
+},1800);
 }
 
 function finish(){
 quiz.style.display="none";
 end.style.display="block";
-res.innerText=name.value+" đạt "+score+"/50";
+res.innerText=name.value+" đạt "+score+"/"+total+" điểm";
 }
+
+function restart(){
+end.style.display="none";
+start.style.display="block";
+}
+
 </script>
 
 </body>
