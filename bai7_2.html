@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
 <meta charset="utf-8">
-<title>Kahoot Tin học 5 – Bài 7</title>
+<title>Tin học 5 – Bài 7</title>
 
 <style>
 body{margin:0;font-family:Arial;background:#0f172a;color:white}
@@ -53,10 +53,7 @@ button{padding:10px 25px;border-radius:10px;border:none;background:#22c55e;font-
 
 <div id="quiz" class="card" style="display:none">
 
-<div class="progress">
-<div class="bar" id="bar"></div>
-</div>
-<div id="percent"></div>
+<div class="progress"><div class="bar" id="bar"></div></div>
 
 <div id="circle">
 <svg width="120" height="120">
@@ -64,7 +61,7 @@ button{padding:10px 25px;border-radius:10px;border:none;background:#22c55e;font-
 <circle id="ring" cx="60" cy="60" r="50" stroke="#22c55e" stroke-width="8" fill="none"
 stroke-dasharray="314" stroke-dashoffset="0"/>
 </svg>
-<div id="time" style="font-size:22px">20</div>
+<div id="time">20</div>
 </div>
 
 <h3 id="q"></h3>
@@ -85,7 +82,15 @@ stroke-dasharray="314" stroke-dashoffset="0"/>
 
 <script>
 
-// ==== QUESTIONS (50 câu) ====
+// ===== SECURITY =====
+document.addEventListener("contextmenu",e=>e.preventDefault());
+document.addEventListener("keydown",e=>{
+if(e.ctrlKey&&e.key=="u")e.preventDefault();
+if(e.key=="F12")e.preventDefault();
+if(e.ctrlKey&&e.shiftKey&&["i","j"].includes(e.key.toLowerCase()))e.preventDefault();
+});
+
+// ===== QUESTIONS =====
 let questions=[
 ["Trước khi định dạng kí tự phải làm gì?",["Chọn văn bản","Đóng Word","Lưu tệp","In"],0],
 ["Font Size là gì?",["Cỡ chữ","Màu chữ","Phông chữ","Kiểu chữ"],0],
@@ -139,62 +144,48 @@ let questions=[
 ];
 while(questions.length<50)questions.push(...questions.slice(0));
 
-let i=0,score=0,time=20,clock,total=50;
+let total=50;
+let i=parseInt(localStorage.idx||0);
+let score=parseInt(localStorage.score||0);
+let lock=localStorage.lock||"";
+
+let time=20,clock;
+
+if(lock=="doing"){start.style.display="none";quiz.style.display="block";load();}
 
 function begin(){
 questions.sort(()=>Math.random()-0.5);
+localStorage.lock="doing";
+localStorage.idx=0;
+localStorage.score=0;
+i=0;score=0;
 start.style.display="none";
 quiz.style.display="block";
-i=0;score=0;
 load();
 }
 
 function load(){
-feedback.innerHTML="";
 if(i>=total){finish();return;}
+localStorage.idx=i;localStorage.score=score;
 
-let progress=Math.floor((i/total)*100);
-bar.style.width=progress+"%";
-percent.innerText="Tiến trình: "+progress+"%";
+bar.style.width=(i/total*100)+"%";
 remain.innerText="Còn lại: "+(total-i)+" câu";
-
 q.innerText="Câu "+(i+1)+": "+questions[i][0];
 
 let arr=[...questions[i][1]].map((a,j)=>({t:a,i:j}));
 arr.sort(()=>Math.random()-0.5);
 
 ans.innerHTML="";
-arr.forEach((o,k)=>{
-ans.innerHTML+=`<div class="answer a${k}" data-i="${o.i}" onclick="check(this)">${o.t}</div>`;
-});
+arr.forEach((o,k)=>ans.innerHTML+=`<div class="answer a${k}" data-i="${o.i}" onclick="check(this)">${o.t}</div>`);
 
 reset();
 }
 
-function reset(){
-clearInterval(clock);
-time=20;
-updateCircle();
-clock=setInterval(tick,1000);
-}
+function reset(){clearInterval(clock);time=20;updateCircle();clock=setInterval(tick,1000);}
+function tick(){time--;updateCircle();if(time<=0)show(null);}
+function updateCircle(){time=Math.max(time,0);timeElem.innerText=time;ring.style.strokeDashoffset=314*(1-time/20);}
 
-function tick(){
-time--;
-updateCircle();
-if(time<=0){show(null);}
-}
-
-function updateCircle(){
-time=Math.max(time,0);
-timeElem=document.getElementById("time");
-timeElem.innerText=time;
-document.getElementById("ring").style.strokeDashoffset=314*(1-time/20);
-}
-
-function check(el){
-clearInterval(clock);
-show(el);
-}
+function check(el){clearInterval(clock);show(el);}
 
 function show(clicked){
 document.querySelectorAll(".answer").forEach(e=>{
@@ -202,30 +193,24 @@ if(e.dataset.i==0)e.classList.add("zoomCorrect");
 else e.classList.add("zoomWrong");
 });
 
-if(clicked && clicked.dataset.i==0){
-score++;feedback.innerHTML="✅ ĐÚNG!";
-}else{
-feedback.innerHTML="❌ SAI";
-quiz.classList.add("shake");
-setTimeout(()=>quiz.classList.remove("shake"),300);
-}
+if(clicked&&clicked.dataset.i==0){score++;feedback.innerHTML="✅ ĐÚNG!";}
+else{feedback.innerHTML="❌ SAI";quiz.classList.add("shake");setTimeout(()=>quiz.classList.remove("shake"),300);}
 
-setTimeout(()=>{
-i++;
-load();
-},1800);
+setTimeout(()=>{i++;load()},1600);
 }
 
 function finish(){
+localStorage.lock="done";
+let board=JSON.parse(localStorage.board||"[]");
+board.push({name:name.value||"HS",score});
+localStorage.board=JSON.stringify(board);
+
 quiz.style.display="none";
 end.style.display="block";
 res.innerText=name.value+" đạt "+score+"/"+total+" điểm";
 }
 
-function restart(){
-end.style.display="none";
-start.style.display="block";
-}
+function restart(){localStorage.clear();location.reload();}
 
 </script>
 
