@@ -2,72 +2,42 @@
 <html lang="vi">
 <head>
 <meta charset="utf-8">
-<title>Tin học 5 – Bài 7</title>
+<title>Kahoot Tin học 5 – Bài 7</title>
 
 <style>
-body{
-margin:0;
-font-family:Arial;
-background:#0f172a;
-color:white;
-}
+body{margin:0;font-family:Arial;background:#0f172a;color:white}
+.screen{max-width:1000px;margin:auto;padding:20px}
+.card{background:#020617;border-radius:20px;padding:25px;text-align:center}
 
-.screen{max-width:900px;margin:auto;padding:20px}
-
-.card{
-background:#020617;
-border-radius:18px;
-padding:25px;
-text-align:center;
-}
-
-input{
-padding:12px;
-width:45%;
-border-radius:10px;
-border:none;
-margin:5px;
-}
-
-button{
-padding:15px 30px;
-font-size:18px;
-border-radius:12px;
-border:none;
-cursor:pointer;
-background:#22c55e;
-}
-
-.answers{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:15px;
-margin-top:20px;
-}
-
-.answer{
-padding:18px;
-border-radius:15px;
-font-size:18px;
-cursor:pointer;
-}
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:20px}
+.answer{padding:20px;border-radius:15px;font-size:18px;cursor:pointer;transition:.4s}
 
 .a0{background:#ef4444}
 .a1{background:#3b82f6}
 .a2{background:#facc15;color:black}
 .a3{background:#22c55e;color:black}
 
-.correct{outline:5px solid white}
-.wrong{opacity:.4}
+.zoomCorrect{transform:scale(1.2);box-shadow:0 0 25px #22c55e}
+.zoomWrong{transform:scale(.8);opacity:.3}
 
-.progress{height:8px;background:#334155;border-radius:5px;overflow:hidden}
+.shake{animation:shake .4s}
+@keyframes shake{
+0%{transform:translateX(0)}
+25%{transform:translateX(-10px)}
+50%{transform:translateX(10px)}
+75%{transform:translateX(-10px)}
+100%{transform:translateX(0)}
+}
+
+.progress{height:6px;background:#334155;border-radius:5px;overflow:hidden}
 .bar{height:100%;background:#22c55e;width:0%}
 
-#timer{font-size:26px;margin:10px}
+#circle{width:120px;margin:auto}
+#feedback{font-size:22px;margin-top:10px}
 
-#feedback{font-size:22px;margin-top:15px}
+button{padding:10px 25px;border-radius:10px;border:none;background:#22c55e;font-size:16px;cursor:pointer}
 
-img{width:130px;margin:10px}
+.teacher{margin-top:15px;background:#020617;padding:10px;border-radius:12px}
 </style>
 </head>
 
@@ -76,36 +46,47 @@ img{width:130px;margin:10px}
 <div class="screen">
 
 <div id="start" class="card">
-<h1>🧠 TIN HỌC 5 – BÀI 7</h1>
-<p>ĐỊNH DẠNG KÍ TỰ</p>
-<input id="name" placeholder="Tên học sinh">
+<h2>🧠 TIN HỌC 5 – BÀI 7</h2>
+<input id="name" placeholder="Tên HS">
 <input id="cls" placeholder="Lớp"><br><br>
 <button onclick="begin()">BẮT ĐẦU</button>
 </div>
 
 <div id="quiz" class="card" style="display:none">
-<div class="progress"><div class="bar" id="bar"></div></div>
-<div id="timer">20</div>
-<img id="pic">
-<h2 id="q"></h2>
+
+<div id="circle">
+<svg width="120" height="120">
+<circle cx="60" cy="60" r="50" stroke="#334155" stroke-width="8" fill="none"/>
+<circle id="ring" cx="60" cy="60" r="50" stroke="#22c55e" stroke-width="8" fill="none"
+stroke-dasharray="314" stroke-dashoffset="0"/>
+</svg>
+<div id="time" style="font-size:22px">20</div>
+</div>
+
+<h3 id="q"></h3>
+
 <div class="answers" id="ans"></div>
 <div id="feedback"></div>
+
+<div class="teacher">
+<b>👨‍🏫 CHẾ ĐỘ GIÁO VIÊN</b><br><br>
+<button onclick="teacherStart()">▶ Bắt đầu câu</button>
+<button onclick="teacherNext()">⏭ Sang câu</button>
+<button onclick="toggle()">⏸ / ▶</button>
+</div>
+
 </div>
 
 <div id="end" class="card" style="display:none">
-<h2>🎉 HOÀN THÀNH</h2>
+<h2>HOÀN THÀNH</h2>
 <p id="res"></p>
 </div>
 
 </div>
 
 <script>
-const icons=[
-"data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iIzIyYzU1ZSIvPjwvc3ZnPg==",
-"data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iIzNiODJmNiIvPjwvc3ZnPg==",
-"data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iI2VmNDQ0NCIvPjwvc3ZnPg=="
-];
 
+// ==== QUESTIONS (50 – giữ nội dung cũ) ====
 let questions=[
 ["Trước khi định dạng kí tự phải làm gì?",["Chọn văn bản","Đóng Word","Lưu tệp","In"],0],
 ["Font Size là gì?",["Cỡ chữ","Màu chữ","Phông chữ","Kiểu chữ"],0],
@@ -157,10 +138,12 @@ let questions=[
 ["Muốn đẹp phải?",["Định dạng","Xóa","In","Thoát"],0],
 ["Hoàn thành bài cần?",["Tự đánh giá","Tắt máy","In","Xóa"],0]
 ];
+while(questions.length<50)questions.push(...questions.slice(0));
 
+// random mỗi lượt
 questions.sort(()=>Math.random()-0.5);
 
-let i=0,score=0,time=20,clock,correctText="";
+let i=0,score=0,time=20,run=false,clock;
 
 function begin(){
 document.documentElement.requestFullscreen();
@@ -171,56 +154,79 @@ load();
 
 function load(){
 feedback.innerHTML="";
-if(i>=50){finish();return;}
-bar.style.width=(i/50*100)+"%";
 q.innerText="Câu "+(i+1)+": "+questions[i][0];
-pic.src=icons[i%3];
 
 let arr=[...questions[i][1]].map((a,j)=>({t:a,i:j}));
-correctText=questions[i][1][0];
 arr.sort(()=>Math.random()-0.5);
-
 ans.innerHTML="";
 arr.forEach((o,k)=>{
-ans.innerHTML+=`<div class="answer a${k}" onclick="check(this,${o.i})">${o.t}</div>`;
+ans.innerHTML+=`<div class="answer a${k}" data-i="${o.i}" onclick="check(this)">${o.t}</div>`;
 });
-resetTimer();
+reset();
 }
 
-function resetTimer(){
+function reset(){
 clearInterval(clock);
 time=20;
-timer.innerText=time;
-clock=setInterval(()=>{
+updateCircle();
+}
+
+function teacherStart(){
+if(run)return;
+run=true;
+clock=setInterval(tick,1000);
+}
+
+function toggle(){
+run=!run;
+if(run)clock=setInterval(tick,1000);
+else clearInterval(clock);
+}
+
+function teacherNext(){
+i++;
+if(i>=50){finish();return;}
+load();
+}
+
+function tick(){
+if(!run)return;
 time--;
-timer.innerText=time;
-if(time<=0){
-feedback.innerHTML="⏰ Hết giờ! Đáp án đúng: "+correctText;
-setTimeout(()=>{i++;load()},1500);
-}
-},1000);
+updateCircle();
+if(time<=0){show(null)}
 }
 
-function check(el,n){
-clearInterval(clock);
-document.querySelectorAll(".answer").forEach(e=>e.onclick=null);
+function updateCircle(){
+time=Math.max(time,0);
+document.getElementById("time").innerText=time;
+document.getElementById("ring").style.strokeDashoffset=314*(1-time/20);
+}
 
-if(n==0){
-score++;
-el.classList.add("correct");
-feedback.innerHTML="✅ ĐÚNG!";
+function check(el){
+if(!run)return;
+run=false;clearInterval(clock);
+show(el);
+}
+
+function show(clicked){
+document.querySelectorAll(".answer").forEach(e=>{
+if(e.dataset.i==0)e.classList.add("zoomCorrect");
+else e.classList.add("zoomWrong");
+});
+
+if(clicked && clicked.dataset.i==0){
+score++;feedback.innerHTML="✅ ĐÚNG!";
 }else{
-el.classList.add("wrong");
-feedback.innerHTML="❌ SAI – Đáp án đúng: "+correctText;
+feedback.innerHTML="❌ SAI";
+quiz.classList.add("shake");
+setTimeout(()=>quiz.classList.remove("shake"),300);
 }
-
-setTimeout(()=>{i++;load()},1500);
 }
 
 function finish(){
 quiz.style.display="none";
 end.style.display="block";
-res.innerText=name.value+" đạt "+score+"/50 điểm";
+res.innerText=name.value+" đạt "+score+"/50";
 }
 </script>
 
