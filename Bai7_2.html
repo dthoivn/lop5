@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Tin học 5 – Bài 7</title>
+
+<style>
+body{
+margin:0;
+font-family:Arial;
+background:#0f172a;
+color:white;
+}
+
+.screen{max-width:900px;margin:auto;padding:20px}
+
+.card{
+background:#020617;
+border-radius:18px;
+padding:25px;
+text-align:center;
+}
+
+input{
+padding:12px;
+width:45%;
+border-radius:10px;
+border:none;
+margin:5px;
+}
+
+button{
+padding:15px 30px;
+font-size:18px;
+border-radius:12px;
+border:none;
+cursor:pointer;
+background:#22c55e;
+color:black;
+}
+
+.answers{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:15px;
+margin-top:20px;
+}
+
+.answer{
+padding:18px;
+border-radius:15px;
+font-size:18px;
+cursor:pointer;
+}
+
+.a0{background:#ef4444}
+.a1{background:#3b82f6}
+.a2{background:#facc15;color:black}
+.a3{background:#22c55e;color:black}
+
+.correct{outline:5px solid white}
+.wrong{opacity:.4}
+
+.progress{height:8px;background:#334155;border-radius:5px;overflow:hidden}
+.bar{height:100%;background:#22c55e;width:0%}
+
+#timer{font-size:24px;margin:10px}
+
+img{width:140px;margin:10px}
+</style>
+</head>
+
+<body>
+
+<div class="screen">
+
+<div id="start" class="card">
+<h1>🧠 TIN HỌC 5 – BÀI 7</h1>
+<p>ĐỊNH DẠNG KÍ TỰ</p>
+<input id="name" placeholder="Tên học sinh">
+<input id="cls" placeholder="Lớp"><br><br>
+<button onclick="begin()">BẮT ĐẦU</button>
+</div>
+
+<div id="quiz" class="card" style="display:none">
+<div class="progress"><div class="bar" id="bar"></div></div>
+<div id="timer">20</div>
+<img id="pic">
+<h2 id="q"></h2>
+<div class="answers" id="ans"></div>
+</div>
+
+<div id="end" class="card" style="display:none">
+<h2>HOÀN THÀNH</h2>
+<p id="res"></p>
+</div>
+
+</div>
+
+<script>
+const icons=[
+"data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iIzIyYzU1ZSIvPjwvc3ZnPg==",
+"data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iIzNiODJmNiIvPjwvc3ZnPg==",
+"data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iI2VmNDQ0NCIvPjwvc3ZnPg=="
+];
+
+let questions=[
+["Trước khi định dạng kí tự phải làm gì?",["Chọn văn bản","Đóng Word","Lưu tệp","In"],0],
+["Font Size là gì?",["Cỡ chữ","Màu chữ","Phông chữ","Kiểu chữ"],0],
+["Font là gì?",["Phông chữ","Cỡ chữ","Màu","Đậm"],0],
+["Font Color dùng để?",["Đổi màu chữ","Đổi cỡ","Đổi phông","In đậm"],0],
+["Bold dùng để?",["In đậm","In nghiêng","Gạch chân","Tô nền"],0],
+["Italic dùng để?",["In nghiêng","In đậm","Gạch chân","Màu"],0],
+["Underline dùng để?",["Gạch chân","In nghiêng","In đậm","Tô nền"],0],
+["Highlight dùng để?",["Tô nền chữ","Đổi cỡ","Đổi phông","In đậm"],0],
+["Ctrl+B là?",["In đậm","In nghiêng","Gạch chân","Lưu"],0],
+["Ctrl+I là?",["In nghiêng","In đậm","Gạch chân","Dán"],0],
+["Ctrl+U là?",["Gạch chân","In đậm","In nghiêng","Cắt"],0],
+["Ctrl+[ ?",["Giảm cỡ chữ","Tăng cỡ","Lưu","In"],0],
+["Ctrl+] ?",["Tăng cỡ chữ","Giảm","Cắt","Dán"],0],
+["Muốn đổi phông dùng công cụ?",["Font","Size","Color","Bold"],0],
+["Muốn đổi cỡ dùng?",["Font Size","Font","Italic","Color"],0],
+["Muốn đổi màu chữ?",["Font Color","Font","Size","Bold"],0],
+["Muốn văn bản đẹp hơn cần?",["Định dạng","Xóa","Thoát","In"],0],
+["Word dùng để?",["Soạn thảo văn bản","Vẽ tranh","Nghe nhạc","Chơi game"],0],
+["Các công cụ định dạng nằm ở thẻ?",["Home","View","Insert","File"],0],
+["Trước khi đổi màu phải?",["Chọn chữ","Lưu","In","Thoát"],0],
+["In nghiêng là?",["Italic","Bold","Underline","Font"],0],
+["In đậm là?",["Bold","Italic","Underline","Color"],0],
+["Gạch chân là?",["Underline","Bold","Italic","Font"],0],
+["Định dạng kí tự giúp?",["Trình bày đẹp","Xóa chữ","Tắt máy","In"],0],
+["Ctrl+S là?",["Lưu tệp","In","Cắt","Dán"],0],
+["Ctrl+C là?",["Sao chép","Dán","Cắt","In"],0],
+["Ctrl+V là?",["Dán","Cắt","Sao chép","Lưu"],0],
+["Ctrl+X là?",["Cắt","Dán","Lưu","In"],0],
+["Muốn định dạng phải?",["Bôi đen","Thoát","In","Đóng"],0],
+["Chọn văn bản nghĩa là?",["Bôi đen","Lưu","Thoát","In"],0],
+["Định dạng là?",["Thay đổi hình thức chữ","Xóa","Lưu","Tắt"],0],
+["Muốn chữ to hơn?",["Tăng cỡ chữ","Đổi màu","Đổi phông","In đậm"],0],
+["Muốn chữ nhỏ lại?",["Giảm cỡ chữ","Tô nền","In","Thoát"],0],
+["Nút B nằm trong nhóm?",["Font","Paragraph","Styles","Editing"],0],
+["Nút I nằm trong?",["Font","Insert","View","File"],0],
+["Nút U nằm trong?",["Font","Save","Print","View"],0],
+["Highlight thuộc nhóm?",["Font","Paragraph","Insert","View"],0],
+["Đổi màu chữ trước tiên phải?",["Chọn chữ","Thoát","Lưu","In"],0],
+["Định dạng áp dụng cho?",["Kí tự","Trang in","Máy","Chuột"],0],
+["Muốn thay đổi chữ phải?",["Chọn chữ","Tắt Word","In","Lưu"],0],
+["Sau khi định dạng nên?",["Lưu tệp","Thoát","In","Xóa"],0],
+["Soạn thảo ca dao thuộc hoạt động?",["Vận dụng","Khởi động","Khám phá","Ghi nhớ"],0],
+["Thực hành ở SGK trang?",["28–29","10–11","5–6","40"],0],
+["Ghi nhớ nằm ở?",["Trang 27","Trang 1","Trang 15","Trang 40"],0],
+["Mục tiêu bài?",["Định dạng kí tự","Vẽ","In","Lưu"],0],
+["Kí tự gồm?",["Chữ, số","Chuột","Máy in","Màn hình"],0],
+["Định dạng kí tự dùng cho?",["Văn bản","Máy","File","USB"],0],
+["Muốn đẹp phải?",["Định dạng","Xóa","In","Thoát"],0],
+["Hoàn thành bài cần?",["Tự đánh giá","Tắt máy","In","Xóa"],0]
+];
+
+// shuffle
+questions.sort(()=>Math.random()-0.5);
+
+let i=0,score=0,time=20,clock;
+
+function begin(){
+start.style.display="none";
+quiz.style.display="block";
+load();
+}
+
+function load(){
+if(i>=50){finish();return;}
+bar.style.width=(i/50*100)+"%";
+q.innerText="Câu "+(i+1)+": "+questions[i][0];
+pic.src=icons[i%3];
+let arr=[...questions[i][1]].map((a,j)=>({t:a,i:j}));
+arr.sort(()=>Math.random()-0.5);
+ans.innerHTML="";
+arr.forEach((o,k)=>{
+ans.innerHTML+=`<div class="answer a${k}" onclick="check(this,${o.i})">${o.t}</div>`;
+});
+resetTimer();
+}
+
+function resetTimer(){
+clearInterval(clock);
+time=20;
+timer.innerText=time;
+clock=setInterval(()=>{
+time--;
+timer.innerText=time;
+if(time<=0){i++;load();}
+},1000);
+}
+
+function check(el,n){
+clearInterval(clock);
+document.querySelectorAll(".answer").forEach(e=>e.onclick=null);
+if(n==0){score++;el.classList.add("correct")}
+else el.classList.add("wrong");
+setTimeout(()=>{i++;load()},900);
+}
+
+function finish(){
+quiz.style.display="none";
+end.style.display="block";
+res.innerText=name.value+" đạt "+score+"/50 điểm";
+}
+</script>
+
+</body>
+</html>
