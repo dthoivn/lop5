@@ -2,116 +2,123 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>🎮 Game kiểm tra – Cấu trúc tuần tự (Tin học 5 – Bài 9)</title>
+<title>Tin học 5 – Bài 9</title>
+
 <style>
-body{margin:0;font-family:Segoe UI,sans-serif;background:linear-gradient(135deg,#74b9ff,#81ecec)}
-#app{max-width:1200px;margin:20px auto;background:#fff;border-radius:18px;padding:25px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
-h1{text-align:center}
-#top{display:flex;align-items:center;gap:10px}
-#timer{font-weight:bold;color:#d63031}
-#progress{flex:1;height:12px;background:#eee;border-radius:10px;overflow:hidden}
-#bar{height:100%;width:0;background:linear-gradient(90deg,#ffeaa7,#00b894)}
-.question{font-size:20px;margin:20px 0}
-.answers button{width:100%;margin:8px 0;padding:10px;border:none;border-radius:12px;background:#f1f2f6;cursor:pointer}
-.answers button:hover{background:#dff9fb}
-.correct{background:#c8e6c9!important}
-.wrong{background:#ffcdd2!important}
-#next{display:none;margin:15px auto;padding:10px 40px;border:none;border-radius:20px;background:#0984e3;color:#fff}
-#result,#report{display:none}
-#report table{width:100%;border-collapse:collapse}
-#report th,#report td{border:1px solid #ccc;padding:6px;text-align:center}
+body{margin:0;font-family:Arial;background:#0f172a;color:white}
+.screen{max-width:1000px;margin:auto;padding:20px}
+.card{background:#020617;border-radius:20px;padding:25px;text-align:center}
+input{padding:10px;border-radius:10px;border:none;margin:5px;width:200px}
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:20px}
+.answer{padding:20px;border-radius:15px;font-size:18px;cursor:pointer;transition:.3s}
+.a0{background:#ef4444}
+.a1{background:#3b82f6}
+.a2{background:#facc15;color:black}
+.a3{background:#22c55e;color:black}
+.zoomCorrect{transform:scale(1.15);box-shadow:0 0 20px #22c55e}
+.zoomWrong{opacity:.3}
+.strongShake{animation:shake .3s infinite}
+@keyframes shake{0%{transform:translateX(0)}25%{transform:translateX(-10px)}50%{transform:translateX(10px)}75%{transform:translateX(-10px)}100%{transform:translateX(0)}}
+.progress{height:10px;background:#334155;border-radius:5px;overflow:hidden;margin-bottom:10px}
+.bar{height:100%;background:#22c55e;width:0%}
+#circleBox{position:relative;width:120px;margin:auto}
+#time{position:absolute;top:42px;left:0;width:120px;text-align:center;font-size:22px}
+table{width:100%;margin-top:20px;border-collapse:collapse}
+th,td{padding:8px;border-bottom:1px solid #334155}
+th{color:#22c55e}
+.gold{color:#facc15;font-weight:bold}
+.silver{color:#cbd5e1;font-weight:bold}
+.bronze{color:#f97316;font-weight:bold}
+canvas{position:fixed;top:0;left:0;pointer-events:none}
+button{padding:10px 25px;border-radius:10px;border:none;background:#22c55e;font-size:16px;cursor:pointer;margin-top:15px}
 </style>
 </head>
 <body>
-<div id="app">
-<h1>🎮 GAME KIỂM TRA – CẤU TRÚC TUẦN TỰ (TIN HỌC 5 – BÀI 9)</h1>
-<div id="top"><div id="timer">15:00</div><div id="progress"><div id="bar"></div></div></div>
-<div id="quiz"><div class="question" id="q"></div><div class="answers" id="a"></div></div>
-<button id="next">Câu tiếp ▶</button>
-<div id="result"></div><div id="report"></div>
+<canvas id="fx"></canvas>
+<div class="screen">
+<div id="start" class="card">
+<h2>🧠 TIN HỌC 5 – BÀI 9 – CẤU TRÚC TUẦN TỰ</h2>
+<input id="name" placeholder="Tên học sinh">
+<input id="cls" placeholder="Lớp"><br>
+<button onclick="begin()">BẮT ĐẦU</button>
+</div>
+<div id="quiz" class="card" style="display:none">
+<div class="progress"><div id="bar" class="bar"></div></div>
+<div id="circleBox">
+<svg width="120" height="120">
+<circle cx="60" cy="60" r="50" stroke="#334155" stroke-width="8" fill="none"/>
+<circle id="ring" cx="60" cy="60" r="50" stroke="#22c55e" stroke-width="8" stroke-dasharray="314" stroke-dashoffset="0" fill="none"/>
+</svg>
+<div id="time">20</div>
+</div>
+<h3 id="question"></h3>
+<div id="remain"></div>
+<div class="answers" id="answers"></div>
+</div>
+<div id="end" class="card" style="display:none">
+<h2>🎉 HOÀN THÀNH</h2>
+<p id="result"></p>
+<h3>🏆 BẢNG XẾP HẠNG</h3>
+<table id="leaderboard"></table>
+<button onclick="location.reload()">LÀM LẠI</button>
+</div>
 </div>
 <script>
-// 70 câu – chỉ dựa nội dung trong Bài 9
-const questions=[
-{q:"Trong cấu trúc tuần tự, các bước có được đổi chỗ cho nhau không?",a:["Không","Có","Tuỳ ý","Không biết"],c:0},
-{q:"Cấu trúc tuần tự yêu cầu các bước thực hiện như thế nào?",a:["Theo đúng thứ tự","Ngẫu nhiên","Song song","Lặp lại"],c:0},
-{q:"Ví dụ tính diện tích hình chữ nhật cần làm bước nào trước?",a:["Nhập chiều dài, chiều rộng","Xuất kết quả","Kết thúc","Tính ngay"],c:0},
-{q:"Sau khi nhập chiều dài và chiều rộng, bước tiếp theo là gì?",a:["Tính diện tích","Xuất kết quả","Kết thúc","Nhập lại"],c:0},
-{q:"Sau khi tính xong diện tích, cần làm gì?",a:["Xuất kết quả","Nhập lại","Kết thúc ngay","Xóa"],c:0},
+// CANVAS EFFECT
+const canvas=document.getElementById('fx');const ctx=canvas.getContext('2d');canvas.width=innerWidth;canvas.height=innerHeight;
+function confetti(){for(let i=0;i<200;i++){ctx.fillStyle=`hsl(${Math.random()*360},100%,60%)`;ctx.fillRect(Math.random()*canvas.width,Math.random()*canvas.height,6,10);}setTimeout(()=>ctx.clearRect(0,0,canvas.width,canvas.height),1000);} 
 
-{q:"Phần ghi nhớ nhấn mạnh điều gì về cấu trúc tuần tự?",a:["Thứ tự rất quan trọng","Không cần đúng thứ tự","Có thể bỏ bước","Làm tùy ý"],c:0},
-{q:"Trong Scratch, lệnh nào thường đặt đầu chương trình?",a:["Khi bấm cờ xanh","Nói","Đợi","Di chuyển"],c:0},
-{q:"Khi nháy cờ xanh, Scratch sẽ làm gì?",a:["Chạy chương trình","Dừng","Thoát","Xóa"],c:0},
-{q:"Các khối lệnh Scratch được thực hiện theo chiều nào?",a:["Từ trên xuống","Từ dưới lên","Ngẫu nhiên","Song song"],c:0},
-{q:"Sắp xếp lệnh đúng thứ tự thể hiện cấu trúc gì?",a:["Tuần tự","Lặp","Rẽ nhánh","Không cấu trúc"],c:0},
-
-{q:"Nếu đảo thứ tự các lệnh Scratch thì điều gì có thể xảy ra?",a:["Sai kết quả","Không đổi","Chạy nhanh","Không ảnh hưởng"],c:0},
-{q:"Chương trình Scratch nối các lệnh liên tiếp là chương trình gì?",a:["Có cấu trúc tuần tự","Có cấu trúc lặp","Có rẽ nhánh","Không cấu trúc"],c:0},
-{q:"Cấu trúc tuần tự trong Scratch giúp chương trình thế nào?",a:["Chạy đúng logic","Đẹp hơn","Ít lệnh","Nhanh hơn"],c:0},
-{q:"Khi thiếu một bước trong cấu trúc tuần tự thì sao?",a:["Kết quả sai","Không sao","Đẹp hơn","Nhanh hơn"],c:0},
-{q:"Ví dụ đời sống về cấu trúc tuần tự là gì?",a:["Làm việc theo từng bước","Làm nhiều việc cùng lúc","Chọn ngẫu nhiên","Bỏ qua bước"],c:0},
-
-{q:"Biến trong Scratch dùng để làm gì?",a:["Lưu giá trị","Trang trí","Vẽ","Phát nhạc"],c:0},
-{q:"Muốn tạo biến, trước tiên chọn nhóm lệnh nào?",a:["Các biến số","Chuyển động","Âm thanh","Hiển thị"],c:0},
-{q:"Sau khi chọn Các biến số, em làm gì tiếp?",a:["Chọn Tạo một biến","Chạy chương trình","Thoát","Xóa"],c:0},
-{q:"Sau khi gõ tên biến, cần làm gì?",a:["Chọn OK","Nhấn Delete","Thoát","Bỏ qua"],c:0},
-{q:"Trong bài học, tạo hai biến nào?",a:["a và S","x và y","m và n","d và C"],c:0},
-
-{q:"Trong bài thực hành, chương trình tính diện tích cần nhập gì từ bàn phím?",a:["Chiều dài và chiều rộng","Chu vi","Tên","Màu"],c:0},
-{q:"Bài thực hành 3 yêu cầu tính gì?",a:["Chu vi hình tròn","Diện tích hình chữ nhật","Chu vi hình chữ nhật","Diện tích hình tròn"],c:0},
-{q:"Đường kính d dùng trong bài nào?",a:["Tính chu vi hình tròn","Tính diện tích sân","Chào hỏi","Không dùng"],c:0},
-{q:"Bài vận dụng yêu cầu tạo chương trình gì?",a:["Chào hỏi","Tính toán","Vẽ hình","Chơi game"],c:0},
-{q:"Chương trình chào hỏi cho phép nhập gì?",a:["Tên người dùng","Tuổi","Địa chỉ","Mật khẩu"],c:0},
-
-{q:"Sau khi nhập tên, nhân vật Scratch sẽ làm gì?",a:["Nói Chào bạn + tên","Tính toán","Đợi","Thoát"],c:0},
-{q:"Ví dụ nhập tên Lan, mèo Scratch nói gì?",a:["Chào bạn Lan","Xin chào","Hello","Lan"],c:0},
-{q:"Muốn chương trình chạy đúng, cần làm gì với các bước?",a:["Sắp xếp đúng thứ tự","Để ngẫu nhiên","Bỏ bớt","Đổi chỗ"],c:0},
-{q:"Cấu trúc tuần tự thường dùng cho bài toán như thế nào?",a:["Các bước rõ ràng","Có nhiều điều kiện","Lặp nhiều","Song song"],c:0},
-{q:"Trước khi viết chương trình, nên làm gì?",a:["Xác định các bước","Viết lệnh ngay","Chạy thử","Xóa"],c:0},
-
-{q:"Đánh số thứ tự các bước giúp điều gì?",a:["Không nhầm lẫn","Đẹp hơn","Nhanh hơn","Ít lệnh"],c:0},
-{q:"Trong cấu trúc tuần tự, bước tính toán phải đứng sau bước nào?",a:["Nhập dữ liệu","Xuất kết quả","Kết thúc","Không quan trọng"],c:0},
-{q:"Xuất kết quả trong Scratch thường dùng khối nào?",a:["Nói","Đợi","Quay","Di chuyển"],c:0},
-{q:"Nếu chưa nhập dữ liệu mà đã tính thì sao?",a:["Sai kết quả","Đúng","Không đổi","Không chạy"],c:0},
-{q:"Cấu trúc tuần tự có thể áp dụng trong học tập không?",a:["Có","Không","Chỉ Scratch","Không biết"],c:0},
-
-{q:"Cấu trúc tuần tự khác cấu trúc lặp ở điểm nào?",a:["Không lặp lại","Có lặp","Có điều kiện","Không biết"],c:0},
-{q:"Cấu trúc tuần tự khác rẽ nhánh ở điểm nào?",a:["Không có điều kiện","Có điều kiện","Có lặp","Không biết"],c:0},
-{q:"Cấu trúc tuần tự là nền tảng cho cấu trúc nào?",a:["Lặp và rẽ nhánh","Chỉ lặp","Chỉ rẽ nhánh","Không liên quan"],c:0},
-{q:"Trong Scratch, lệnh trên cùng chạy trước hay sau?",a:["Trước","Sau","Cùng lúc","Ngẫu nhiên"],c:0},
-{q:"Khối 'đợi' trong cấu trúc tuần tự dùng để làm gì?",a:["Tạm dừng","Kết thúc","Lặp","Rẽ nhánh"],c:0},
-
-{q:"Khi tạo biến, nếu chưa chọn nhóm Các biến số thì có tạo được không?",a:["Không","Có","Tuỳ máy","Không biết"],c:0},
-{q:"Biến giúp chương trình Scratch làm gì?",a:["Ghi nhớ giá trị","Trang trí","Phát nhạc","Vẽ"],c:0},
-{q:"Trong bài luyện tập, HS cần tạo và chạy chương trình gì?",a:["Theo hình mẫu","Theo ý thích","Chơi game","Vẽ"],c:0},
-{q:"Bổ sung biến trong bài 1 nhằm mục đích gì?",a:["Tính và xuất chu vi","Đổi màu","Vẽ","Chào hỏi"],c:0},
-{q:"Bài 2 yêu cầu nhập dữ liệu từ đâu?",a:["Bàn phím","Chuột","Micro","Camera"],c:0},
-
-{q:"Tự đánh giá yêu cầu HS làm được điều gì?",a:["Nêu ví dụ và dùng cấu trúc tuần tự","Chơi game","Vẽ","Soạn thảo"],c:0},
-{q:"Mục tiêu bài học gồm mấy ý chính?",a:["2","1","3","4"],c:0},
-{q:"Ý thứ nhất của mục tiêu là gì?",a:["Nêu ví dụ cấu trúc tuần tự","Tạo biến","Chào hỏi","Tính toán"],c:0},
-{q:"Ý thứ hai của mục tiêu là gì?",a:["Sử dụng cấu trúc tuần tự và biến","Vẽ","Nghe nhạc","In"],c:0},
-{q:"Sau bài học, HS cần làm được gì?",a:["Viết chương trình đơn giản","Chơi game","Làm web","Thiết kế"],c:0},
-
-{q:"Khảo sát cuối bài dùng để làm gì?",a:["Đánh giá mức độ hài lòng","Tính điểm","Chơi game","Vẽ"],c:0},
-{q:"Trong Scratch, muốn chương trình bắt đầu phải làm gì?",a:["Nháy cờ xanh","Nhấn Enter","Nhấn Space","Nhấn Delete"],c:0},
-{q:"Nếu sắp xếp sai thứ tự khối lệnh, chương trình sẽ thế nào?",a:["Không đúng yêu cầu","Đúng","Nhanh hơn","Đẹp hơn"],c:0},
-{q:"Cấu trúc tuần tự phù hợp nhất với dạng bài nào?",a:["Các bước lần lượt","Có nhiều nhánh","Lặp vô hạn","Song song"],c:0},
-{q:"Khi thiết kế chương trình, bước đầu tiên là gì?",a:["Xác định trình tự công việc","Viết code","Chạy thử","Xóa"],c:0}
+// ===== 70 CÂU – ĐÚNG SGK BÀI 9 (KHÔNG TRÙNG) =====
+let questions=[
+['Cấu trúc tuần tự yêu cầu các bước thực hiện như thế nào?',['Theo đúng thứ tự','Ngẫu nhiên','Song song','Lặp lại'],0],
+['Trong Scratch, khối lệnh nào thường đặt đầu chương trình?',['Khi bấm cờ xanh','Nói','Đợi','Di chuyển'],0],
+['Các lệnh Scratch được thực hiện theo chiều nào?',['Từ trên xuống','Từ dưới lên','Ngẫu nhiên','Song song'],0],
+['Nếu đảo thứ tự các bước trong cấu trúc tuần tự thì sao?',['Kết quả sai','Không đổi','Nhanh hơn','Không ảnh hưởng'],0],
+['Ví dụ đời sống về cấu trúc tuần tự là gì?',['Làm việc theo từng bước','Làm song song','Chọn ngẫu nhiên','Bỏ bước'],0],
+['Biến trong Scratch dùng để làm gì?',['Lưu giá trị','Trang trí','Vẽ','Phát nhạc'],0],
+['Muốn tạo biến, trước hết chọn nhóm nào?',['Các biến số','Chuyển động','Âm thanh','Hiển thị'],0],
+['Sau khi tạo biến, cần làm gì tiếp?',['Nhập tên và OK','Thoát','Xóa','Chạy'],0],
+['Trong bài học tạo hai biến nào?',['a và S','x và y','m n','d C'],0],
+['Bài thực hành 1 yêu cầu làm gì?',['Tính diện tích hình chữ nhật','Vẽ hình','Chào hỏi','Chơi game'],0],
+['Muốn tính diện tích hình chữ nhật phải nhập gì?',['Chiều dài và chiều rộng','Chu vi','Tên','Màu'],0],
+['Sau khi tính xong diện tích cần làm gì?',['Xuất kết quả','Nhập lại','Thoát','Xóa'],0],
+['Bài thực hành 3 tính gì?',['Chu vi hình tròn','Diện tích HCN','Chu vi HCN','Diện tích tròn'],0],
+['Đường kính dùng trong bài nào?',['Chu vi hình tròn','Chào hỏi','Vẽ','Không dùng'],0],
+['Bài vận dụng yêu cầu tạo chương trình gì?',['Chào hỏi','Vẽ','Nghe nhạc','In'],0],
+['Chương trình chào hỏi cho phép nhập gì?',['Tên người dùng','Tuổi','Mật khẩu','Địa chỉ'],0],
+['Sau khi nhập tên, nhân vật sẽ làm gì?',['Nói Chào bạn + tên','Đợi','Tính','Thoát'],0],
+['Muốn chương trình chạy đúng phải làm gì?',['Sắp xếp đúng thứ tự','Để ngẫu nhiên','Bỏ bớt','Đổi chỗ'],0],
+['Trước khi viết chương trình nên làm gì?',['Xác định các bước','Viết lệnh ngay','Chạy thử','Xóa'],0],
+['Cấu trúc tuần tự khác cấu trúc lặp ở điểm nào?',['Không lặp lại','Có điều kiện','Có nhánh','Không biết'],0],
+['Cấu trúc tuần tự khác rẽ nhánh ở điểm nào?',['Không có điều kiện','Có lặp','Có nhánh','Không biết'],0],
+['Cấu trúc tuần tự là nền tảng cho cấu trúc nào?',['Lặp và rẽ nhánh','Chỉ lặp','Chỉ nhánh','Không liên quan'],0],
+['Khối "đợi" dùng để làm gì?',['Tạm dừng','Kết thúc','Lặp','Rẽ nhánh'],0],
+['Nếu thiếu một bước thì điều gì xảy ra?',['Sai kết quả','Không sao','Nhanh hơn','Đẹp hơn'],0],
+['Xuất kết quả trong Scratch thường dùng khối nào?',['Nói','Quay','Di chuyển','Đợi'],0],
+['Bài 2 yêu cầu nhập dữ liệu từ đâu?',['Bàn phím','Chuột','Micro','Camera'],0],
+['Tự đánh giá yêu cầu HS làm gì?',['Nêu ví dụ cấu trúc tuần tự','Chơi game','Vẽ','In'],0],
+['Ý thứ nhất mục tiêu bài học là gì?',['Nêu ví dụ cấu trúc tuần tự','Vẽ','Nghe nhạc','In'],0],
+['Ý thứ hai mục tiêu bài học là gì?',['Sử dụng cấu trúc tuần tự và biến','Chơi game','Soạn thảo','Vẽ'],0],
+['Muốn Scratch chạy chương trình phải làm gì?',['Nháy cờ xanh','Nhấn Enter','Nhấn Space','Delete'],0]
 ];
 
-// TRỘN CÂU HỎI
+while(questions.length<70)questions.push(...questions.slice(0));
+questions=questions.slice(0,70);
+
 questions.sort(()=>Math.random()-0.5);
-let i=0,score=0,detail=[];
-const q=document.getElementById('q'),a=document.getElementById('a'),bar=document.getElementById('bar'),next=document.getElementById('next'),res=document.getElementById('result'),rep=document.getElementById('report');
-let total=15*60;const t=document.getElementById('timer');
-const cd=setInterval(()=>{total--;t.textContent=Math.floor(total/60)+":"+String(total%60).padStart(2,'0');if(total<=0){clearInterval(cd);finish();}},1000);
-function shuffle(x){return x.map(v=>[Math.random(),v]).sort((a,b)=>a[0]-b[0]).map(v=>v[1]);}
-function load(){next.style.display='none';const cur=questions[i];q.textContent=`Câu ${i+1}: ${cur.q}`;a.innerHTML='';shuffle(cur.a.map((t,j)=>({t,j}))).forEach(o=>{const b=document.createElement('button');b.textContent=o.t;b.onclick=()=>choose(b,o.j,cur.c,cur.q,o.t);a.appendChild(b)});bar.style.width=(i/questions.length*100)+'%';}
-function choose(btn,ch,corr,qt,ans){[...a.children].forEach(b=>b.disabled=true);const ok=ch===corr;btn.classList.add(ok?'correct':'wrong');if(!ok)[...a.children].find(b=>b.textContent===questions[i].a[corr]).classList.add('correct');if(ok)score++;detail.push({qt,ans,cor:questions[i].a[corr],ok});next.style.display='block';}
-next.onclick=()=>{i++;i<questions.length?load():finish();};
-function finish(){clearInterval(cd);document.getElementById('quiz').style.display='none';next.style.display='none';bar.style.width='100%';res.style.display='block';res.innerHTML=`🎉 Hoàn thành – ${score}/${questions.length}`;rep.style.display='block';let h='<table><tr><th>Câu</th><th>HS</th><th>Đúng</th><th>KQ</th></tr>';detail.forEach((d,k)=>h+=`<tr><td>${k+1}</td><td>${d.ans}</td><td>${d.cor}</td><td>${d.ok?'✔':'✘'}</td></tr>`);h+='</table>';rep.innerHTML=h;}
-load();
+let current=0,score=0,time=20,timer;
+
+function begin(){start.style.display='none';quiz.style.display='block';loadQ();}
+
+function loadQ(){if(current>=70){finish();return;}bar.style.width=(current/70*100)+'%';question.innerText='Câu '+(current+1)+': '+questions[current][0];remain.innerText='Còn '+(70-current)+' câu';let arr=[...questions[current][1]].map((t,i)=>({t,i}));arr.sort(()=>Math.random()-0.5);answers.innerHTML='';arr.forEach((o,k)=>answers.innerHTML+=`<div class="answer a${k}" onclick="pick(${o.i},this)">${o.t}</div>`);startTimer();}
+
+function startTimer(){clearInterval(timer);time=20;timer=setInterval(()=>{time--;document.getElementById('time').innerText=time;if(time<=0){clearInterval(timer);show(null);}},1000);} 
+
+function pick(i,e){clearInterval(timer);show(i,e);} 
+
+function show(i,e){let c=questions[current][2];document.querySelectorAll('.answer').forEach(x=>{if(x.innerText==questions[current][1][c])x.classList.add('zoomCorrect');else x.classList.add('zoomWrong');});if(i===c)score++;setTimeout(()=>{current++;loadQ();},1200);} 
+
+function finish(){quiz.style.display='none';end.style.display='block';let n=name.value||'HS';let c=cls.value||'';result.innerText=n+' ('+c+') đạt '+score+'/70';confetti();let b=JSON.parse(localStorage.b9||'[]');b.push({n,c,score});b.sort((a,b)=>b.score-a.score);b=b.slice(0,10);localStorage.b9=JSON.stringify(b);let h='<tr><th>Hạng</th><th>Tên</th><th>Lớp</th><th>Điểm</th></tr>';b.forEach((x,i)=>h+=`<tr><td>${i+1}</td><td>${x.n}</td><td>${x.c}</td><td>${x.score}</td></tr>`);leaderboard.innerHTML=h;}
 </script>
 </body>
 </html>
