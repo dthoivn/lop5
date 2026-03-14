@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Tin học 5 - Bài 11-Cấu trúc lặp<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Tin học 5 - Bài 11-Cấu trúc lặp</title>
+
+<style>
+body{font-family:Arial;background:#eef4ff;margin:0;text-align:center}
+.card{max-width:900px;margin:auto;margin-top:30px;background:white;padding:30px;border-radius:20px;box-shadow:0 10px 25px rgba(0,0,0,.15)}
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:20px}
+.answer{padding:18px;border-radius:12px;font-size:18px;cursor:pointer;transition:.3s}
+.a0{background:#ff7675}.a1{background:#74b9ff}.a2{background:#ffeaa7}.a3{background:#55efc4}
+.correct{background:#2ecc71!important;transform:scale(1.15)}
+.wrong{opacity:.3}
+</style>
+</head>
+
+<body oncontextmenu="return false">
+
+<div class="card">
+
+<h2>Tin học 5 – Bài 11</h2>
+
+<input id="name" placeholder="Họ tên học sinh"><br><br>
+<button onclick="start()">BẮT ĐẦU</button>
+
+<div id="quiz" style="display:none">
+
+<h3 id="question"></h3>
+
+<div class="answers" id="answers"></div>
+
+<div id="correctText"></div>
+
+</div>
+
+</div>
+
+<script>
+
+document.onkeydown=function(e){
+if(e.ctrlKey && e.key=="c") return false
+if(e.key=="F12") return false
+}
+
+let questions=[
+
+["Cấu trúc lặp dùng để làm gì?",["Lặp lại lệnh","Chọn lệnh","Xóa lệnh","Nghe nhạc"],0],
+["Cấu trúc lặp giúp chương trình?",["Thực hiện nhiều lần","Chỉ một lần","Không chạy","Tắt"],0],
+["Có bao nhiêu loại cấu trúc lặp?",["2","3","4","5"],0],
+["Lặp với số lần biết trước nghĩa là?",["Biết số lần lặp","Không biết","Ngẫu nhiên","Không"],0],
+["Lặp với số lần không biết trước nghĩa là?",["Lặp đến khi điều kiện đúng","Chỉ một lần","Hai lần","Không"],0],
+
+["Ví dụ lặp 4 lần di chuyển 100 bước thuộc loại?",["Lặp biết trước","Lặp không biết","Rẽ nhánh","Tuần tự"],0],
+["Lặp đến khi nhấn phím Q thuộc loại?",["Lặp không biết trước","Lặp biết trước","Rẽ nhánh","Không"],0],
+["Cấu trúc lặp thường dùng trong?",["Lập trình","Âm nhạc","Vẽ tranh","Soạn thảo"],0],
+["Scratch hỗ trợ cấu trúc lặp?",["Có","Không","Không biết","Hiếm khi"],0],
+["Khối lệnh Repeat trong Scratch dùng để?",["Lặp lại","Xóa","Di chuyển","Âm thanh"],0],
+
+["Cấu trúc lặp giúp chương trình?",["Tiết kiệm lệnh","Dài hơn","Sai","Không"],0],
+["Lặp giúp?",["Tự động hóa","Ngẫu nhiên","Sai","Không"],0],
+["Lặp dùng trong?",["Chương trình","Video","Âm nhạc","Phim"],0],
+["Lặp giúp?",["Giảm số lệnh","Tăng số lệnh","Sai","Không"],0],
+["Lặp dùng khi?",["Làm việc lặp lại","Không lặp","Sai","Không"],0],
+
+["Ví dụ lặp trong đời sống?",["Đi bộ nhiều bước","Nghe nhạc","Xem phim","Đọc sách"],0],
+["Lặp giúp chương trình?",["Hiệu quả hơn","Chậm hơn","Sai","Không"],0],
+["Lặp có thể dùng nhiều lần?",["Có","Không","Không biết","Hiếm khi"],0],
+["Lặp cần?",["Điều kiện hoặc số lần","Âm thanh","Màu","Hình"],0],
+["Lặp trong Scratch?",["Có","Không","Không biết","Hiếm khi"],0],
+
+["Repeat nghĩa là?",["Lặp lại","Dừng","Xóa","In"],0],
+["Forever nghĩa là?",["Lặp mãi","Một lần","Hai lần","Không"],0],
+["Repeat 10 nghĩa là?",["Lặp 10 lần","1 lần","Không","Sai"],0],
+["Forever chạy khi?",["Luôn luôn","Một lần","Không","Sai"],0],
+["Lặp dùng khi?",["Lệnh cần lặp","Không","Sai","Không"],0],
+
+["Cấu trúc lặp giúp chương trình?",["Tự động","Ngẫu nhiên","Sai","Không"],0],
+["Lặp có thể kết hợp với?",["Rẽ nhánh","Âm nhạc","Hình","Không"],0],
+["Lặp thuộc kiến thức?",["Lập trình","Mỹ thuật","Âm nhạc","Thể dục"],0],
+["Lặp có trong bài?",["Bài 11","Bài 2","Bài 3","Bài 4"],0],
+["Lặp dùng để?",["Lặp hành động","Chọn hành động","Xóa","Không"],0]
+
+]
+
+while(questions.length<50){
+questions.push(...questions.slice(0,20))
+}
+
+questions=questions.slice(0,50)
+questions.sort(()=>Math.random()-0.5)
+
+let current=0
+
+function start(){
+quiz.style.display="block"
+load()
+}
+
+function load(){
+
+question.innerText="Câu "+(current+1)+": "+questions[current][0]
+
+let ans=questions[current][1]
+.map((a,i)=>({t:a,i}))
+.sort(()=>Math.random()-0.5)
+
+answers.innerHTML=""
+
+ans.forEach((a,k)=>{
+answers.innerHTML+=`<div class="answer a${k}" onclick="choose(${a.i})">${a.t}</div>`
+})
+
+}
+
+function choose(i){
+
+let correct=questions[current][2]
+let correctAns=questions[current][1][correct]
+
+document.querySelectorAll(".answer").forEach(el=>{
+if(el.innerText===correctAns) el.classList.add("correct")
+else el.classList.add("wrong")
+})
+
+correctText.innerText="Đáp án đúng: "+correctAns
+
+setTimeout(()=>{
+current++
+if(current<50) load()
+},1200)
+
+}
+
+</script>
+
+</body>
+</html></title>
+
+<style>
+body{font-family:Arial;background:#eef4ff;margin:0;text-align:center}
+.card{max-width:900px;margin:auto;margin-top:30px;background:white;padding:30px;border-radius:20px;box-shadow:0 10px 25px rgba(0,0,0,.15)}
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:20px}
+.answer{padding:18px;border-radius:12px;font-size:18px;cursor:pointer;transition:.3s}
+.a0{background:#ff7675}.a1{background:#74b9ff}.a2{background:#ffeaa7}.a3{background:#55efc4}
+.correct{background:#2ecc71!important;transform:scale(1.15)}
+.wrong{opacity:.3}
+</style>
+</head>
+
+<body oncontextmenu="return false">
+
+<div class="card">
+
+<h2>Tin học 5 – Bài 11</h2>
+
+<input id="name" placeholder="Họ tên học sinh"><br><br>
+<button onclick="start()">BẮT ĐẦU</button>
+
+<div id="quiz" style="display:none">
+
+<h3 id="question"></h3>
+
+<div class="answers" id="answers"></div>
+
+<div id="correctText"></div>
+
+</div>
+
+</div>
+
+<script>
+
+document.onkeydown=function(e){
+if(e.ctrlKey && e.key=="c") return false
+if(e.key=="F12") return false
+}
+
+let questions=[
+
+["Cấu trúc lặp dùng để làm gì?",["Lặp lại lệnh","Chọn lệnh","Xóa lệnh","Nghe nhạc"],0],
+["Cấu trúc lặp giúp chương trình?",["Thực hiện nhiều lần","Chỉ một lần","Không chạy","Tắt"],0],
+["Có bao nhiêu loại cấu trúc lặp?",["2","3","4","5"],0],
+["Lặp với số lần biết trước nghĩa là?",["Biết số lần lặp","Không biết","Ngẫu nhiên","Không"],0],
+["Lặp với số lần không biết trước nghĩa là?",["Lặp đến khi điều kiện đúng","Chỉ một lần","Hai lần","Không"],0],
+
+["Ví dụ lặp 4 lần di chuyển 100 bước thuộc loại?",["Lặp biết trước","Lặp không biết","Rẽ nhánh","Tuần tự"],0],
+["Lặp đến khi nhấn phím Q thuộc loại?",["Lặp không biết trước","Lặp biết trước","Rẽ nhánh","Không"],0],
+["Cấu trúc lặp thường dùng trong?",["Lập trình","Âm nhạc","Vẽ tranh","Soạn thảo"],0],
+["Scratch hỗ trợ cấu trúc lặp?",["Có","Không","Không biết","Hiếm khi"],0],
+["Khối lệnh Repeat trong Scratch dùng để?",["Lặp lại","Xóa","Di chuyển","Âm thanh"],0],
+
+["Cấu trúc lặp giúp chương trình?",["Tiết kiệm lệnh","Dài hơn","Sai","Không"],0],
+["Lặp giúp?",["Tự động hóa","Ngẫu nhiên","Sai","Không"],0],
+["Lặp dùng trong?",["Chương trình","Video","Âm nhạc","Phim"],0],
+["Lặp giúp?",["Giảm số lệnh","Tăng số lệnh","Sai","Không"],0],
+["Lặp dùng khi?",["Làm việc lặp lại","Không lặp","Sai","Không"],0],
+
+["Ví dụ lặp trong đời sống?",["Đi bộ nhiều bước","Nghe nhạc","Xem phim","Đọc sách"],0],
+["Lặp giúp chương trình?",["Hiệu quả hơn","Chậm hơn","Sai","Không"],0],
+["Lặp có thể dùng nhiều lần?",["Có","Không","Không biết","Hiếm khi"],0],
+["Lặp cần?",["Điều kiện hoặc số lần","Âm thanh","Màu","Hình"],0],
+["Lặp trong Scratch?",["Có","Không","Không biết","Hiếm khi"],0],
+
+["Repeat nghĩa là?",["Lặp lại","Dừng","Xóa","In"],0],
+["Forever nghĩa là?",["Lặp mãi","Một lần","Hai lần","Không"],0],
+["Repeat 10 nghĩa là?",["Lặp 10 lần","1 lần","Không","Sai"],0],
+["Forever chạy khi?",["Luôn luôn","Một lần","Không","Sai"],0],
+["Lặp dùng khi?",["Lệnh cần lặp","Không","Sai","Không"],0],
+
+["Cấu trúc lặp giúp chương trình?",["Tự động","Ngẫu nhiên","Sai","Không"],0],
+["Lặp có thể kết hợp với?",["Rẽ nhánh","Âm nhạc","Hình","Không"],0],
+["Lặp thuộc kiến thức?",["Lập trình","Mỹ thuật","Âm nhạc","Thể dục"],0],
+["Lặp có trong bài?",["Bài 11","Bài 2","Bài 3","Bài 4"],0],
+["Lặp dùng để?",["Lặp hành động","Chọn hành động","Xóa","Không"],0]
+
+]
+
+while(questions.length<50){
+questions.push(...questions.slice(0,20))
+}
+
+questions=questions.slice(0,50)
+questions.sort(()=>Math.random()-0.5)
+
+let current=0
+
+function start(){
+quiz.style.display="block"
+load()
+}
+
+function load(){
+
+question.innerText="Câu "+(current+1)+": "+questions[current][0]
+
+let ans=questions[current][1]
+.map((a,i)=>({t:a,i}))
+.sort(()=>Math.random()-0.5)
+
+answers.innerHTML=""
+
+ans.forEach((a,k)=>{
+answers.innerHTML+=`<div class="answer a${k}" onclick="choose(${a.i})">${a.t}</div>`
+})
+
+}
+
+function choose(i){
+
+let correct=questions[current][2]
+let correctAns=questions[current][1][correct]
+
+document.querySelectorAll(".answer").forEach(el=>{
+if(el.innerText===correctAns) el.classList.add("correct")
+else el.classList.add("wrong")
+})
+
+correctText.innerText="Đáp án đúng: "+correctAns
+
+setTimeout(()=>{
+current++
+if(current<50) load()
+},1200)
+
+}
+
+</script>
+
+</body>
+</html>
