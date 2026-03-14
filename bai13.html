@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Tin học 5 - Bài 13-Chạy thử chương trình</title>
+
+<style>
+body{font-family:Arial;background:#eef4ff;margin:0;text-align:center}
+.card{max-width:900px;margin:auto;margin-top:30px;background:white;padding:30px;border-radius:20px;box-shadow:0 10px 25px rgba(0,0,0,.15)}
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:20px}
+.answer{padding:18px;border-radius:12px;font-size:18px;cursor:pointer;transition:.3s}
+.a0{background:#ff7675}.a1{background:#74b9ff}.a2{background:#ffeaa7}.a3{background:#55efc4}
+.correct{background:#2ecc71!important;transform:scale(1.15)}
+.wrong{opacity:.3}
+</style>
+
+</head>
+
+<body oncontextmenu="return false">
+
+<div class="card">
+
+<h2>Tin học 5 – Bài 13</h2>
+
+<input id="name" placeholder="Họ tên học sinh"><br><br>
+<button onclick="start()">BẮT ĐẦU</button>
+
+<div id="quiz" style="display:none">
+<h3 id="question"></h3>
+<div class="answers" id="answers"></div>
+<div id="correctText"></div>
+</div>
+
+</div>
+
+<script>
+
+document.onkeydown=function(e){
+if(e.ctrlKey && e.key=="c") return false
+if(e.key=="F12") return false
+}
+
+let questions=[
+
+["Chạy thử chương trình dùng để?",["Kiểm tra chương trình","Nghe nhạc","Chơi game","Vẽ tranh"],0],
+["Lỗi chương trình là gì?",["Chương trình không chạy đúng","Chạy nhanh","Chạy chậm","Không"],0],
+["Chạy thử giúp phát hiện?",["Lỗi","Âm thanh","Màu","Hình"],0],
+["Chương trình không hoạt động có nghĩa?",["Không chạy","Chạy đúng","Chạy nhanh","Không"],0],
+["Chương trình hoạt động sai nghĩa là?",["Kết quả không đúng","Đúng","Nhanh","Không"],0],
+
+["Chạy thử chương trình cần làm gì?",["Quan sát kết quả","Nghe nhạc","Xem phim","Không"],0],
+["Lỗi chương trình có thể do?",["Sai lệnh","Âm thanh","Màu","Không"],0],
+["Khi chương trình sai cần?",["Sửa lỗi","Xóa","In","Không"],0],
+["Kiểm tra chương trình giúp?",["Hoạt động đúng","Sai","Không","Không biết"],0],
+["Chạy thử chương trình thuộc bước?",["Kiểm tra","Viết","Thiết kế","Không"],0],
+
+["Chương trình cần chạy thử trước khi?",["Sử dụng","Nghe nhạc","Chơi game","Không"],0],
+["Chạy thử giúp tìm?",["Lỗi","Âm thanh","Màu","Không"],0],
+["Nếu chương trình sai cần?",["Sửa","Xóa","In","Không"],0],
+["Chạy thử giúp chương trình?",["Hoạt động đúng","Sai","Không","Không"],0],
+["Lỗi có thể do?",["Sai điều kiện","Âm thanh","Màu","Không"],0],
+
+["Kiểm tra chương trình giúp?",["Phát hiện lỗi","Chơi game","Nghe nhạc","Không"],0],
+["Chạy thử có quan trọng không?",["Có","Không","Không biết","Hiếm khi"],0],
+["Lỗi cần được?",["Sửa","Bỏ","In","Không"],0],
+["Chạy thử giúp?",["Hoàn thiện chương trình","Nghe nhạc","Xem phim","Không"],0],
+["Chạy thử chương trình thuộc?",["Lập trình","Âm nhạc","Thể dục","Không"],0]
+
+]
+
+while(questions.length<50){
+questions.push(...questions.slice(0,20))
+}
+
+questions=questions.slice(0,50)
+questions.sort(()=>Math.random()-0.5)
+
+let current=0
+
+function start(){
+quiz.style.display="block"
+load()
+}
+
+function load(){
+
+question.innerText="Câu "+(current+1)+": "+questions[current][0]
+
+let ans=questions[current][1].map((a,i)=>({t:a,i})).sort(()=>Math.random()-0.5)
+
+answers.innerHTML=""
+
+ans.forEach((a,k)=>{
+answers.innerHTML+=`<div class="answer a${k}" onclick="choose(${a.i})">${a.t}</div>`
+})
+
+}
+
+function choose(i){
+
+let correct=questions[current][2]
+let correctAns=questions[current][1][correct]
+
+document.querySelectorAll(".answer").forEach(el=>{
+if(el.innerText===correctAns) el.classList.add("correct")
+else el.classList.add("wrong")
+})
+
+correctText.innerText="Đáp án đúng: "+correctAns
+
+setTimeout(()=>{
+current++
+if(current<50) load()
+},1200)
+
+}
+
+</script>
+
+</body>
+</html>
