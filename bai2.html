@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Tin học 5 - Bài 1</title>
+<title>Tin học 5 - Bài 2</title>
 
 <style>
 body{font-family:Arial;background:#eef4ff;margin:0;text-align:center}
@@ -14,20 +14,21 @@ body{font-family:Arial;background:#eef4ff;margin:0;text-align:center}
 .wrong{opacity:.3}
 .timer{font-size:22px;color:#e74c3c}
 </style>
+
 </head>
 
 <body oncontextmenu="return false">
 
 <div class="card">
 
-<h2>Tin học 5 – Bài 1</h2>
+<h2>Tin học 5 – Bài 2</h2>
 
 <input id="name" placeholder="Họ tên học sinh"><br><br>
 <button onclick="start()">BẮT ĐẦU</button>
 
 <div id="quiz" style="display:none">
 
-<div class="timer" id="time">30:00</div>
+<div class="timer">30:00</div>
 
 <h3 id="question"></h3>
 
@@ -48,62 +49,59 @@ if(e.key=="F12") return false
 
 let questions=[
 
-["Máy tính có thể giúp em học tập những gì?",["Học tiếng Anh","Học Toán","Khám phá Hệ mặt trời","Tất cả"],3],
-["Máy tính giúp em luyện tập sử dụng thiết bị nào?",["Chuột","Bàn phím","Cả hai","Không"],2],
-["Máy tính giúp tạo sản phẩm số nào?",["PowerPoint","Word","Scratch","Tất cả"],3],
-["Bài trình chiếu được tạo bằng phần mềm nào?",["PowerPoint","Paint","Excel","Chrome"],0],
-["Văn bản được soạn thảo bằng phần mềm nào?",["Word","Paint","Scratch","Chrome"],0],
-["Máy tính có thể tạo sản phẩm nào?",["Hình ảnh","Bản nhạc","Phim hoạt hình","Tất cả"],3],
-["Máy tính giúp tìm thông tin bằng công cụ nào?",["Google","Internet","Website","Tất cả"],3],
-["Máy tính giúp chia sẻ thông tin qua công cụ nào?",["Zalo","Messenger Kids","Email","Tất cả"],3],
-["Máy tính giúp giải trí bằng cách nào?",["Chơi trò chơi","Nghe nhạc","Đọc truyện","Tất cả"],3],
-["Máy tính có thể dùng để đọc gì?",["Sách","Truyện","Báo","Tất cả"],3],
+["Danh mục trên website giúp người dùng làm gì?",["Dễ tìm thông tin","Trang trí","Chơi game","Không có tác dụng"],0],
+["Website truyencotich.vn dùng để làm gì?",["Đọc truyện","Nghe nhạc","Xem phim","Chơi game"],0],
+["Danh mục nào có trên website truyện?",["Cổ tích Việt Nam","Cổ tích thế giới","Truyện thiếu nhi","Tất cả"],3],
+["Thông tin trên website thường được sắp xếp theo?",["Danh mục","Màu sắc","Hình ảnh","Âm thanh"],0],
+["Công cụ tìm kiếm trên website giúp gì?",["Tìm thông tin","Nghe nhạc","Chơi game","Vẽ tranh"],0],
 
-["Máy tính giúp xem gì?",["Phim","Video","Tin tức","Tất cả"],3],
-["Máy tính giúp giao lưu với ai?",["Bạn bè","Người thân","Bạn học","Tất cả"],3],
-["Máy tính là công cụ giúp làm gì?",["Học tập","Làm việc","Giải trí","Tất cả"],3],
-["Máy tính có thể giúp học môn nào?",["Tiếng Anh","Toán","Khoa học","Tất cả"],3],
-["Máy tính giúp luyện kỹ năng gì?",["Chuột","Bàn phím","Phần mềm học","Tất cả"],3],
+["Muốn tìm truyện Tấm Cám cần làm gì?",["Nhập từ khóa","Tắt máy","Mở Paint","In trang"],0],
+["Từ khóa dùng để làm gì?",["Tìm thông tin","Chơi game","Nghe nhạc","In"],0],
+["Ô tìm kiếm dùng để làm gì?",["Nhập từ khóa","Xem phim","Chơi game","Nghe nhạc"],0],
+["Sau khi nhập từ khóa cần nhấn gì?",["Search","Esc","Delete","Enter máy"],0],
+["Website cung cấp công cụ tìm kiếm để?",["Giúp tìm thông tin nhanh","Trang trí","Chơi game","In"],0],
 
-["Sản phẩm số là gì?",["Sản phẩm tạo bằng máy tính","Sản phẩm giấy","Sản phẩm gỗ","Sản phẩm nhựa"],0],
-["Máy tính giúp tìm hiểu điều gì?",["Khoa học","Thiên văn","Thể thao","Tất cả"],3],
-["Máy tính giúp hợp tác với ai?",["Bạn bè","Nhóm học","Thầy cô","Tất cả"],3],
-["Chương trình kể chuyện được tạo bằng phần mềm nào?",["Scratch","Word","Paint","Excel"],0],
-["Máy tính giúp học sinh làm gì tốt hơn?",["Học tập","Trao đổi thông tin","Giải trí","Tất cả"],3],
+["Truy cập website cần dùng gì?",["Internet","USB","Máy in","Loa"],0],
+["Website giúp tìm thông tin gì?",["Truyện","Tin tức","Bài học","Tất cả"],3],
+["Website giúp chia sẻ thông tin không?",["Có","Không","Không biết","Hiếm khi"],0],
+["Website giúp học sinh học tập không?",["Có","Không","Không biết","Hiếm khi"],0],
+["Danh mục giúp website trở nên?",["Dễ sử dụng","Khó dùng","Không đổi","Phức tạp"],0],
 
-["Máy tính có thể giúp học sinh làm việc nhóm không?",["Có","Không","Chỉ đôi khi","Không biết"],0],
-["Máy tính giúp tìm thông tin nhanh hơn bằng gì?",["Internet","Sách","Báo","TV"],0],
-["Máy tính có thể tạo ra phim hoạt hình không?",["Có","Không","Không biết","Chỉ đôi khi"],0],
-["Máy tính có thể giúp học sinh học tiếng Anh không?",["Có","Không","Không biết","Hiếm khi"],0],
-["Máy tính giúp tạo bài trình chiếu để làm gì?",["Trình bày bài học","Nghe nhạc","Chơi game","Xem phim"],0],
+["Tìm thông tin theo danh mục giúp?",["Nhanh hơn","Chậm hơn","Không đổi","Sai"],0],
+["Tìm kiếm bằng từ khóa giúp?",["Nhanh","Chậm","Không hiệu quả","Sai"],0],
+["Từ khóa nên?",["Phù hợp","Sai","Ngẫu nhiên","Dài"],0],
+["Danh mục truyện giúp?",["Phân loại truyện","Chơi game","Nghe nhạc","Xem phim"],0],
+["Website truyencotich.vn chứa?",["Truyện cổ tích","Tin tức","Video","Game"],0],
 
-["Máy tính giúp trao đổi thông tin bằng cách nào?",["Internet","Thư điện tử","Ứng dụng nhắn tin","Tất cả"],3],
-["Máy tính giúp học sinh khám phá gì?",["Hệ mặt trời","Thiên nhiên","Khoa học","Tất cả"],3],
-["Máy tính có thể dùng để cập nhật tin tức không?",["Có","Không","Hiếm khi","Không biết"],0],
-["Máy tính giúp học sinh đọc báo không?",["Có","Không","Hiếm khi","Không biết"],0],
-["Máy tính có thể giúp xem video học tập không?",["Có","Không","Hiếm khi","Không biết"],0],
+["Website giúp tìm truyện?",["Tấm Cám","Sự tích cây khế","Cả hai","Không"],2],
+["Website có thể dùng để học không?",["Có","Không","Không biết","Hiếm khi"],0],
+["Website giúp học sinh tìm thông tin nhanh không?",["Có","Không","Không biết","Hiếm khi"],0],
+["Website có danh mục để?",["Phân loại thông tin","Chơi game","Nghe nhạc","Xem phim"],0],
+["Danh mục giúp tìm thông tin?",["Nhanh hơn","Chậm hơn","Không đổi","Sai"],0],
 
-["Máy tính giúp học sinh làm bài tập không?",["Có","Không","Không biết","Hiếm khi"],0],
-["Máy tính giúp học sinh luyện gõ bàn phím không?",["Có","Không","Hiếm khi","Không biết"],0],
-["Máy tính có thể giúp học sinh luyện chuột không?",["Có","Không","Không biết","Hiếm khi"],0],
-["Máy tính giúp tạo hình ảnh số không?",["Có","Không","Hiếm khi","Không biết"],0],
-["Máy tính có thể tạo bản nhạc số không?",["Có","Không","Không biết","Hiếm khi"],0],
+["Công cụ tìm kiếm giúp?",["Tìm nhanh","Chậm","Sai","Không"],0],
+["Tìm thông tin cần?",["Từ khóa","Game","Âm nhạc","Video"],0],
+["Tìm thông tin trên website cần?",["Internet","Chuột","Bàn phím","Tất cả"],3],
+["Website có thể chứa?",["Truyện","Tin tức","Thông tin","Tất cả"],3],
+["Website có thể chia sẻ thông tin?",["Có","Không","Không biết","Hiếm khi"],0],
 
-["Máy tính giúp tạo phim hoạt hình không?",["Có","Không","Hiếm khi","Không biết"],0],
-["Máy tính giúp học sinh giao lưu bạn bè không?",["Có","Không","Không biết","Hiếm khi"],0],
-["Máy tính có thể dùng để chơi trò chơi không?",["Có","Không","Hiếm khi","Không biết"],0],
-["Máy tính giúp nghe nhạc không?",["Có","Không","Không biết","Hiếm khi"],0],
-["Máy tính giúp đọc sách điện tử không?",["Có","Không","Không biết","Hiếm khi"],0],
+["Website giúp hợp tác học tập không?",["Có","Không","Không biết","Hiếm khi"],0],
+["Website giúp tìm truyện nhanh?",["Có","Không","Không biết","Hiếm khi"],0],
+["Website có ô tìm kiếm?",["Có","Không","Không biết","Hiếm khi"],0],
+["Tìm thông tin cần nhập?",["Từ khóa","Mật khẩu","Tên giáo viên","Tên lớp"],0],
+["Search nghĩa là?",["Tìm kiếm","In","Xóa","Lưu"],0],
 
-["Máy tính có thể dùng để xem phim không?",["Có","Không","Không biết","Hiếm khi"],0],
-["Máy tính giúp cập nhật tin tức không?",["Có","Không","Không biết","Hiếm khi"],0],
-["Máy tính có thể giúp học sinh học online không?",["Có","Không","Hiếm khi","Không biết"],0],
-["Máy tính giúp tìm kiếm thông tin nhanh không?",["Có","Không","Không biết","Hiếm khi"],0],
-["Máy tính giúp học sinh làm nhiều việc không?",["Có","Không","Hiếm khi","Không biết"],0],
+["Website giúp đọc truyện online?",["Có","Không","Không biết","Hiếm khi"],0],
+["Website giúp học sinh đọc truyện cổ tích?",["Có","Không","Không biết","Hiếm khi"],0],
+["Website giúp học sinh tìm kiến thức?",["Có","Không","Không biết","Hiếm khi"],0],
+["Website giúp tìm thông tin nhanh?",["Có","Không","Không biết","Hiếm khi"],0],
+["Website giúp chia sẻ thông tin?",["Có","Không","Không biết","Hiếm khi"],0],
 
-["Máy tính có phải công cụ đa năng không?",["Có","Không","Không biết","Hiếm khi"],0],
-["Máy tính giúp con người làm nhiều việc không?",["Có","Không","Không biết","Hiếm khi"],0],
-["Có nên học sử dụng máy tính thành thạo không?",["Có","Không","Không biết","Hiếm khi"],0]
+["Internet giúp truy cập website?",["Có","Không","Không biết","Hiếm khi"],0],
+["Website có thể dùng để học?",["Có","Không","Không biết","Hiếm khi"],0],
+["Website có thể dùng để đọc tin?",["Có","Không","Không biết","Hiếm khi"],0],
+["Website giúp tìm truyện nhanh?",["Có","Không","Không biết","Hiếm khi"],0],
+["Website giúp học sinh học tốt hơn?",["Có","Không","Không biết","Hiếm khi"],0]
 
 ]
 
