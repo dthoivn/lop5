@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Tin học 5 - Bài 3</title>
+
+<style>
+body{font-family:Arial;background:#eef4ff;margin:0;text-align:center}
+.card{max-width:900px;margin:auto;margin-top:30px;background:white;padding:30px;border-radius:20px;box-shadow:0 10px 25px rgba(0,0,0,.15)}
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:20px}
+.answer{padding:18px;border-radius:12px;font-size:18px;cursor:pointer;transition:.3s}
+.a0{background:#ff7675}.a1{background:#74b9ff}.a2{background:#ffeaa7}.a3{background:#55efc4}
+.correct{background:#2ecc71!important;transform:scale(1.15)}
+.wrong{opacity:.3}
+</style>
+
+</head>
+
+<body oncontextmenu="return false">
+
+<div class="card">
+
+<h2>Tin học 5 – Bài 3</h2>
+
+<input id="name" placeholder="Họ tên học sinh"><br><br>
+<button onclick="start()">BẮT ĐẦU</button>
+
+<div id="quiz" style="display:none">
+
+<h3 id="question"></h3>
+
+<div class="answers" id="answers"></div>
+
+<div id="correctText"></div>
+
+</div>
+
+</div>
+
+<script>
+
+document.onkeydown=function(e){
+if(e.ctrlKey && e.key=="c") return false
+if(e.key=="F12") return false
+}
+
+let questions=[
+
+["Thu thập thông tin giúp gì?",["Giải quyết vấn đề","Chơi game","Nghe nhạc","Không"],0],
+["Bạn An cần tìm thông tin về đâu?",["Châu Nam Cực","Châu Á","Châu Phi","Châu Âu"],0],
+["Bạn An có thể tìm thông tin bằng cách nào?",["Internet","Thư viện","Cả hai","Không"],2],
+["Sau khi thu thập thông tin cần làm gì?",["Lựa chọn thông tin","Xóa","In","Chơi"],0],
+["Thông tin cần đảm bảo gì?",["Chính xác","Liên quan","Tin cậy","Tất cả"],3],
+
+["Quyết định dựa trên gì?",["Thông tin","May mắn","Đoán","Không"],0],
+["Tìm thông tin cần?",["Từ khóa","Game","Nhạc","Video"],0],
+["Thông tin cần?",["Liên quan","Chính xác","Đầy đủ","Tất cả"],3],
+["Tìm thông tin giúp?",["Giải quyết vấn đề","Chơi game","Nghe nhạc","Không"],0],
+["Thông tin sai có nên dùng?",["Không","Có","Đôi khi","Không biết"],0],
+
+["Thông tin dự báo thời tiết giúp?",["Quyết định mang áo mưa","Chơi game","Nghe nhạc","Xem phim"],0],
+["Thông tin hôm qua có phù hợp cho ngày mai không?",["Không","Có","Không biết","Đôi khi"],0],
+["Thông tin địa phương khác có phù hợp không?",["Không","Có","Không biết","Đôi khi"],0],
+["Thông tin từ bác sĩ có đáng tin không?",["Có","Không","Không biết","Đôi khi"],0],
+["Thông tin từ mạng xã hội luôn đúng không?",["Không","Có","Không biết","Đôi khi"],0],
+
+["Thông tin cần kiểm tra?",["Có","Không","Không biết","Hiếm khi"],0],
+["Thu thập thông tin giúp học sinh?",["Giải quyết vấn đề","Chơi game","Nghe nhạc","Không"],0],
+["Thông tin giúp đưa ra?",["Quyết định","Trò chơi","Âm nhạc","Phim"],0],
+["Thông tin sai có thể gây?",["Sai quyết định","Đúng","Không","Không biết"],0],
+["Thông tin cần?",["Tin cậy","Chính xác","Liên quan","Tất cả"],3],
+
+["Internet giúp tìm thông tin?",["Có","Không","Không biết","Hiếm khi"],0],
+["Thư viện giúp tìm thông tin?",["Có","Không","Không biết","Hiếm khi"],0],
+["Thông tin cần kiểm chứng?",["Có","Không","Không biết","Hiếm khi"],0],
+["Thông tin giúp giải quyết vấn đề?",["Có","Không","Không biết","Hiếm khi"],0],
+["Thông tin cần lựa chọn?",["Có","Không","Không biết","Hiếm khi"],0],
+
+["Thông tin cần mới?",["Có","Không","Không biết","Hiếm khi"],0],
+["Thông tin cần đầy đủ?",["Có","Không","Không biết","Hiếm khi"],0],
+["Thông tin cần chính xác?",["Có","Không","Không biết","Hiếm khi"],0],
+["Thông tin cần liên quan?",["Có","Không","Không biết","Hiếm khi"],0],
+["Thông tin cần tin cậy?",["Có","Không","Không biết","Hiếm khi"],0],
+
+["Thu thập thông tin là bước gì?",["Quan trọng","Không cần","Sai","Không"],0],
+["Thông tin giúp giải quyết nhiệm vụ?",["Có","Không","Không biết","Hiếm khi"],0],
+["Thông tin giúp học sinh học tốt hơn?",["Có","Không","Không biết","Hiếm khi"],0],
+["Thông tin giúp đưa ra quyết định đúng?",["Có","Không","Không biết","Hiếm khi"],0],
+["Thông tin giúp giải quyết vấn đề nhanh?",["Có","Không","Không biết","Hiếm khi"],0],
+
+["Thông tin cần phân tích?",["Có","Không","Không biết","Hiếm khi"],0],
+["Thông tin cần đánh giá?",["Có","Không","Không biết","Hiếm khi"],0],
+["Thông tin cần so sánh?",["Có","Không","Không biết","Hiếm khi"],0],
+["Thông tin cần chọn lọc?",["Có","Không","Không biết","Hiếm khi"],0],
+["Thông tin cần kiểm tra nguồn?",["Có","Không","Không biết","Hiếm khi"],0]
+
+]
+
+questions.sort(()=>Math.random()-0.5)
+
+let current=0
+
+function start(){
+quiz.style.display="block"
+load()
+}
+
+function load(){
+
+question.innerText="Câu "+(current+1)+": "+questions[current][0]
+
+let ans=questions[current][1]
+.map((a,i)=>({t:a,i}))
+.sort(()=>Math.random()-0.5)
+
+answers.innerHTML=""
+
+ans.forEach((a,k)=>{
+answers.innerHTML+=`<div class="answer a${k}" onclick="choose(${a.i})">${a.t}</div>`
+})
+
+}
+
+function choose(i){
+
+let correct=questions[current][2]
+let correctAns=questions[current][1][correct]
+
+document.querySelectorAll(".answer").forEach(el=>{
+if(el.innerText===correctAns) el.classList.add("correct")
+else el.classList.add("wrong")
+})
+
+correctText.innerText="Đáp án đúng: "+correctAns
+
+setTimeout(()=>{
+current++
+if(current<50) load()
+},1200)
+
+}
+
+</script>
+
+</body>
+</html>
