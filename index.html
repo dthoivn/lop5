@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Hệ thống bài tập Tin học</title>
+
+<style>
+
+body{
+font-family:"Comic Sans MS", Arial;
+background:linear-gradient(135deg,#a1c4fd,#c2e9fb);
+padding:20px;
+}
+
+.container{
+max-width:900px;
+margin:auto;
+background:white;
+padding:30px;
+border-radius:20px;
+box-shadow:0 0 25px rgba(0,0,0,0.2);
+}
+
+h1{
+text-align:center;
+color:#ff5722;
+}
+
+.student{
+text-align:center;
+margin-bottom:20px;
+}
+
+input{
+padding:8px;
+border-radius:10px;
+border:1px solid #ccc;
+margin:5px;
+}
+
+button{
+padding:8px 15px;
+border-radius:10px;
+border:none;
+background:#4caf50;
+color:white;
+cursor:pointer;
+}
+
+.timer{
+text-align:right;
+font-size:18px;
+color:red;
+margin-bottom:10px;
+}
+
+details{
+margin:10px 0;
+background:#f0f9ff;
+border-radius:15px;
+padding:10px;
+}
+
+summary{
+font-size:20px;
+font-weight:bold;
+cursor:pointer;
+color:#1565c0;
+}
+
+ul{
+font-size:18px;
+line-height:1.8;
+}
+
+a{
+text-decoration:none;
+color:#2e7d32;
+font-weight:bold;
+}
+
+a:hover{
+color:#e91e63;
+}
+
+.counter{
+text-align:center;
+font-size:16px;
+margin-bottom:10px;
+color:#444;
+}
+
+</style>
+
+</head>
+
+<body oncontextmenu="return false">
+
+<div class="container">
+
+<h1>📚 HỆ THỐNG BÀI TẬP TIN HỌC</h1>
+
+<div class="student">
+
+Tên HS:
+<input id="name">
+
+Lớp:
+<input id="class">
+
+<button onclick="saveInfo()">Lưu</button>
+
+</div>
+
+<div class="counter">
+Tổng bài: 30 (15 trắc nghiệm + 15 thực hành)
+</div>
+
+<div class="timer">
+⏱ Thời gian: <span id="time">30:00</span>
+</div>
+
+
+<!-- TRẮC NGHIỆM -->
+
+<details open>
+
+<summary>📝 PHẦN 1: TRẮC NGHIỆM</summary>
+
+<ul>
+
+<li>• <a href="bai1.html">Bài 1</a></li>
+<li>• <a href="bai2.html">Bài 2</a></li>
+<li>• <a href="bai3.html">Bài 3</a></li>
+<li>• <a href="bai4.html">Bài 4</a></li>
+<li>• <a href="bai5.html">Bài 5</a></li>
+<li>• <a href="bai6.html">Bài 6</a></li>
+<li>• <a href="bai7.html">Bài 7</a></li>
+<li>• <a href="bai8.html">Bài 8</a></li>
+<li>• <a href="bai9.html">Bài 9</a></li>
+<li>• <a href="bai10.html">Bài 10</a></li>
+<li>• <a href="bai11.html">Bài 11</a></li>
+<li>• <a href="bai12.html">Bài 12</a></li>
+<li>• <a href="bai13.html">Bài 13</a></li>
+<li>• <a href="bai14.html">Bài 14</a></li>
+<li>• <a href="bai15.html">Bài 15</a></li>
+
+</ul>
+
+</details>
+
+
+<!-- THỰC HÀNH -->
+
+<details>
+
+<summary>💻 PHẦN 2: THỰC HÀNH</summary>
+
+<ul>
+
+<li>• <a href="bt1.html">Bài thực hành 1</a></li>
+<li>• <a href="bt2.html">Bài thực hành 2</a></li>
+<li>• <a href="bt3.html">Bài thực hành 3</a></li>
+<li>• <a href="bt4.html">Bài thực hành 4</a></li>
+<li>• <a href="bt5.html">Bài thực hành 5</a></li>
+<li>• <a href="bt6.html">Bài thực hành 6</a></li>
+<li>• <a href="bt7.html">Bài thực hành 7</a></li>
+<li>• <a href="bt8.html">Bài thực hành 8</a></li>
+<li>• <a href="bt9.html">Bài thực hành 9</a></li>
+<li>• <a href="bt10.html">Bài thực hành 10</a></li>
+<li>• <a href="bt11.html">Bài thực hành 11</a></li>
+<li>• <a href="bt12.html">Bài thực hành 12</a></li>
+<li>• <a href="bt13.html">Bài thực hành 13</a></li>
+<li>• <a href="bt14.html">Bài thực hành 14</a></li>
+<li>• <a href="bt15.html">Bài thực hành 15</a></li>
+
+</ul>
+
+</details>
+
+</div>
+
+<script>
+
+function saveInfo(){
+
+localStorage.setItem("name",document.getElementById("name").value)
+localStorage.setItem("class",document.getElementById("class").value)
+
+alert("Đã lưu thông tin!")
+
+}
+
+let time=1800
+
+setInterval(function(){
+
+let m=Math.floor(time/60)
+let s=time%60
+
+document.getElementById("time").innerHTML=
+m+":"+(s<10?"0"+s:s)
+
+if(time>0)time--
+
+},1000)
+
+document.onkeydown=function(e){
+
+if(e.ctrlKey && e.key==="c") return false
+
+}
+
+</script>
+
+</body>
+</html>
