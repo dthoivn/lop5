@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Tin học 5 - Bài 10</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+background:#eef4ff;
+text-align:center
+}
+
+.card{
+max-width:900px;
+margin:auto;
+margin-top:30px;
+background:white;
+padding:30px;
+border-radius:20px;
+box-shadow:0 10px 25px rgba(0,0,0,.15)
+}
+
+.answers{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:15px;
+margin-top:20px
+}
+
+.answer{
+padding:18px;
+border-radius:12px;
+font-size:18px;
+cursor:pointer;
+transition:.3s
+}
+
+.a0{background:#ff7675}
+.a1{background:#74b9ff}
+.a2{background:#ffeaa7}
+.a3{background:#55efc4}
+
+.correct{
+background:#2ecc71!important;
+transform:scale(1.15)
+}
+
+.wrong{
+opacity:.3
+}
+
+.timer{
+font-size:22px;
+color:#e74c3c
+}
+
+</style>
+
+</head>
+
+<body oncontextmenu="return false">
+
+<div class="card">
+
+<h2>Tin học 5 – Bài 10: Cấu trúc rẽ nhánh</h2>
+
+<input id="name" placeholder="Họ tên học sinh"><br><br>
+
+<button onclick="start()">BẮT ĐẦU</button>
+
+<div id="quiz" style="display:none">
+
+<div class="timer">30:00</div>
+
+<h3 id="question"></h3>
+
+<div class="answers" id="answers"></div>
+
+<div id="correctText"></div>
+
+</div>
+
+</div>
+
+<script>
+
+document.onkeydown=function(e){
+if(e.ctrlKey && e.key=="c") return false
+if(e.key=="F12") return false
+}
+
+let questions=[
+
+["Cấu trúc rẽ nhánh dùng để làm gì?",["Lựa chọn hành động theo điều kiện","Lặp lại lệnh","Xóa lệnh","Tạo âm thanh"],0],
+["Câu lệnh nào mô tả cấu trúc rẽ nhánh?",["Nếu…thì","Lặp lại","Di chuyển","Âm thanh"],0],
+["Cấu trúc 'Nếu…thì…nếu không thì' dùng để?",["Xử lý hai trường hợp","Lặp lại","Xóa lệnh","Tạo biến"],0],
+["Ví dụ rẽ nhánh trong đời sống?",["Nếu trời mưa thì mang áo mưa","Nghe nhạc","Xem phim","Đọc sách"],0],
+["Cấu trúc rẽ nhánh thường dùng trong?",["Lập trình","Âm nhạc","Vẽ tranh","Soạn thảo"],0],
+
+["Trong Scratch, rẽ nhánh dùng khối nào?",["If","Repeat","Move","Say"],0],
+["Rẽ nhánh giúp chương trình?",["Quyết định hành động","Chơi nhạc","Xóa dữ liệu","Tắt máy"],0],
+["Nếu điều kiện đúng thì?",["Thực hiện lệnh","Dừng","Xóa","Lặp"],0],
+["Nếu điều kiện sai thì?",["Không thực hiện lệnh","Chạy","Lặp","In"],0],
+["Cấu trúc rẽ nhánh phụ thuộc vào?",["Điều kiện","Âm thanh","Hình ảnh","Màu sắc"],0],
+
+["Trong ví dụ vé xem phim, điều kiện là?",["Đi xem một mình hay theo nhóm","Nghe nhạc","Chơi game","Đọc sách"],0],
+["Nếu đi xem một mình thì giá vé?",["60 000","40 000","30 000","20 000"],0],
+["Nếu đi xem theo nhóm thì giá vé?",["40 000","60 000","80 000","100 000"],0],
+["Cấu trúc rẽ nhánh giúp chương trình?",["Chọn một trong nhiều hành động","Lặp mãi","Dừng","Tắt"],0],
+["Cấu trúc rẽ nhánh xuất hiện trong?",["Scratch","Paint","Word","Excel"],0],
+
+["Rẽ nhánh giúp kiểm tra?",["Điều kiện","Âm thanh","Hình ảnh","Chuột"],0],
+["Nếu điều kiện đúng chương trình?",["Thực hiện lệnh","Xóa","Tắt","Ngủ"],0],
+["Nếu điều kiện sai?",["Bỏ qua lệnh","Lặp","Chạy","In"],0],
+["Cấu trúc rẽ nhánh thuộc loại?",["Cấu trúc điều khiển","Cấu trúc dữ liệu","Âm thanh","Hình ảnh"],0],
+["Cấu trúc rẽ nhánh dùng trong?",["Chương trình","Âm nhạc","Phim","Tranh"],0],
+
+["Trong Scratch rẽ nhánh có dạng?",["If","Repeat","Move","Sound"],0],
+["Điều kiện trong rẽ nhánh có thể là?",["So sánh","Âm thanh","Màu","Hình"],0],
+["Nếu a>b thì?",["Điều kiện đúng","Sai","Không biết","Không"],0],
+["Nếu a<b thì?",["Điều kiện đúng","Sai","Không biết","Không"],0],
+["Nếu a=b thì?",["Điều kiện đúng","Sai","Không biết","Không"],0],
+
+["Rẽ nhánh giúp chương trình?",["Linh hoạt","Cứng nhắc","Không đổi","Sai"],0],
+["Rẽ nhánh kiểm tra?",["Điều kiện","Âm thanh","Chuột","Bàn phím"],0],
+["Rẽ nhánh dùng trong?",["Lập trình Scratch","Paint","Word","Excel"],0],
+["Nếu điều kiện đúng chương trình?",["Chạy lệnh","Dừng","Xóa","In"],0],
+["Nếu sai?",["Không chạy lệnh","Lặp","Xóa","In"],0],
+
+["Rẽ nhánh giúp chương trình thông minh hơn?",["Có","Không","Không biết","Hiếm khi"],0],
+["Rẽ nhánh có thể dùng nhiều lần?",["Có","Không","Không biết","Hiếm khi"],0],
+["Scratch hỗ trợ rẽ nhánh?",["Có","Không","Không biết","Hiếm khi"],0],
+["Rẽ nhánh cần điều kiện?",["Có","Không","Không biết","Hiếm khi"],0],
+["Điều kiện giúp?",["Quyết định hành động","Chơi game","Nghe nhạc","Không"],0],
+
+["Nếu trời mưa thì?",["Mang áo mưa","Nghe nhạc","Xem phim","Đọc sách"],0],
+["Nếu trời nắng thì?",["Đội mũ","Nghe nhạc","Chơi game","Xem phim"],0],
+["Rẽ nhánh có bao nhiêu kết quả?",["Hai hoặc nhiều","Một","Không","Sai"],0],
+["Rẽ nhánh dùng để?",["Chọn hành động","Lặp","Xóa","Tắt"],0],
+["Rẽ nhánh kiểm tra điều kiện?",["Đúng","Sai","Không","Không biết"],0],
+
+["Rẽ nhánh thuộc kiến thức?",["Lập trình","Âm nhạc","Mỹ thuật","Thể dục"],0],
+["Rẽ nhánh dùng trong Scratch?",["Có","Không","Không biết","Hiếm khi"],0],
+["Rẽ nhánh giúp chương trình?",["Quyết định","Ngủ","Dừng","Xóa"],0],
+["Rẽ nhánh phụ thuộc?",["Điều kiện","Màu","Âm thanh","Chuột"],0],
+["Rẽ nhánh giúp chọn?",["Hành động","Âm nhạc","Video","Game"],0],
+
+["Rẽ nhánh có trong bài nào?",["Bài 10","Bài 1","Bài 2","Bài 3"],0]
+
+]
+
+questions.sort(()=>Math.random()-0.5)
+
+let current=0
+
+function start(){
+quiz.style.display="block"
+load()
+}
+
+function load(){
+
+question.innerText="Câu "+(current+1)+": "+questions[current][0]
+
+let ans=questions[current][1]
+.map((a,i)=>({t:a,i}))
+.sort(()=>Math.random()-0.5)
+
+answers.innerHTML=""
+
+ans.forEach((a,k)=>{
+answers.innerHTML+=`<div class="answer a${k}" onclick="choose(${a.i})">${a.t}</div>`
+})
+
+}
+
+function choose(i){
+
+let correct=questions[current][2]
+let correctAns=questions[current][1][correct]
+
+document.querySelectorAll(".answer").forEach(el=>{
+if(el.innerText===correctAns) el.classList.add("correct")
+else el.classList.add("wrong")
+})
+
+correctText.innerText="Đáp án đúng: "+correctAns
+
+setTimeout(()=>{
+current++
+if(current<50) load()
+},1200)
+
+}
+
+</script>
+
+</body>
+</html>
