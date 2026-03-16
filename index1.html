@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tin học lớp 3</title>
+
+<style>
+
+body{
+font-family:Arial, sans-serif;
+margin:0;
+background:#f2f2f2;
+}
+
+/* HEADER */
+
+.header{
+background:linear-gradient(90deg,#6fb7b7,#8cc4d3);
+padding:30px 20px;
+text-align:center;
+color:white;
+}
+
+.header-top{
+display:flex;
+justify-content:center;
+align-items:center;
+gap:15px;
+}
+
+.header img{
+width:50px;
+}
+
+.header h1{
+font-size:40px;
+margin:0;
+}
+
+.subtitle{
+margin-top:10px;
+font-size:18px;
+}
+
+/* SEARCH */
+
+.search-box{
+background:#ededed;
+padding:35px;
+text-align:center;
+}
+
+.search-box input{
+width:320px;
+padding:14px;
+border-radius:12px;
+border:1px solid #ccc;
+font-size:16px;
+}
+
+/* CONTENT */
+
+.container{
+max-width:1200px;
+margin:auto;
+padding:30px;
+}
+
+.section-title{
+font-size:22px;
+margin:25px 0;
+color:#333;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+gap:20px;
+}
+
+.card{
+background:#4CAF50;
+color:white;
+padding:20px;
+border-radius:16px;
+text-decoration:none;
+transition:0.25s;
+display:block;
+}
+
+.card:hover{
+background:#2e7d32;
+transform:translateY(-4px);
+}
+
+.practice{
+background:#2196F3;
+}
+
+.practice:hover{
+background:#1565C0;
+}
+
+.title{
+font-size:18px;
+font-weight:bold;
+margin-bottom:6px;
+}
+
+.subtitle2{
+font-size:14px;
+opacity:0.9;
+}
+
+.footer{
+text-align:center;
+margin-top:40px;
+color:#666;
+}
+
+</style>
+
+<script>
+
+function searchLesson(){
+
+let input=document.getElementById("search").value.toLowerCase();
+let cards=document.getElementsByClassName("lesson");
+
+for(let i=0;i<cards.length;i++){
+
+let text=cards[i].innerText.toLowerCase();
+cards[i].style.display=text.includes(input) ? "block":"none";
+
+}
+
+}
+
+</script>
+
+</head>
+
+<body>
+
+<!-- HEADER -->
+
+<div class="header">
+
+<div class="header-top">
+
+<img src="https://cdn-icons-png.flaticon.com/512/29/29302.png">
+
+<h1>Tin học lớp 3</h1>
+
+</div>
+
+<div class="subtitle">
+Website học tập & thực hành
+</div>
+
+</div>
+
+<!-- SEARCH -->
+
+<div class="search-box">
+
+<input id="search" type="text" placeholder="Tìm bài học..." onkeyup="searchLesson()">
+
+</div>
+
+
+<div class="container">
+
+<h2 class="section-title">🧠 Bài trắc nghiệm</h2>
+
+<div class="grid">
+
+<a href="bai1.html" class="card lesson"><div class="title">Bài 1</div><div class="subtitle2">Thông tin và quyết định</div></a>
+<a href="bai2.html" class="card lesson"><div class="title">Bài 2</div><div class="subtitle2">Xử lí thông tin</div></a>
+<a href="bai3.html" class="card lesson"><div class="title">Bài 3</div><div class="subtitle2">Máy tính – Bạn mới</div></a>
+<a href="bai4.html" class="card lesson"><div class="title">Bài 4</div><div class="subtitle2">Làm việc với máy tính</div></a>
+<a href="bai5.html" class="card lesson"><div class="title">Bài 5</div><div class="subtitle2">Tập gõ bàn phím</div></a>
+<a href="bai6.html" class="card lesson"><div class="title">Bài 6</div><div class="subtitle2">Xem tin Internet</div></a>
+<a href="bai7.html" class="card lesson"><div class="title">Bài 7</div><div class="subtitle2">Sắp xếp dữ liệu</div></a>
+<a href="bai8.html" class="card lesson"><div class="title">Bài 8</div><div class="subtitle2">Thư mục</div></a>
+<a href="bai9.html" class="card lesson"><div class="title">Bài 9</div><div class="subtitle2">Bảo vệ thông tin</div></a>
+<a href="bai10.html" class="card lesson"><div class="title">Bài 10</div><div class="subtitle2">Trang trình chiếu</div></a>
+<a href="bai11.html" class="card lesson"><div class="title">Bài 11</div><div class="subtitle2">Thực hành trình chiếu</div></a>
+<a href="bai12.html" class="card lesson"><div class="title">Bài 12</div><div class="subtitle2">Theo các bước</div></a>
+<a href="bai13.html" class="card lesson"><div class="title">Bài 13</div><div class="subtitle2">Chia việc lớn</div></a>
+<a href="bai14.html" class="card lesson"><div class="title">Bài 14</div><div class="subtitle2">Theo điều kiện</div></a>
+<a href="bai15.html" class="card lesson"><div class="title">Bài 15</div><div class="subtitle2">Nhiệm vụ</div></a>
+
+</div>
+
+
+<h2 class="section-title">🧪 Bài thực hành</h2>
+
+<div class="grid">
+
+<a href="bt1.html" class="card practice lesson"><div class="title">Thực hành 1</div><div class="subtitle2">Thông tin và quyết định</div></a>
+<a href="bt2.html" class="card practice lesson"><div class="title">Thực hành 2</div><div class="subtitle2">Xử lí thông tin</div></a>
+<a href="bt3.html" class="card practice lesson"><div class="title">Thực hành 3</div><div class="subtitle2">Máy tính</div></a>
+<a href="bt4.html" class="card practice lesson"><div class="title">Thực hành 4</div><div class="subtitle2">Làm việc với máy</div></a>
+<a href="bt5.html" class="card practice lesson"><div class="title">Thực hành 5</div><div class="subtitle2">Bàn phím</div></a>
+<a href="bt6.html" class="card practice lesson"><div class="title">Thực hành 6</div><div class="subtitle2">Internet</div></a>
+<a href="bt7.html" class="card practice lesson"><div class="title">Thực hành 7</div><div class="subtitle2">Sắp xếp</div></a>
+<a href="bt8.html" class="card practice lesson"><div class="title">Thực hành 8</div><div class="subtitle2">Thư mục</div></a>
+<a href="bt9.html" class="card practice lesson"><div class="title">Thực hành 9</div><div class="subtitle2">Bảo vệ thông tin</div></a>
+<a href="bt0.html" class="card practice lesson"><div class="title">Thực hành 10</div><div class="subtitle2">Trình chiếu</div></a>
+<a href="bt1.html" class="card practice lesson"><div class="title">Thực hành 11</div><div class="subtitle2">Trình chiếu nâng cao</div></a>
+<a href="bt2.html" class="card practice lesson"><div class="title">Thực hành 12</div><div class="subtitle2">Theo bước</div></a>
+<a href="bt3.html" class="card practice lesson"><div class="title">Thực hành 13</div><div class="subtitle2">Chia việc</div></a>
+<a href="bt4.html" class="card practice lesson"><div class="title">Thực hành 14</div><div class="subtitle2">Điều kiện</div></a>
+<a href="bt5.html" class="card practice lesson"><div class="title">Thực hành 15</div><div class="subtitle2">Nhiệm vụ</div></a>
+
+</div>
+
+<div class="footer">
+© Website học Tin học lớp 3
+</div>
+
+</div>
+
+</body>
+</html>
