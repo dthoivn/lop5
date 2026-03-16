@@ -97,7 +97,7 @@ background:#0652dd
 
 <div class="card">
 
-<h2>Tin học 5 – Quiz Classroom</h2>
+<h2>Tin học 5 – Bài 1</h2>
 
 <input id="name" placeholder="Họ tên học sinh">
 <br><br>
@@ -125,6 +125,7 @@ background:#0652dd
 </div>
 
 <script>
+let studentName=""
 
 /* câu hỏi */
 
@@ -230,7 +231,9 @@ finish()
 
 function start(){
 
-if(name.value==""){
+studentName = document.getElementById("name").value.trim()
+
+if(studentName==""){
 alert("Nhập tên học sinh")
 return
 }
@@ -335,7 +338,7 @@ let percent=Math.round(correctCount/total*100)
 result.innerHTML=
 
 "<h2>Hoàn thành bài</h2>"+
-"<p>Học sinh: "+name.value+"</p>"+
+"<p>"Học sinh: "+studentName+</p>"+
 "<h3>Tổng câu: "+total+"</h3>"+
 "<h3>Đúng: "+correctCount+"</h3>"+
 "<h3>Sai: "+wrongCount+"</h3>"+
