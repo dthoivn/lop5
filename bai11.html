@@ -2,29 +2,149 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Tin học 5 - Bài 11-Cấu trúc lặp</title>
+<title>Quiz Classroom PRO</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-body{font-family:Arial;background:#eef4ff;margin:0;text-align:center}
-.card{max-width:900px;margin:auto;margin-top:30px;background:white;padding:30px;border-radius:20px;box-shadow:0 10px 25px rgba(0,0,0,.15)}
-.answers{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:20px}
-.answer{padding:18px;border-radius:12px;font-size:18px;cursor:pointer;transition:.3s}
-.a0{background:#ff7675}.a1{background:#74b9ff}.a2{background:#ffeaa7}.a3{background:#55efc4}
-.correct{background:#2ecc71!important;transform:scale(1.15)}
-.wrong{opacity:.3}
+
+body{
+font-family:Arial;
+background:#eef4ff;
+margin:0;
+text-align:center
+}
+
+.card{
+max-width:900px;
+margin:auto;
+margin-top:20px;
+background:white;
+padding:25px;
+border-radius:20px;
+box-shadow:0 10px 25px rgba(0,0,0,.15)
+}
+
+input{
+padding:10px;
+font-size:16px;
+border-radius:8px;
+border:1px solid #ccc;
+width:220px
+}
+
+.answers{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:15px;
+margin-top:20px
+}
+
+.answer{
+padding:18px;
+border-radius:12px;
+font-size:18px;
+cursor:pointer;
+transition:.25s;
+font-weight:bold
+}
+
+.answer:hover{
+transform:scale(1.05)
+}
+
+.a0{background:#ff7675}
+.a1{background:#74b9ff}
+.a2{background:#ffeaa7}
+.a3{background:#55efc4}
+
+.correct{
+background:#2ecc71!important;
+transform:scale(1.15)
+}
+
+.wrong{
+opacity:.3
+}
+
+.timer{
+font-size:24px;
+color:#e74c3c;
+font-weight:bold
+}
+
+#progressBar{
+width:100%;
+height:12px;
+background:#ddd;
+border-radius:10px;
+margin-top:15px;
+overflow:hidden
+}
+
+#progress{
+height:100%;
+width:0%;
+background:#2ecc71
+}
+
+button{
+padding:12px 25px;
+font-size:16px;
+border:none;
+border-radius:10px;
+background:#0984e3;
+color:white;
+cursor:pointer
+}
+
+button:hover{
+background:#0652dd
+}
+
+canvas{
+max-width:300px;
+margin-top:20px
+}
+
+/* mobile */
+
+@media(max-width:600px){
+
+.answers{
+grid-template-columns:1fr
+}
+
+.answer{
+font-size:16px
+}
+
+}
+
 </style>
 </head>
 
-<body oncontextmenu="return false">
+<body>
 
 <div class="card">
 
-<h2>Tin học 5 – Bài 11-Cấu trúc lặp</h2>
+<h2>Quiz Tin học 5 - Bài 11 - Cấu trúc lặp</h2>
 
-<input id="name" placeholder="Họ tên học sinh"><br><br>
+<input id="name" placeholder="Họ tên học sinh">
+<br><br>
+
+<input id="class" placeholder="Lớp">
+<br><br>
+
 <button onclick="start()">BẮT ĐẦU</button>
 
 <div id="quiz" style="display:none">
+
+<div class="timer" id="time">30:00</div>
+
+<div id="progressBar">
+<div id="progress"></div>
+</div>
 
 <h3 id="question"></h3>
 
@@ -34,14 +154,19 @@ body{font-family:Arial;background:#eef4ff;margin:0;text-align:center}
 
 </div>
 
+<div id="result"></div>
+
+<canvas id="chart"></canvas>
+
 </div>
+
+<audio id="correctSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_5b0f4d2c03.mp3"></audio>
+<audio id="wrongSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_0d30a3c0d2.mp3"></audio>
 
 <script>
 
-document.onkeydown=function(e){
-if(e.ctrlKey && e.key=="c") return false
-if(e.key=="F12") return false
-}
+let studentName=""
+let studentClass=""
 
 let questions=[
 
@@ -81,23 +206,60 @@ let questions=[
 ["Lặp có trong bài?",["Bài 11","Bài 2","Bài 3","Bài 4"],0],
 ["Lặp dùng để?",["Lặp hành động","Chọn hành động","Xóa","Không"],0]
 
-]
+];
 
-while(questions.length<50){
-questions.push(...questions.slice(0,20))
-}
-
-questions=questions.slice(0,50)
 questions.sort(()=>Math.random()-0.5)
 
 let current=0
+let correctCount=0
+let wrongCount=0
+let totalTime=1800
+let timer
 
 function start(){
+
+studentName=document.getElementById("name").value.trim()
+studentClass=document.getElementById("class").value.trim()
+
+if(studentName==""||studentClass==""){
+alert("Nhập tên và lớp")
+return
+}
+
 quiz.style.display="block"
+
+startTimer()
+
 load()
+
+}
+
+function startTimer(){
+
+timer=setInterval(()=>{
+
+totalTime--
+
+let m=Math.floor(totalTime/60)
+let s=totalTime%60
+
+time.innerText=
+String(m).padStart(2,'0')+":"+
+String(s).padStart(2,'0')
+
+if(totalTime<=0){
+finish()
+}
+
+},1000)
+
 }
 
 function load(){
+
+correctText.innerText=""
+
+progress.style.width=(current/questions.length*100)+"%"
 
 question.innerText="Câu "+(current+1)+": "+questions[current][0]
 
@@ -108,7 +270,10 @@ let ans=questions[current][1]
 answers.innerHTML=""
 
 ans.forEach((a,k)=>{
-answers.innerHTML+=`<div class="answer a${k}" onclick="choose(${a.i})">${a.t}</div>`
+
+answers.innerHTML+=
+`<div class="answer a${k}" onclick="choose(${a.i})">${a.t}</div>`
+
 })
 
 }
@@ -119,16 +284,91 @@ let correct=questions[current][2]
 let correctAns=questions[current][1][correct]
 
 document.querySelectorAll(".answer").forEach(el=>{
-if(el.innerText===correctAns) el.classList.add("correct")
-else el.classList.add("wrong")
+
+if(el.innerText===correctAns)
+el.classList.add("correct")
+else
+el.classList.add("wrong")
+
 })
+
+if(i===correct){
+correctCount++
+correctSound.play()
+}else{
+wrongCount++
+wrongSound.play()
+}
 
 correctText.innerText="Đáp án đúng: "+correctAns
 
 setTimeout(()=>{
+
 current++
-if(current<50) load()
+
+if(current<questions.length){
+load()
+}else{
+finish()
+}
+
 },1200)
+
+}
+
+function finish(){
+
+clearInterval(timer)
+
+quiz.style.display="none"
+
+let total=questions.length
+let percent=Math.round(correctCount/total*100)
+
+let grade=""
+
+if(percent>=80) grade="Giỏi"
+else if(percent>=65) grade="Khá"
+else if(percent>=50) grade="Trung bình"
+else grade="Cần cố gắng"
+
+result.innerHTML=
+
+"<h2>Hoàn thành bài</h2>"+
+"<p>Học sinh: "+studentName+"</p>"+
+"<p>Lớp: "+studentClass+"</p>"+
+"<h3>Đúng: "+correctCount+"</h3>"+
+"<h3>Sai: "+wrongCount+"</h3>"+
+"<h3>Tỷ lệ: "+percent+"%</h3>"+
+"<h3>Xếp loại: "+grade+"</h3>"+
+"<br><button onclick='location.reload()'>Làm lại bài</button>"
+
+drawChart()
+
+}
+
+function drawChart(){
+
+let c=document.getElementById("chart")
+let ctx=c.getContext("2d")
+
+let total=correctCount+wrongCount
+
+let correctAngle=(correctCount/total)*2*Math.PI
+
+ctx.clearRect(0,0,300,300)
+
+ctx.beginPath()
+ctx.moveTo(150,150)
+ctx.arc(150,150,120,0,correctAngle)
+ctx.fillStyle="#2ecc71"
+ctx.fill()
+
+ctx.beginPath()
+ctx.moveTo(150,150)
+ctx.arc(150,150,120,correctAngle,2*Math.PI)
+ctx.fillStyle="#e74c3c"
+ctx.fill()
 
 }
 
