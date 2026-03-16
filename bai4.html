@@ -21,7 +21,7 @@ body{font-family:Arial;background:#eef4ff;margin:0;text-align:center}
 
 <div class="card">
 
-<h2>Tin học 5 – Bài 4 - TỔ CHỨC, LƯU TRỮ VÀ TÌM TỆP, THƯ MỤC TRONG MÁY TÍNH</h2>
+<h2>Tin học 5 – Bài 4 - TỔ CHỨC, LƯU TRỮ VÀ TÌM TỆP, THƯ MỤC TRONG MÁY TÍNH</h2>
 
 <input id="name" placeholder="Họ tên học sinh"><br><br>
 <button onclick="start()">BẮT ĐẦU</button>
@@ -45,15 +45,6 @@ body{font-family:Arial;background:#eef4ff;margin:0;text-align:center}
 document.onkeydown=function(e){
 if(e.ctrlKey && e.key=="c") return false
 if(e.key=="F12") return false
-}
-
-// hàm đảo mảng
-function shuffle(array){
-for(let i=array.length-1;i>0;i--){
-let j=Math.floor(Math.random()*(i+1))
-[array[i],array[j]]=[array[j],array[i]]
-}
-return array
 }
 
 let questions=[
@@ -115,8 +106,7 @@ let questions=[
 
 ];
 
-// đảo câu hỏi khi load trang
-questions = shuffle(questions)
+questions.sort(()=>Math.random()-0.5)
 
 let current=0
 
@@ -155,7 +145,7 @@ correctText.innerText="Đáp án đúng: "+correctAns
 
 setTimeout(()=>{
 current++
-if(current<questions.length) load()
+if(current<50) load()
 },1200)
 
 }
