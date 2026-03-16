@@ -2,96 +2,298 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Tin học 5 - Bài 14-Viết kịch bản chương trình máy tính</title>
+<title>Quiz Classroom PRO</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-body{font-family:Arial;background:#eef4ff;margin:0;text-align:center}
-.card{max-width:900px;margin:auto;margin-top:30px;background:white;padding:30px;border-radius:20px;box-shadow:0 10px 25px rgba(0,0,0,.15)}
-.answers{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:20px}
-.answer{padding:18px;border-radius:12px;font-size:18px;cursor:pointer;transition:.3s}
-.a0{background:#ff7675}.a1{background:#74b9ff}.a2{background:#ffeaa7}.a3{background:#55efc4}
-.correct{background:#2ecc71!important;transform:scale(1.15)}
-.wrong{opacity:.3}
-</style>
 
+body{
+font-family:Arial;
+background:#eef4ff;
+margin:0;
+text-align:center
+}
+
+.card{
+max-width:900px;
+margin:auto;
+margin-top:20px;
+background:white;
+padding:25px;
+border-radius:20px;
+box-shadow:0 10px 25px rgba(0,0,0,.15)
+}
+
+input{
+padding:10px;
+font-size:16px;
+border-radius:8px;
+border:1px solid #ccc;
+width:220px
+}
+
+.answers{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:15px;
+margin-top:20px
+}
+
+.answer{
+padding:18px;
+border-radius:12px;
+font-size:18px;
+cursor:pointer;
+transition:.25s;
+font-weight:bold
+}
+
+.answer:hover{
+transform:scale(1.05)
+}
+
+.a0{background:#ff7675}
+.a1{background:#74b9ff}
+.a2{background:#ffeaa7}
+.a3{background:#55efc4}
+
+.correct{
+background:#2ecc71!important;
+transform:scale(1.15)
+}
+
+.wrong{
+opacity:.3
+}
+
+.timer{
+font-size:24px;
+color:#e74c3c;
+font-weight:bold
+}
+
+#progressBar{
+width:100%;
+height:12px;
+background:#ddd;
+border-radius:10px;
+margin-top:15px;
+overflow:hidden
+}
+
+#progress{
+height:100%;
+width:0%;
+background:#2ecc71
+}
+
+button{
+padding:12px 25px;
+font-size:16px;
+border:none;
+border-radius:10px;
+background:#0984e3;
+color:white;
+cursor:pointer
+}
+
+button:hover{
+background:#0652dd
+}
+
+canvas{
+max-width:300px;
+margin-top:20px
+}
+
+/* mobile */
+
+@media(max-width:600px){
+
+.answers{
+grid-template-columns:1fr
+}
+
+.answer{
+font-size:16px
+}
+
+}
+
+</style>
 </head>
 
-<body oncontextmenu="return false">
+<body>
 
 <div class="card">
 
-<h2>Tin học 5 – Bài 14</h2>
+<h2>Quiz Tin học 5 - Bài 14 - Viết kịch bản chương trình máy tính</h2>
 
-<input id="name" placeholder="Họ tên học sinh"><br><br>
+<input id="name" placeholder="Họ tên học sinh">
+<br><br>
+
+<input id="class" placeholder="Lớp">
+<br><br>
+
 <button onclick="start()">BẮT ĐẦU</button>
 
 <div id="quiz" style="display:none">
-<h3 id="question"></h3>
-<div class="answers" id="answers"></div>
-<div id="correctText"></div>
+
+<div class="timer" id="time">30:00</div>
+
+<div id="progressBar">
+<div id="progress"></div>
 </div>
 
+<h3 id="question"></h3>
+
+<div class="answers" id="answers"></div>
+
+<div id="correctText"></div>
+
 </div>
+
+<div id="result"></div>
+
+<canvas id="chart"></canvas>
+
+</div>
+
+<audio id="correctSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_5b0f4d2c03.mp3"></audio>
+<audio id="wrongSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_0d30a3c0d2.mp3"></audio>
 
 <script>
 
-document.onkeydown=function(e){
-if(e.ctrlKey && e.key=="c") return false
-if(e.key=="F12") return false
-}
+let studentName=""
+let studentClass=""
 
 let questions=[
 
-["Kịch bản chương trình dùng để?",["Mô tả chương trình","Nghe nhạc","Xem phim","Chơi game"],0],
-["Viết kịch bản giúp?",["Thiết kế chương trình","Nghe nhạc","Xem phim","Không"],0],
-["Kịch bản gồm mấy phần?",["3","2","4","5"],0],
-["Ba phần của kịch bản là?",["Mở đầu, diễn biến, kết thúc","Âm thanh","Hình ảnh","Không"],0],
-["Mở đầu kịch bản dùng để?",["Mô tả bối cảnh","Chơi game","Nghe nhạc","Không"],0],
+["Viết kịch bản chương trình máy tính dùng để làm gì?",["Mô tả hoạt động chương trình","Xóa chương trình","Tắt máy","Cài game"],0],
+["Kịch bản chương trình là gì?",["Bản mô tả hoạt động chương trình","Một trò chơi","Một phần mềm","Một tệp"],0],
+["Trước khi viết chương trình cần làm gì?",["Viết kịch bản","Xóa máy","Cài game","Đổi màn hình"],0],
+["Kịch bản giúp lập trình như thế nào?",["Dễ xây dựng chương trình","Máy nhanh hơn","Pin lâu hơn","Màn hình sáng"],0],
+["Viết kịch bản thường thực hiện theo hình thức nào?",["Làm việc nhóm","Làm một mình","Không cần làm","Chỉ giáo viên"],0],
 
-["Diễn biến kịch bản dùng để?",["Mô tả hoạt động","Nghe nhạc","Xem phim","Không"],0],
-["Kết thúc kịch bản dùng để?",["Mô tả kết quả","Nghe nhạc","Chơi game","Không"],0],
-["Viết kịch bản cần?",["Ý tưởng","Âm nhạc","Video","Không"],0],
-["Ý tưởng chương trình giúp?",["Xây dựng chương trình","Nghe nhạc","Xem phim","Không"],0],
-["Viết kịch bản cần làm việc?",["Nhóm","Một mình","Không","Không"],0],
+["Để viết kịch bản cần xác định điều gì trước?",["Ý tưởng chương trình","Màu sắc","Âm thanh","Chuột"],0],
+["Ý tưởng chương trình là gì?",["Nội dung trò chơi hoặc câu chuyện","Âm thanh","Hình ảnh","Phần mềm"],0],
+["Trong trò chơi cần xác định gì?",["Nhân vật","Chuột","Bàn phím","Loa"],0],
+["Ngoài nhân vật cần xác định gì?",["Bối cảnh","Ổ đĩa","Chuột","RAM"],0],
+["Bối cảnh là gì?",["Nơi diễn ra câu chuyện","Âm thanh","Chuột","Bàn phím"],0],
 
-["Kịch bản giúp chương trình?",["Rõ ràng","Sai","Không","Không"],0],
-["Kịch bản dùng trong?",["Lập trình","Âm nhạc","Thể dục","Không"],0],
-["Ví dụ trò chơi trong bài?",["Mèo hứng táo","Đá bóng","Chạy bộ","Không"],0],
-["Trong trò chơi mèo hứng táo?",["Táo rơi","Nhạc","Video","Không"],0],
-["Mèo bắt táo sẽ?",["Được điểm","Không","Sai","Không"],0],
+["Kịch bản chương trình thường có mấy phần?",["3","2","4","5"],0],
+["Ba phần của kịch bản là gì?",["Mở đầu, diễn biến, kết thúc","Đầu, giữa","Trước, sau","Trên, dưới"],0],
+["Phần mở đầu dùng để làm gì?",["Mô tả bối cảnh ban đầu","Kết thúc câu chuyện","Chạy chương trình","Xóa dữ liệu"],0],
+["Phần diễn biến dùng để làm gì?",["Mô tả diễn biến câu chuyện","Mô tả kết thúc","Xóa chương trình","Tắt máy"],0],
+["Phần kết thúc dùng để làm gì?",["Mô tả kết quả cuối","Bắt đầu chương trình","Chạy lặp","Xóa dữ liệu"],0],
 
-["Kịch bản giúp lập trình?",["Dễ hơn","Khó hơn","Sai","Không"],0],
-["Viết kịch bản trước khi?",["Lập trình","Nghe nhạc","Xem phim","Không"],0],
-["Kịch bản giúp?",["Mô tả hoạt động","Nghe nhạc","Xem phim","Không"],0],
-["Kịch bản có thể chỉnh sửa?",["Có","Không","Không biết","Hiếm khi"],0],
-["Kịch bản giúp chương trình?",["Hoạt động rõ ràng","Sai","Không","Không"],0]
+["Trong kịch bản cần mô tả gì?",["Hoạt động của nhân vật","Ổ cứng","Chuột","RAM"],0],
+["Ví dụ trò chơi trong bài học là gì?",["Mèo hứng táo","Bắn máy bay","Cờ vua","Tetris"],0],
+["Trong trò chơi mèo hứng táo, quả táo làm gì?",["Rơi từ trên xuống","Bay lên","Đứng yên","Biến mất"],0],
+["Nhân vật mèo dùng để làm gì?",["Bắt táo","Bay","Nhảy","Ngủ"],0],
+["Nếu mèo bắt được táo thì sao?",["Được điểm","Mất điểm","Thoát game","Tắt máy"],0],
 
-]
+["Nếu mèo không bắt được táo thì sao?",["Không có điểm","Tăng điểm","Kết thúc game","Tắt máy"],0],
+["Quả táo rơi ở vị trí như thế nào?",["Ngẫu nhiên","Cố định","Luôn bên trái","Luôn bên phải"],0],
+["Người chơi điều khiển mèo bằng gì?",["Bàn phím","Chuột","Loa","Camera"],0],
+["Trong Scratch nhân vật gọi là gì?",["Sprite","Actor","Player","Robot"],0],
+["Sân khấu trong Scratch dùng để làm gì?",["Hiển thị hoạt động","Lưu tệp","Phát nhạc","Chạy web"],0],
 
-while(questions.length<50){
-questions.push(...questions.slice(0,20))
-}
+["Khi viết kịch bản cần làm gì sau khi hoàn thành?",["Lấy ý kiến góp ý","Xóa","Tắt máy","Đổi máy"],0],
+["Góp ý giúp gì cho kịch bản?",["Hoàn thiện hơn","Máy nhanh hơn","Pin lâu hơn","Màn hình sáng"],0],
+["Sau khi góp ý cần làm gì?",["Chỉnh sửa kịch bản","Xóa chương trình","Tắt máy","Cài game"],0],
+["Viết kịch bản giúp điều gì?",["Lập trình dễ hơn","Máy nhanh hơn","Pin lâu","Màn hình đẹp"],0],
+["Kịch bản chương trình thường viết ở đâu?",["Trên giấy hoặc máy tính","Chỉ trong Scratch","Trong game","Trong Paint"],0],
 
-questions=questions.slice(0,50)
+["Một kịch bản tốt cần gì?",["Rõ ràng","Ngẫu nhiên","Ngắn nhất","Không cần"],0],
+["Kịch bản cần mô tả điều gì?",["Các bước hoạt động","Màu sắc","Âm thanh","Hình ảnh"],0],
+["Nếu kịch bản rõ ràng thì sao?",["Chương trình dễ viết","Máy nhanh","Pin lâu","Màn hình sáng"],0],
+["Ví dụ câu chuyện dùng cho chương trình là gì?",["Thỏ và rùa","Bóng đá","Máy tính","Internet"],0],
+["Một ví dụ khác là gì?",["Hai con dê","Xe đạp","Điện thoại","Loa"],0],
+
+["Khi viết kịch bản cần xác định gì?",["Nhân vật và hoạt động","Ổ cứng","Chuột","RAM"],0],
+["Nhân vật trong chương trình có thể là gì?",["Con vật hoặc người","Chuột","Bàn phím","Ổ đĩa"],0],
+["Chương trình Scratch có thể kể gì?",["Câu chuyện","Chỉ nhạc","Chỉ hình","Chỉ văn bản"],0],
+["Kịch bản chương trình giúp gì?",["Lập kế hoạch","Xóa dữ liệu","Tắt máy","Cài game"],0],
+["Trước khi viết kịch bản cần gì?",["Ý tưởng","Chuột","Loa","Camera"],0],
+
+["Ý tưởng chương trình giúp gì?",["Định hướng chương trình","Máy nhanh","Pin lâu","Màn hình sáng"],0],
+["Khi viết kịch bản cần làm gì với nhóm?",["Thảo luận","Im lặng","Không làm","Tắt máy"],0],
+["Thảo luận nhóm giúp gì?",["Có nhiều ý tưởng","Máy nhanh","Pin lâu","Màn hình sáng"],0],
+["Sau khi hoàn thành kịch bản cần làm gì?",["Chỉnh sửa","Xóa","Đóng","Tắt"],0],
+["Một chương trình tốt cần gì trước?",["Kịch bản rõ ràng","Màu đẹp","Âm thanh","Hình nền"],0],
+
+["Bài 14 dạy học sinh điều gì?",["Viết kịch bản chương trình","Chơi game","Nghe nhạc","Vẽ tranh"],0]
+
+];
+
 questions.sort(()=>Math.random()-0.5)
 
 let current=0
+let correctCount=0
+let wrongCount=0
+let totalTime=1800
+let timer
 
 function start(){
+
+studentName=document.getElementById("name").value.trim()
+studentClass=document.getElementById("class").value.trim()
+
+if(studentName==""||studentClass==""){
+alert("Nhập tên và lớp")
+return
+}
+
 quiz.style.display="block"
+
+startTimer()
+
 load()
+
+}
+
+function startTimer(){
+
+timer=setInterval(()=>{
+
+totalTime--
+
+let m=Math.floor(totalTime/60)
+let s=totalTime%60
+
+time.innerText=
+String(m).padStart(2,'0')+":"+
+String(s).padStart(2,'0')
+
+if(totalTime<=0){
+finish()
+}
+
+},1000)
+
 }
 
 function load(){
 
+correctText.innerText=""
+
+progress.style.width=(current/questions.length*100)+"%"
+
 question.innerText="Câu "+(current+1)+": "+questions[current][0]
 
-let ans=questions[current][1].map((a,i)=>({t:a,i})).sort(()=>Math.random()-0.5)
+let ans=questions[current][1]
+.map((a,i)=>({t:a,i}))
+.sort(()=>Math.random()-0.5)
 
 answers.innerHTML=""
 
 ans.forEach((a,k)=>{
-answers.innerHTML+=`<div class="answer a${k}" onclick="choose(${a.i})">${a.t}</div>`
+
+answers.innerHTML+=
+`<div class="answer a${k}" onclick="choose(${a.i})">${a.t}</div>`
+
 })
 
 }
@@ -102,16 +304,91 @@ let correct=questions[current][2]
 let correctAns=questions[current][1][correct]
 
 document.querySelectorAll(".answer").forEach(el=>{
-if(el.innerText===correctAns) el.classList.add("correct")
-else el.classList.add("wrong")
+
+if(el.innerText===correctAns)
+el.classList.add("correct")
+else
+el.classList.add("wrong")
+
 })
+
+if(i===correct){
+correctCount++
+correctSound.play()
+}else{
+wrongCount++
+wrongSound.play()
+}
 
 correctText.innerText="Đáp án đúng: "+correctAns
 
 setTimeout(()=>{
+
 current++
-if(current<50) load()
+
+if(current<questions.length){
+load()
+}else{
+finish()
+}
+
 },1200)
+
+}
+
+function finish(){
+
+clearInterval(timer)
+
+quiz.style.display="none"
+
+let total=questions.length
+let percent=Math.round(correctCount/total*100)
+
+let grade=""
+
+if(percent>=80) grade="Giỏi"
+else if(percent>=65) grade="Khá"
+else if(percent>=50) grade="Trung bình"
+else grade="Cần cố gắng"
+
+result.innerHTML=
+
+"<h2>Hoàn thành bài</h2>"+
+"<p>Học sinh: "+studentName+"</p>"+
+"<p>Lớp: "+studentClass+"</p>"+
+"<h3>Đúng: "+correctCount+"</h3>"+
+"<h3>Sai: "+wrongCount+"</h3>"+
+"<h3>Tỷ lệ: "+percent+"%</h3>"+
+"<h3>Xếp loại: "+grade+"</h3>"+
+"<br><button onclick='location.reload()'>Làm lại bài</button>"
+
+drawChart()
+
+}
+
+function drawChart(){
+
+let c=document.getElementById("chart")
+let ctx=c.getContext("2d")
+
+let total=correctCount+wrongCount
+
+let correctAngle=(correctCount/total)*2*Math.PI
+
+ctx.clearRect(0,0,300,300)
+
+ctx.beginPath()
+ctx.moveTo(150,150)
+ctx.arc(150,150,120,0,correctAngle)
+ctx.fillStyle="#2ecc71"
+ctx.fill()
+
+ctx.beginPath()
+ctx.moveTo(150,150)
+ctx.arc(150,150,120,correctAngle,2*Math.PI)
+ctx.fillStyle="#e74c3c"
+ctx.fill()
 
 }
 
