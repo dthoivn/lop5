@@ -125,6 +125,7 @@ background:#0652dd
 </div>
 
 <script>
+
 let studentName=""
 
 /* câu hỏi */
@@ -152,41 +153,7 @@ let questions=[
 ["Máy tính giúp tìm hiểu điều gì?",["Khoa học","Thiên văn","Thể thao","Tất cả"],3],
 ["Máy tính giúp hợp tác với ai?",["Bạn bè","Nhóm học","Thầy cô","Tất cả"],3],
 ["Chương trình kể chuyện được tạo bằng phần mềm nào?",["Scratch","Word","Paint","Excel"],0],
-["Máy tính giúp học sinh làm gì tốt hơn?",["Học tập","Trao đổi thông tin","Giải trí","Tất cả"],3],
-
-["Máy tính có thể giúp học sinh làm việc nhóm không?",["Có","Không","Chỉ đôi khi","Không biết"],0],
-["Máy tính giúp tìm thông tin nhanh hơn bằng gì?",["Internet","Sách","Báo","TV"],0],
-["Máy tính có thể tạo ra phim hoạt hình không?",["Có","Không","Không biết","Chỉ đôi khi"],0],
-["Máy tính có thể giúp học sinh học tiếng Anh không?",["Có","Không","Không biết","Hiếm khi"],0],
-["Máy tính giúp tạo bài trình chiếu để làm gì?",["Trình bày bài học","Nghe nhạc","Chơi game","Xem phim"],0],
-
-["Máy tính giúp trao đổi thông tin bằng cách nào?",["Internet","Thư điện tử","Ứng dụng nhắn tin","Tất cả"],3],
-["Máy tính giúp học sinh khám phá gì?",["Hệ mặt trời","Thiên nhiên","Khoa học","Tất cả"],3],
-["Máy tính có thể dùng để cập nhật tin tức không?",["Có","Không","Hiếm khi","Không biết"],0],
-["Máy tính giúp học sinh đọc báo không?",["Có","Không","Hiếm khi","Không biết"],0],
-["Máy tính có thể giúp xem video học tập không?",["Có","Không","Hiếm khi","Không biết"],0],
-
-["Máy tính giúp học sinh làm bài tập không?",["Có","Không","Không biết","Hiếm khi"],0],
-["Máy tính giúp học sinh luyện gõ bàn phím không?",["Có","Không","Hiếm khi","Không biết"],0],
-["Máy tính có thể giúp học sinh luyện chuột không?",["Có","Không","Không biết","Hiếm khi"],0],
-["Máy tính giúp tạo hình ảnh số không?",["Có","Không","Hiếm khi","Không biết"],0],
-["Máy tính có thể tạo bản nhạc số không?",["Có","Không","Không biết","Hiếm khi"],0],
-
-["Máy tính giúp tạo phim hoạt hình không?",["Có","Không","Hiếm khi","Không biết"],0],
-["Máy tính giúp học sinh giao lưu bạn bè không?",["Có","Không","Không biết","Hiếm khi"],0],
-["Máy tính có thể dùng để chơi trò chơi không?",["Có","Không","Hiếm khi","Không biết"],0],
-["Máy tính giúp nghe nhạc không?",["Có","Không","Không biết","Hiếm khi"],0],
-["Máy tính giúp đọc sách điện tử không?",["Có","Không","Không biết","Hiếm khi"],0],
-
-["Máy tính có thể dùng để xem phim không?",["Có","Không","Không biết","Hiếm khi"],0],
-["Máy tính giúp cập nhật tin tức không?",["Có","Không","Không biết","Hiếm khi"],0],
-["Máy tính có thể giúp học sinh học online không?",["Có","Không","Hiếm khi","Không biết"],0],
-["Máy tính giúp tìm kiếm thông tin nhanh không?",["Có","Không","Không biết","Hiếm khi"],0],
-["Máy tính giúp học sinh làm nhiều việc không?",["Có","Không","Hiếm khi","Không biết"],0],
-
-["Máy tính có phải công cụ đa năng không?",["Có","Không","Không biết","Hiếm khi"],0],
-["Máy tính giúp con người làm nhiều việc không?",["Có","Không","Không biết","Hiếm khi"],0],
-["Có nên học sử dụng máy tính thành thạo không?",["Có","Không","Không biết","Hiếm khi"],0]
+["Máy tính giúp học sinh làm gì tốt hơn?",["Học tập","Trao đổi thông tin","Giải trí","Tất cả"],3]
 
 ]
 
@@ -231,7 +198,7 @@ finish()
 
 function start(){
 
-studentName = document.getElementById("name").value.trim()
+studentName=document.getElementById("name").value.trim()
 
 if(studentName==""){
 alert("Nhập tên học sinh")
@@ -254,11 +221,9 @@ lock=false
 
 correctText.innerText=""
 
-progress.style.width=
-(current/questions.length*100)+"%"
+progress.style.width=(current/questions.length*100)+"%"
 
-question.innerText=
-"Câu "+(current+1)+": "+questions[current][0]
+question.innerText="Câu "+(current+1)+": "+questions[current][0]
 
 let ans=
 questions[current][1]
@@ -310,13 +275,9 @@ setTimeout(()=>{
 current++
 
 if(current<questions.length){
-
 load()
-
 }else{
-
 finish()
-
 }
 
 },1200)
@@ -336,9 +297,8 @@ let total=questions.length
 let percent=Math.round(correctCount/total*100)
 
 result.innerHTML=
-
 "<h2>Hoàn thành bài</h2>"+
-"<p>"Học sinh: "+studentName+</p>"+
+"<p>Học sinh: "+studentName+"</p>"+
 "<h3>Tổng câu: "+total+"</h3>"+
 "<h3>Đúng: "+correctCount+"</h3>"+
 "<h3>Sai: "+wrongCount+"</h3>"+
