@@ -2,96 +2,296 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Tin học 5 - Bài 13-Chạy thử chương trình</title>
+<title>Quiz Classroom PRO</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-body{font-family:Arial;background:#eef4ff;margin:0;text-align:center}
-.card{max-width:900px;margin:auto;margin-top:30px;background:white;padding:30px;border-radius:20px;box-shadow:0 10px 25px rgba(0,0,0,.15)}
-.answers{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:20px}
-.answer{padding:18px;border-radius:12px;font-size:18px;cursor:pointer;transition:.3s}
-.a0{background:#ff7675}.a1{background:#74b9ff}.a2{background:#ffeaa7}.a3{background:#55efc4}
-.correct{background:#2ecc71!important;transform:scale(1.15)}
-.wrong{opacity:.3}
-</style>
 
+body{
+font-family:Arial;
+background:#eef4ff;
+margin:0;
+text-align:center
+}
+
+.card{
+max-width:900px;
+margin:auto;
+margin-top:20px;
+background:white;
+padding:25px;
+border-radius:20px;
+box-shadow:0 10px 25px rgba(0,0,0,.15)
+}
+
+input{
+padding:10px;
+font-size:16px;
+border-radius:8px;
+border:1px solid #ccc;
+width:220px
+}
+
+.answers{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:15px;
+margin-top:20px
+}
+
+.answer{
+padding:18px;
+border-radius:12px;
+font-size:18px;
+cursor:pointer;
+transition:.25s;
+font-weight:bold
+}
+
+.answer:hover{
+transform:scale(1.05)
+}
+
+.a0{background:#ff7675}
+.a1{background:#74b9ff}
+.a2{background:#ffeaa7}
+.a3{background:#55efc4}
+
+.correct{
+background:#2ecc71!important;
+transform:scale(1.15)
+}
+
+.wrong{
+opacity:.3
+}
+
+.timer{
+font-size:24px;
+color:#e74c3c;
+font-weight:bold
+}
+
+#progressBar{
+width:100%;
+height:12px;
+background:#ddd;
+border-radius:10px;
+margin-top:15px;
+overflow:hidden
+}
+
+#progress{
+height:100%;
+width:0%;
+background:#2ecc71
+}
+
+button{
+padding:12px 25px;
+font-size:16px;
+border:none;
+border-radius:10px;
+background:#0984e3;
+color:white;
+cursor:pointer
+}
+
+button:hover{
+background:#0652dd
+}
+
+canvas{
+max-width:300px;
+margin-top:20px
+}
+
+/* mobile */
+
+@media(max-width:600px){
+
+.answers{
+grid-template-columns:1fr
+}
+
+.answer{
+font-size:16px
+}
+
+}
+
+</style>
 </head>
 
-<body oncontextmenu="return false">
+<body>
 
 <div class="card">
 
-<h2>Tin học 5 – Bài 13-Chạy thử chương trình</h2>
+<h2>Quiz Tin học 5 - Bài 13 - Chạy thử chương trình</h2>
 
-<input id="name" placeholder="Họ tên học sinh"><br><br>
+<input id="name" placeholder="Họ tên học sinh">
+<br><br>
+
+<input id="class" placeholder="Lớp">
+<br><br>
+
 <button onclick="start()">BẮT ĐẦU</button>
 
 <div id="quiz" style="display:none">
-<h3 id="question"></h3>
-<div class="answers" id="answers"></div>
-<div id="correctText"></div>
+
+<div class="timer" id="time">30:00</div>
+
+<div id="progressBar">
+<div id="progress"></div>
 </div>
 
+<h3 id="question"></h3>
+
+<div class="answers" id="answers"></div>
+
+<div id="correctText"></div>
+
 </div>
+
+<div id="result"></div>
+
+<canvas id="chart"></canvas>
+
+</div>
+
+<audio id="correctSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_5b0f4d2c03.mp3"></audio>
+<audio id="wrongSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_0d30a3c0d2.mp3"></audio>
 
 <script>
 
-document.onkeydown=function(e){
-if(e.ctrlKey && e.key=="c") return false
-if(e.key=="F12") return false
-}
+let studentName=""
+let studentClass=""
 
 let questions=[
 
-["Chạy thử chương trình dùng để?",["Kiểm tra chương trình","Nghe nhạc","Chơi game","Vẽ tranh"],0],
-["Lỗi chương trình là gì?",["Chương trình không chạy đúng","Chạy nhanh","Chạy chậm","Không"],0],
-["Chạy thử giúp phát hiện?",["Lỗi","Âm thanh","Màu","Hình"],0],
-["Chương trình không hoạt động có nghĩa?",["Không chạy","Chạy đúng","Chạy nhanh","Không"],0],
-["Chương trình hoạt động sai nghĩa là?",["Kết quả không đúng","Đúng","Nhanh","Không"],0],
+["Chạy thử chương trình dùng để làm gì?",["Kiểm tra chương trình","Xóa chương trình","Tắt máy","Đổi tên tệp"],0],
+["Khi viết chương trình cần làm gì sau khi hoàn thành?",["Chạy thử","Xóa","In ra","Đóng lại"],0],
+["Chạy thử chương trình giúp phát hiện gì?",["Lỗi chương trình","Hình ảnh","Âm thanh","Video"],0],
+["Lỗi chương trình là gì?",["Chương trình không chạy đúng","Máy tính tắt","Màn hình tối","Loa hỏng"],0],
+["Có mấy loại lỗi chương trình cơ bản?",["2","3","4","5"],0],
 
-["Chạy thử chương trình cần làm gì?",["Quan sát kết quả","Nghe nhạc","Xem phim","Không"],0],
-["Lỗi chương trình có thể do?",["Sai lệnh","Âm thanh","Màu","Không"],0],
-["Khi chương trình sai cần?",["Sửa lỗi","Xóa","In","Không"],0],
-["Kiểm tra chương trình giúp?",["Hoạt động đúng","Sai","Không","Không biết"],0],
-["Chạy thử chương trình thuộc bước?",["Kiểm tra","Viết","Thiết kế","Không"],0],
+["Hai loại lỗi chương trình là gì?",["Không hoạt động và sai kết quả","Nhanh và chậm","Lớn và nhỏ","Đúng và đẹp"],0],
+["Lỗi chương trình không hoạt động nghĩa là gì?",["Chương trình không chạy","Chạy sai","Chạy nhanh","Chạy chậm"],0],
+["Lỗi chương trình hoạt động không như mong muốn nghĩa là gì?",["Chạy nhưng sai kết quả","Không chạy","Máy tắt","Không hiển thị"],0],
+["Nếu các khối lệnh không khớp nhau thì sao?",["Chương trình không hoạt động","Chạy nhanh hơn","Không ảnh hưởng","Máy tắt"],0],
+["Trong Scratch, khối lệnh phải như thế nào?",["Khớp nhau","Rời rạc","Không cần nối","Đặt ngẫu nhiên"],0],
 
-["Chương trình cần chạy thử trước khi?",["Sử dụng","Nghe nhạc","Chơi game","Không"],0],
-["Chạy thử giúp tìm?",["Lỗi","Âm thanh","Màu","Không"],0],
-["Nếu chương trình sai cần?",["Sửa","Xóa","In","Không"],0],
-["Chạy thử giúp chương trình?",["Hoạt động đúng","Sai","Không","Không"],0],
-["Lỗi có thể do?",["Sai điều kiện","Âm thanh","Màu","Không"],0],
+["Khi chương trình không chạy cần làm gì?",["Kiểm tra các lệnh","Tắt máy","Xóa Scratch","Cài game"],0],
+["Khi chương trình sai kết quả cần làm gì?",["Sửa lệnh","Xóa máy","Tắt mạng","Đổi bàn phím"],0],
+["Chạy thử chương trình giúp gì cho lập trình?",["Phát hiện lỗi","Xóa dữ liệu","Tăng RAM","Tăng pin"],0],
+["Nếu lệnh không nối đúng thì sao?",["Chương trình lỗi","Chạy tốt","Chạy nhanh","Không đổi"],0],
+["Trong Scratch, khối lệnh thường nối với nhau như thế nào?",["Xếp chồng","Đặt ngang","Đặt rời","Đặt xa"],0],
 
-["Kiểm tra chương trình giúp?",["Phát hiện lỗi","Chơi game","Nghe nhạc","Không"],0],
-["Chạy thử có quan trọng không?",["Có","Không","Không biết","Hiếm khi"],0],
-["Lỗi cần được?",["Sửa","Bỏ","In","Không"],0],
-["Chạy thử giúp?",["Hoàn thiện chương trình","Nghe nhạc","Xem phim","Không"],0],
-["Chạy thử chương trình thuộc?",["Lập trình","Âm nhạc","Thể dục","Không"],0]
+["Khi phát hiện lỗi ta cần làm gì?",["Sửa lỗi","Tắt máy","Xóa file","Đổi màu"],0],
+["Chạy thử chương trình nên thực hiện khi nào?",["Sau khi viết chương trình","Trước khi viết","Khi tắt máy","Khi chơi game"],0],
+["Kiểm tra chương trình giúp gì?",["Chương trình chạy đúng","Máy nhanh hơn","Pin lâu hơn","Màn hình sáng hơn"],0],
+["Nếu chương trình sai kết quả thì gọi là gì?",["Lỗi logic","Lỗi màn hình","Lỗi chuột","Lỗi loa"],0],
+["Nếu chương trình không chạy gọi là gì?",["Lỗi hoạt động","Lỗi hình","Lỗi âm thanh","Lỗi mạng"],0],
 
-]
+["Chạy thử chương trình còn gọi là gì?",["Kiểm tra chương trình","Xóa chương trình","Sao chép chương trình","In chương trình"],0],
+["Mục đích chạy thử là gì?",["Tìm lỗi","Vẽ hình","Phát nhạc","Chơi game"],0],
+["Nếu chương trình chạy sai cần làm gì?",["Tìm nguyên nhân","Tắt máy","Đổi màn hình","Cài game"],0],
+["Sau khi sửa lỗi cần làm gì?",["Chạy thử lại","Xóa chương trình","Đổi máy","Tắt Scratch"],0],
+["Quá trình sửa lỗi chương trình gọi là gì?",["Debug","Paint","Game","Music"],0],
 
-while(questions.length<50){
-questions.push(...questions.slice(0,20))
-}
+["Trong Scratch, lỗi thường do gì?",["Sai lệnh","Màu sắc","Âm thanh","Hình nền"],0],
+["Sai điều kiện so sánh có thể gây gì?",["Sai kết quả","Máy tắt","Màn hình tối","Loa nhỏ"],0],
+["Nếu chương trình chưa xét đủ trường hợp thì sao?",["Kết quả sai","Máy hỏng","Mất mạng","Mất chuột"],0],
+["Ví dụ chưa xét trường hợp a=b thì sao?",["Thông báo sai","Không lỗi","Máy tắt","Màn hình đổi"],0],
+["Kiểm tra điều kiện giúp gì?",["Chương trình đúng hơn","Máy nhanh hơn","Pin lâu hơn","Màn hình sáng"],0],
 
-questions=questions.slice(0,50)
+["Khi chạy thử cần nhập dữ liệu gì?",["Dữ liệu kiểm tra","Hình ảnh","Âm thanh","Video"],0],
+["Nhập nhiều dữ liệu giúp gì?",["Kiểm tra chính xác hơn","Máy chậm","Máy tắt","Không đổi"],0],
+["Chạy thử nhiều lần giúp gì?",["Phát hiện lỗi","Tăng pin","Đổi màu","Tắt máy"],0],
+["Khi sửa lỗi cần làm gì với chương trình?",["Chỉnh sửa lệnh","Xóa máy","Tắt Scratch","Cài game"],0],
+["Sau khi sửa xong cần làm gì?",["Kiểm tra lại","Xóa","Đóng","Tắt"],0],
+
+["Nếu chương trình đúng thì sao?",["Chạy đúng kết quả","Máy tắt","Màn hình tối","Loa nhỏ"],0],
+["Chạy thử giúp người lập trình điều gì?",["Cải thiện chương trình","Xóa chương trình","Tắt máy","Đổi màu"],0],
+["Một chương trình tốt cần gì?",["Ít lỗi","Nhiều lỗi","Không chạy","Không hiển thị"],0],
+["Kiểm tra chương trình là bước nào?",["Quan trọng","Không cần","Ngẫu nhiên","Sai"],0],
+["Trong lập trình cần gì để tránh lỗi?",["Kiểm tra thường xuyên","Tắt máy","Xóa Scratch","Chơi game"],0],
+
+["Chương trình sai do điều kiện thiếu gọi là gì?",["Lỗi logic","Lỗi mạng","Lỗi màn hình","Lỗi chuột"],0],
+["Chương trình không chạy do lệnh sai gọi là gì?",["Lỗi chương trình","Lỗi pin","Lỗi bàn phím","Lỗi loa"],0],
+["Chạy thử chương trình giúp điều gì?",["Hoạt động đúng","Máy nhanh","Pin lâu","Màn hình đẹp"],0],
+["Trong Scratch cần làm gì sau khi sửa lỗi?",["Chạy thử lại","Tắt máy","Đổi máy","Cài game"],0],
+["Bài 13 dạy học sinh điều gì?",["Chạy thử chương trình","Chơi game","Nghe nhạc","Vẽ tranh"],0]
+
+];
+
 questions.sort(()=>Math.random()-0.5)
 
 let current=0
+let correctCount=0
+let wrongCount=0
+let totalTime=1800
+let timer
 
 function start(){
+
+studentName=document.getElementById("name").value.trim()
+studentClass=document.getElementById("class").value.trim()
+
+if(studentName==""||studentClass==""){
+alert("Nhập tên và lớp")
+return
+}
+
 quiz.style.display="block"
+
+startTimer()
+
 load()
+
+}
+
+function startTimer(){
+
+timer=setInterval(()=>{
+
+totalTime--
+
+let m=Math.floor(totalTime/60)
+let s=totalTime%60
+
+time.innerText=
+String(m).padStart(2,'0')+":"+
+String(s).padStart(2,'0')
+
+if(totalTime<=0){
+finish()
+}
+
+},1000)
+
 }
 
 function load(){
 
+correctText.innerText=""
+
+progress.style.width=(current/questions.length*100)+"%"
+
 question.innerText="Câu "+(current+1)+": "+questions[current][0]
 
-let ans=questions[current][1].map((a,i)=>({t:a,i})).sort(()=>Math.random()-0.5)
+let ans=questions[current][1]
+.map((a,i)=>({t:a,i}))
+.sort(()=>Math.random()-0.5)
 
 answers.innerHTML=""
 
 ans.forEach((a,k)=>{
-answers.innerHTML+=`<div class="answer a${k}" onclick="choose(${a.i})">${a.t}</div>`
+
+answers.innerHTML+=
+`<div class="answer a${k}" onclick="choose(${a.i})">${a.t}</div>`
+
 })
 
 }
@@ -102,16 +302,91 @@ let correct=questions[current][2]
 let correctAns=questions[current][1][correct]
 
 document.querySelectorAll(".answer").forEach(el=>{
-if(el.innerText===correctAns) el.classList.add("correct")
-else el.classList.add("wrong")
+
+if(el.innerText===correctAns)
+el.classList.add("correct")
+else
+el.classList.add("wrong")
+
 })
+
+if(i===correct){
+correctCount++
+correctSound.play()
+}else{
+wrongCount++
+wrongSound.play()
+}
 
 correctText.innerText="Đáp án đúng: "+correctAns
 
 setTimeout(()=>{
+
 current++
-if(current<50) load()
+
+if(current<questions.length){
+load()
+}else{
+finish()
+}
+
 },1200)
+
+}
+
+function finish(){
+
+clearInterval(timer)
+
+quiz.style.display="none"
+
+let total=questions.length
+let percent=Math.round(correctCount/total*100)
+
+let grade=""
+
+if(percent>=80) grade="Giỏi"
+else if(percent>=65) grade="Khá"
+else if(percent>=50) grade="Trung bình"
+else grade="Cần cố gắng"
+
+result.innerHTML=
+
+"<h2>Hoàn thành bài</h2>"+
+"<p>Học sinh: "+studentName+"</p>"+
+"<p>Lớp: "+studentClass+"</p>"+
+"<h3>Đúng: "+correctCount+"</h3>"+
+"<h3>Sai: "+wrongCount+"</h3>"+
+"<h3>Tỷ lệ: "+percent+"%</h3>"+
+"<h3>Xếp loại: "+grade+"</h3>"+
+"<br><button onclick='location.reload()'>Làm lại bài</button>"
+
+drawChart()
+
+}
+
+function drawChart(){
+
+let c=document.getElementById("chart")
+let ctx=c.getContext("2d")
+
+let total=correctCount+wrongCount
+
+let correctAngle=(correctCount/total)*2*Math.PI
+
+ctx.clearRect(0,0,300,300)
+
+ctx.beginPath()
+ctx.moveTo(150,150)
+ctx.arc(150,150,120,0,correctAngle)
+ctx.fillStyle="#2ecc71"
+ctx.fill()
+
+ctx.beginPath()
+ctx.moveTo(150,150)
+ctx.arc(150,150,120,correctAngle,2*Math.PI)
+ctx.fillStyle="#e74c3c"
+ctx.fill()
 
 }
 
