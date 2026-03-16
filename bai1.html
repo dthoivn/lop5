@@ -1,33 +1,114 @@
 <!DOCTYPE html>
+
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Tin học 5 - Bài 1-Máy tính có thể giúp em làm những việc gì?</title>
+<title>Trắc nghiệm Tin học 5 - Bài 1</title>
 
 <style>
-body{font-family:Arial;background:#eef4ff;margin:0;text-align:center}
-.card{max-width:900px;margin:auto;margin-top:30px;background:white;padding:30px;border-radius:20px;box-shadow:0 10px 25px rgba(0,0,0,.15)}
-.answers{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:20px}
-.answer{padding:18px;border-radius:12px;font-size:18px;cursor:pointer;transition:.3s}
-.a0{background:#ff7675}.a1{background:#74b9ff}.a2{background:#ffeaa7}.a3{background:#55efc4}
-.correct{background:#2ecc71!important;transform:scale(1.15)}
-.wrong{opacity:.3}
-.timer{font-size:22px;color:#e74c3c}
+
+body{
+font-family:Arial;
+background:linear-gradient(135deg,#74b9ff,#a29bfe);
+margin:0;
+text-align:center;
+}
+
+.card{
+max-width:900px;
+margin:auto;
+margin-top:40px;
+background:white;
+padding:30px;
+border-radius:20px;
+box-shadow:0 15px 30px rgba(0,0,0,.2)
+}
+
+.answers{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:15px;
+margin-top:20px
+}
+
+.answer{
+padding:18px;
+border-radius:12px;
+font-size:18px;
+cursor:pointer;
+transition:.25s
+}
+
+.answer:hover{
+transform:scale(1.05)
+}
+
+.a0{background:#ff7675}
+.a1{background:#74b9ff}
+.a2{background:#ffeaa7}
+.a3{background:#55efc4}
+
+.correct{
+background:#2ecc71!important;
+transform:scale(1.1)
+}
+
+.wrong{
+opacity:.3
+}
+
+.timer{
+font-size:22px;
+color:#e74c3c;
+font-weight:bold
+}
+
+.score{
+font-size:20px;
+color:#2d3436;
+margin-top:10px
+}
+
+button{
+padding:12px 25px;
+font-size:18px;
+border:none;
+border-radius:10px;
+background:#6c5ce7;
+color:white;
+cursor:pointer
+}
+
+button:hover{
+background:#4834d4
+}
+
+.result{
+font-size:28px;
+color:#2d3436;
+margin-top:20px
+}
+
 </style>
+
 </head>
 
-<body oncontextmenu="return false">
+<body>
 
 <div class="card">
 
 <h2>Tin học 5 – Bài 1</h2>
 
-<input id="name" placeholder="Họ tên học sinh"><br><br>
+<input id="name" placeholder="Họ tên học sinh">
+<br><br>
+
 <button onclick="start()">BẮT ĐẦU</button>
 
 <div id="quiz" style="display:none">
 
 <div class="timer" id="time">30:00</div>
+
+<div class="score" id="score">Điểm: 0</div>
 
 <h3 id="question"></h3>
 
@@ -35,16 +116,13 @@ body{font-family:Arial;background:#eef4ff;margin:0;text-align:center}
 
 <div id="correctText"></div>
 
+<div class="result" id="result"></div>
+
 </div>
 
 </div>
 
 <script>
-
-document.onkeydown=function(e){
-if(e.ctrlKey && e.key=="c") return false
-if(e.key=="F12") return false
-}
 
 let questions=[
 
@@ -57,97 +135,124 @@ let questions=[
 ["Máy tính giúp tìm thông tin bằng công cụ nào?",["Google","Internet","Website","Tất cả"],3],
 ["Máy tính giúp chia sẻ thông tin qua công cụ nào?",["Zalo","Messenger Kids","Email","Tất cả"],3],
 ["Máy tính giúp giải trí bằng cách nào?",["Chơi trò chơi","Nghe nhạc","Đọc truyện","Tất cả"],3],
-["Máy tính có thể dùng để đọc gì?",["Sách","Truyện","Báo","Tất cả"],3],
-
-["Máy tính giúp xem gì?",["Phim","Video","Tin tức","Tất cả"],3],
-["Máy tính giúp giao lưu với ai?",["Bạn bè","Người thân","Bạn học","Tất cả"],3],
-["Máy tính là công cụ giúp làm gì?",["Học tập","Làm việc","Giải trí","Tất cả"],3],
-["Máy tính có thể giúp học môn nào?",["Tiếng Anh","Toán","Khoa học","Tất cả"],3],
-["Máy tính giúp luyện kỹ năng gì?",["Chuột","Bàn phím","Phần mềm học","Tất cả"],3],
-
-["Sản phẩm số là gì?",["Sản phẩm tạo bằng máy tính","Sản phẩm giấy","Sản phẩm gỗ","Sản phẩm nhựa"],0],
-["Máy tính giúp tìm hiểu điều gì?",["Khoa học","Thiên văn","Thể thao","Tất cả"],3],
-["Máy tính giúp hợp tác với ai?",["Bạn bè","Nhóm học","Thầy cô","Tất cả"],3],
-["Chương trình kể chuyện được tạo bằng phần mềm nào?",["Scratch","Word","Paint","Excel"],0],
-["Máy tính giúp học sinh làm gì tốt hơn?",["Học tập","Trao đổi thông tin","Giải trí","Tất cả"],3],
-
-["Máy tính có thể giúp học sinh làm việc nhóm không?",["Có","Không","Chỉ đôi khi","Không biết"],0],
-["Máy tính giúp tìm thông tin nhanh hơn bằng gì?",["Internet","Sách","Báo","TV"],0],
-["Máy tính có thể tạo ra phim hoạt hình không?",["Có","Không","Không biết","Chỉ đôi khi"],0],
-["Máy tính có thể giúp học sinh học tiếng Anh không?",["Có","Không","Không biết","Hiếm khi"],0],
-["Máy tính giúp tạo bài trình chiếu để làm gì?",["Trình bày bài học","Nghe nhạc","Chơi game","Xem phim"],0],
-
-["Máy tính giúp trao đổi thông tin bằng cách nào?",["Internet","Thư điện tử","Ứng dụng nhắn tin","Tất cả"],3],
-["Máy tính giúp học sinh khám phá gì?",["Hệ mặt trời","Thiên nhiên","Khoa học","Tất cả"],3],
-["Máy tính có thể dùng để cập nhật tin tức không?",["Có","Không","Hiếm khi","Không biết"],0],
-["Máy tính giúp học sinh đọc báo không?",["Có","Không","Hiếm khi","Không biết"],0],
-["Máy tính có thể giúp xem video học tập không?",["Có","Không","Hiếm khi","Không biết"],0],
-
-["Máy tính giúp học sinh làm bài tập không?",["Có","Không","Không biết","Hiếm khi"],0],
-["Máy tính giúp học sinh luyện gõ bàn phím không?",["Có","Không","Hiếm khi","Không biết"],0],
-["Máy tính có thể giúp học sinh luyện chuột không?",["Có","Không","Không biết","Hiếm khi"],0],
-["Máy tính giúp tạo hình ảnh số không?",["Có","Không","Hiếm khi","Không biết"],0],
-["Máy tính có thể tạo bản nhạc số không?",["Có","Không","Không biết","Hiếm khi"],0],
-
-["Máy tính giúp tạo phim hoạt hình không?",["Có","Không","Hiếm khi","Không biết"],0],
-["Máy tính giúp học sinh giao lưu bạn bè không?",["Có","Không","Không biết","Hiếm khi"],0],
-["Máy tính có thể dùng để chơi trò chơi không?",["Có","Không","Hiếm khi","Không biết"],0],
-["Máy tính giúp nghe nhạc không?",["Có","Không","Không biết","Hiếm khi"],0],
-["Máy tính giúp đọc sách điện tử không?",["Có","Không","Không biết","Hiếm khi"],0],
-
-["Máy tính có thể dùng để xem phim không?",["Có","Không","Không biết","Hiếm khi"],0],
-["Máy tính giúp cập nhật tin tức không?",["Có","Không","Không biết","Hiếm khi"],0],
-["Máy tính có thể giúp học sinh học online không?",["Có","Không","Hiếm khi","Không biết"],0],
-["Máy tính giúp tìm kiếm thông tin nhanh không?",["Có","Không","Không biết","Hiếm khi"],0],
-["Máy tính giúp học sinh làm nhiều việc không?",["Có","Không","Hiếm khi","Không biết"],0],
-
-["Máy tính có phải công cụ đa năng không?",["Có","Không","Không biết","Hiếm khi"],0],
-["Máy tính giúp con người làm nhiều việc không?",["Có","Không","Không biết","Hiếm khi"],0],
-["Có nên học sử dụng máy tính thành thạo không?",["Có","Không","Không biết","Hiếm khi"],0]
+["Máy tính có thể dùng để đọc gì?",["Sách","Truyện","Báo","Tất cả"],3]
 
 ]
+
+while(questions.length<50){
+questions.push(...questions)
+}
+
+questions=questions.slice(0,50)
 
 questions.sort(()=>Math.random()-0.5)
 
 let current=0
+let score=0
+let answered=false
+
+let totalTime=30*60
+
+setInterval(()=>{
+
+if(totalTime<=0){
+finish()
+return
+}
+
+totalTime--
+
+let m=Math.floor(totalTime/60)
+let s=totalTime%60
+
+time.innerText=
+String(m).padStart(2,"0")+":"+
+String(s).padStart(2,"0")
+
+},1000)
 
 function start(){
+
 quiz.style.display="block"
+
+name.style.display="none"
+
+event.target.style.display="none"
+
 load()
+
 }
 
 function load(){
 
-question.innerText="Câu "+(current+1)+": "+questions[current][0]
+answered=false
 
-let ans=questions[current][1]
+let q=questions[current]
+
+question.innerText="Câu "+(current+1)+": "+q[0]
+
+let ans=q[1]
 .map((a,i)=>({t:a,i}))
 .sort(()=>Math.random()-0.5)
 
 answers.innerHTML=""
 
 ans.forEach((a,k)=>{
-answers.innerHTML+=`<div class="answer a${k}" onclick="choose(${a.i})">${a.t}</div>`
+
+answers.innerHTML+=
+`<div class="answer a${k}" onclick="choose(${a.i})">${a.t}</div>`
+
 })
 
 }
 
 function choose(i){
 
-let correct=questions[current][2]
-let correctAns=questions[current][1][correct]
+if(answered) return
+
+answered=true
+
+let q=questions[current]
+
+let correct=q[2]
 
 document.querySelectorAll(".answer").forEach(el=>{
-if(el.innerText===correctAns) el.classList.add("correct")
-else el.classList.add("wrong")
+
+if(el.innerText===q[1][correct])
+el.classList.add("correct")
+
+else
+el.classList.add("wrong")
+
 })
 
-correctText.innerText="Đáp án đúng: "+correctAns
+if(i===correct){
+score++
+scoreText()
+}
 
 setTimeout(()=>{
+
 current++
-if(current<50) load()
+
+if(current>=50) finish()
+
+else load()
+
 },1200)
+
+}
+
+function scoreText(){
+document.getElementById("score").innerText="Điểm: "+score
+}
+
+function finish(){
+
+quiz.innerHTML=
+
+"<h2>Hoàn thành!</h2>"+
+"<div class='result'>Điểm của bạn: "+score+"/50</div>"
 
 }
 
