@@ -2,33 +2,149 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Quiz Classroom</title>
+<title>Quiz Classroom PRO</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-body{font-family:Arial;background:#eef4ff;margin:0;text-align:center}
-.card{max-width:900px;margin:auto;margin-top:30px;background:white;padding:30px;border-radius:20px;box-shadow:0 10px 25px rgba(0,0,0,.15)}
-.answers{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:20px}
-.answer{padding:18px;border-radius:12px;font-size:18px;cursor:pointer;transition:.3s}
-.a0{background:#ff7675}.a1{background:#74b9ff}.a2{background:#ffeaa7}.a3{background:#55efc4}
-.correct{background:#2ecc71!important;transform:scale(1.15)}
-.wrong{opacity:.3}
-.timer{font-size:22px;color:#e74c3c}
-</style>
 
+body{
+font-family:Arial;
+background:#eef4ff;
+margin:0;
+text-align:center
+}
+
+.card{
+max-width:900px;
+margin:auto;
+margin-top:20px;
+background:white;
+padding:25px;
+border-radius:20px;
+box-shadow:0 10px 25px rgba(0,0,0,.15)
+}
+
+input{
+padding:10px;
+font-size:16px;
+border-radius:8px;
+border:1px solid #ccc;
+width:220px
+}
+
+.answers{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:15px;
+margin-top:20px
+}
+
+.answer{
+padding:18px;
+border-radius:12px;
+font-size:18px;
+cursor:pointer;
+transition:.25s;
+font-weight:bold
+}
+
+.answer:hover{
+transform:scale(1.05)
+}
+
+.a0{background:#ff7675}
+.a1{background:#74b9ff}
+.a2{background:#ffeaa7}
+.a3{background:#55efc4}
+
+.correct{
+background:#2ecc71!important;
+transform:scale(1.15)
+}
+
+.wrong{
+opacity:.3
+}
+
+.timer{
+font-size:24px;
+color:#e74c3c;
+font-weight:bold
+}
+
+#progressBar{
+width:100%;
+height:12px;
+background:#ddd;
+border-radius:10px;
+margin-top:15px;
+overflow:hidden
+}
+
+#progress{
+height:100%;
+width:0%;
+background:#2ecc71
+}
+
+button{
+padding:12px 25px;
+font-size:16px;
+border:none;
+border-radius:10px;
+background:#0984e3;
+color:white;
+cursor:pointer
+}
+
+button:hover{
+background:#0652dd
+}
+
+canvas{
+max-width:300px;
+margin-top:20px
+}
+
+/* mobile */
+
+@media(max-width:600px){
+
+.answers{
+grid-template-columns:1fr
+}
+
+.answer{
+font-size:16px
+}
+
+}
+
+</style>
 </head>
 
-<body oncontextmenu="return false">
+<body>
 
 <div class="card">
 
-<h2>Tin học 5 – Bài 4 - TỔ CHỨC, LƯU TRỮ VÀ TÌM TỆP, THƯ MỤC TRONG MÁY TÍNH</h2>
+<h2>Quiz Tin học 5</h2>
 
-<input id="name" placeholder="Họ tên học sinh"><br><br>
+<input id="name" placeholder="Họ tên học sinh">
+<br><br>
+
+<input id="class" placeholder="Lớp">
+<br><br>
+
 <button onclick="start()">BẮT ĐẦU</button>
 
 <div id="quiz" style="display:none">
 
-<div class="timer">30:00</div>
+<div class="timer" id="time">30:00</div>
+
+<div id="progressBar">
+<div id="progress"></div>
+</div>
 
 <h3 id="question"></h3>
 
@@ -38,84 +154,82 @@ body{font-family:Arial;background:#eef4ff;margin:0;text-align:center}
 
 </div>
 
+<div id="result"></div>
+
+<canvas id="chart"></canvas>
+
 </div>
+
+<audio id="correctSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_5b0f4d2c03.mp3"></audio>
+<audio id="wrongSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_0d30a3c0d2.mp3"></audio>
 
 <script>
 
-document.onkeydown=function(e){
-if(e.ctrlKey && e.key=="c") return false
-if(e.key=="F12") return false
-}
+let studentName=""
+let studentClass=""
 
 let questions=[
 
-["Cây thư mục trong máy tính dùng để làm gì?",["Sắp xếp và quản lí tệp","Chơi game","Nghe nhạc","Tăng dung lượng ổ đĩa"],0],
-["Thư mục là gì?",["Nơi chứa tệp hoặc thư mục khác","Một loại phần mềm","Một trò chơi","Một ổ đĩa"],0],
-["Tệp tin là gì?",["Đơn vị lưu trữ thông tin","Một loại thư mục","Một phần mềm hệ điều hành","Một ổ cứng"],0],
-["Cây thư mục thường có dạng gì?",["Sơ đồ hình cây","Hình tròn","Hình vuông","Hình tam giác"],0],
-["Đặt tên thư mục nên như thế nào?",["Ngắn gọn dễ nhớ","Thật dài","Không cần ý nghĩa","Chỉ dùng số"],0],
-["Trước khi tạo cây thư mục nên làm gì?",["Phân loại tài liệu","Xóa hết tệp","Tắt máy","Đổi ổ đĩa"],0],
-["Trong cùng một thư mục có thể đặt tên thư mục con trùng nhau không?",["Không","Có","Tùy thích","Luôn luôn"],0],
-["Ổ đĩa thường được kí hiệu bằng gì?",["Chữ cái","Số","Biểu tượng","Màu sắc"],0],
-["Ví dụ ổ đĩa trong máy tính là gì?",["C:, D:, E:","A1,B1","Ổ vuông","Ổ tròn"],0],
-["Muốn tạo thư mục mới ta dùng lệnh gì?",["New Folder","Delete","Open","Save"],0],
+["Cây thư mục dùng để làm gì?",["Sắp xếp tệp","Chơi game","Nghe nhạc","Tăng dung lượng"],0],
+["Thư mục là gì?",["Nơi chứa tệp","Phần mềm","Game","Ổ đĩa"],0],
+["File Explorer dùng để làm gì?",["Quản lí tệp","Nghe nhạc","Chơi game","Vẽ"],0],
+["Tệp tin là gì?",["Đơn vị lưu trữ thông tin","Ổ cứng","CPU","Màn hình"],0],
+["Cây thư mục có dạng gì?",["Hình cây","Hình tròn","Hình vuông","Hình tam giác"],0]
 
-["Để tạo thư mục cần mở gì trước?",["Thư mục chứa","Trình duyệt web","Game","Video"],0],
-["Sau khi tạo thư mục cần làm gì tiếp?",["Đặt tên","Xóa","Tắt máy","Chạy chương trình"],0],
-["Nhấn phím nào để hoàn thành đặt tên thư mục?",["Enter","Shift","Ctrl","Alt"],0],
-["Công cụ quản lí tệp trong Windows là gì?",["File Explorer","Chrome","Paint","Word"],0],
-["Ô tìm kiếm trong File Explorer dùng để làm gì?",["Tìm tệp hoặc thư mục","Chơi game","Mở nhạc","Đổi hình nền"],0],
-["Để tìm tệp ta cần làm gì?",["Nhập từ khóa","Đổi ổ cứng","Tắt máy","Xóa tệp"],0],
-["Khi tìm kiếm nên chọn gì trước?",["Phạm vi tìm kiếm","Đáp án","Hình ảnh","Âm thanh"],0],
-["Phạm vi tìm kiếm có thể là gì?",["Ổ đĩa hoặc This PC","Chỉ màn hình","Chỉ bàn phím","Chỉ chuột"],0],
-["This PC giúp tìm kiếm ở đâu?",["Toàn bộ máy tính","Chỉ ổ C","Chỉ Desktop","Chỉ USB"],0],
-["Sau khi tìm thấy tệp có thể làm gì?",["Mở vị trí tệp","Xóa máy","Tắt mạng","Khởi động lại"],0],
-
-["Lệnh Open file location dùng để làm gì?",["Mở vị trí chứa tệp","Xóa tệp","Đổi tên tệp","Chạy game"],0],
-["Đường dẫn tệp là gì?",["Vị trí của tệp trong máy tính","Tên trò chơi","Tên hệ điều hành","Tên người dùng"],0],
-["Ví dụ đường dẫn hợp lệ là gì?",["D:\\Giải trí\\Nhạc thiếu nhi\\Quốc ca.mp3","D:Quocca","D/Quocca","Quocca"],0],
-["Trong đường dẫn dấu \\ dùng để làm gì?",["Phân cách thư mục","Trang trí","Âm thanh","Màu sắc"],0],
-["Thư mục gốc của đường dẫn thường là gì?",["Ổ đĩa","Tệp","Ảnh","Video"],0],
-["Tệp Quốc ca.mp3 thuộc loại gì?",["Âm thanh","Văn bản","Hình ảnh","Video"],0],
-["Đuôi .mp3 cho biết điều gì?",["Tệp âm thanh","Tệp ảnh","Tệp video","Tệp văn bản"],0],
-["Ví dụ thư mục giải trí có thể chứa gì?",["Nhạc và phim","Bài tập","Tài liệu học","Bài kiểm tra"],0],
-["Ví dụ thư mục học tập có thể chứa gì?",["Toán, Tiếng Việt, Tin học","Phim","Nhạc","Game"],0],
-["Nhạc thiếu nhi thường thuộc thư mục nào?",["Giải trí","Toán","Tin học","Tiếng Việt"],0],
-
-["Phim hoạt hình thuộc nhóm nào?",["Giải trí","Học tập","Bài tập","Tài liệu"],0],
-["Tin học thuộc thư mục nào?",["Học tập","Giải trí","Nhạc","Phim"],0],
-["Tiếng Việt là gì trong cây thư mục?",["Thư mục con","Ổ đĩa","Phần mềm","Trò chơi"],0],
-["Toán thường được đặt trong đâu?",["Thư mục học tập","Thư mục nhạc","Thư mục phim","Thư mục game"],0],
-["Tại sao cần tổ chức thư mục hợp lí?",["Dễ tìm tài liệu","Máy chạy nhanh hơn","Màn hình đẹp hơn","Âm thanh to hơn"],0],
-["Cây thư mục giống với gì ngoài thực tế?",["Cách phân loại tài liệu","Bản đồ","Trò chơi","Phim"],0],
-["Khi tìm tệp, từ khóa thường là gì?",["Tên tệp","Tên máy","Tên bàn phím","Tên chuột"],0],
-["Kết quả tìm kiếm thường hiển thị ở đâu?",["Danh sách kết quả","Màn hình nền","Thanh taskbar","Thanh địa chỉ"],0],
-["Trong kết quả tìm kiếm, từ khóa thường được gì?",["Tô màu","Ẩn đi","Xóa","Đổi màu nền"],0],
-["Nếu chọn ổ D khi tìm kiếm thì phạm vi là gì?",["Ổ D","Toàn bộ máy","Internet","USB"],0],
-
-["Nếu chọn This PC khi tìm kiếm thì sao?",["Tìm toàn máy","Chỉ ổ D","Chỉ ổ C","Chỉ Desktop"],0],
-["Thư mục có thể chứa gì?",["Tệp và thư mục con","Chỉ ảnh","Chỉ video","Chỉ âm thanh"],0],
-["Một máy tính có thể có bao nhiêu thư mục?",["Rất nhiều","Chỉ một","Hai","Ba"],0],
-["Tệp có thể được làm gì?",["Sao chép","Chỉ xem","Chỉ xóa","Chỉ đổi màu"],0],
-["Sao chép tệp dùng để làm gì?",["Tạo bản giống","Xóa tệp","Tắt máy","Đổi ổ đĩa"],0],
-["Di chuyển tệp là gì?",["Chuyển tệp sang nơi khác","Xóa tệp","Đổi tên tệp","Chạy tệp"],0],
-["Khi quản lí tệp nên làm gì?",["Sắp xếp hợp lí","Để lộn xộn","Xóa hết","Không lưu"],0],
-["Thư mục giúp gì cho người dùng?",["Quản lí thông tin","Chơi game","Xem phim","Nghe nhạc"],0],
-["Khi lưu bài học nên đặt ở đâu?",["Thư mục học tập","Thư mục phim","Thư mục nhạc","Thư mục game"],0],
-["Khi lưu phim hoạt hình nên đặt ở đâu?",["Thư mục giải trí","Thư mục toán","Thư mục tiếng việt","Thư mục tin học"],0]
-
-];
+]
 
 questions.sort(()=>Math.random()-0.5)
 
 let current=0
+let correctCount=0
+let wrongCount=0
+let totalTime=1800
+let timer
 
 function start(){
+
+studentName=document.getElementById("name").value.trim()
+studentClass=document.getElementById("class").value.trim()
+
+if(studentName==""||studentClass==""){
+alert("Nhập tên và lớp")
+return
+}
+
 quiz.style.display="block"
+
+startTimer()
+
 load()
+
+}
+
+function startTimer(){
+
+timer=setInterval(()=>{
+
+totalTime--
+
+let m=Math.floor(totalTime/60)
+let s=totalTime%60
+
+time.innerText=
+String(m).padStart(2,'0')+":"+
+String(s).padStart(2,'0')
+
+if(totalTime<=0){
+finish()
+}
+
+},1000)
+
 }
 
 function load(){
+
+correctText.innerText=""
+
+progress.style.width=(current/questions.length*100)+"%"
 
 question.innerText="Câu "+(current+1)+": "+questions[current][0]
 
@@ -126,7 +240,10 @@ let ans=questions[current][1]
 answers.innerHTML=""
 
 ans.forEach((a,k)=>{
-answers.innerHTML+=`<div class="answer a${k}" onclick="choose(${a.i})">${a.t}</div>`
+
+answers.innerHTML+=
+`<div class="answer a${k}" onclick="choose(${a.i})">${a.t}</div>`
+
 })
 
 }
@@ -137,16 +254,91 @@ let correct=questions[current][2]
 let correctAns=questions[current][1][correct]
 
 document.querySelectorAll(".answer").forEach(el=>{
-if(el.innerText===correctAns) el.classList.add("correct")
-else el.classList.add("wrong")
+
+if(el.innerText===correctAns)
+el.classList.add("correct")
+else
+el.classList.add("wrong")
+
 })
+
+if(i===correct){
+correctCount++
+correctSound.play()
+}else{
+wrongCount++
+wrongSound.play()
+}
 
 correctText.innerText="Đáp án đúng: "+correctAns
 
 setTimeout(()=>{
+
 current++
-if(current<50) load()
+
+if(current<questions.length){
+load()
+}else{
+finish()
+}
+
 },1200)
+
+}
+
+function finish(){
+
+clearInterval(timer)
+
+quiz.style.display="none"
+
+let total=questions.length
+let percent=Math.round(correctCount/total*100)
+
+let grade=""
+
+if(percent>=80) grade="Giỏi"
+else if(percent>=65) grade="Khá"
+else if(percent>=50) grade="Trung bình"
+else grade="Cần cố gắng"
+
+result.innerHTML=
+
+"<h2>Hoàn thành bài</h2>"+
+"<p>Học sinh: "+studentName+"</p>"+
+"<p>Lớp: "+studentClass+"</p>"+
+"<h3>Đúng: "+correctCount+"</h3>"+
+"<h3>Sai: "+wrongCount+"</h3>"+
+"<h3>Tỷ lệ: "+percent+"%</h3>"+
+"<h3>Xếp loại: "+grade+"</h3>"+
+"<br><button onclick='location.reload()'>Làm lại bài</button>"
+
+drawChart()
+
+}
+
+function drawChart(){
+
+let c=document.getElementById("chart")
+let ctx=c.getContext("2d")
+
+let total=correctCount+wrongCount
+
+let correctAngle=(correctCount/total)*2*Math.PI
+
+ctx.clearRect(0,0,300,300)
+
+ctx.beginPath()
+ctx.moveTo(150,150)
+ctx.arc(150,150,120,0,correctAngle)
+ctx.fillStyle="#2ecc71"
+ctx.fill()
+
+ctx.beginPath()
+ctx.moveTo(150,150)
+ctx.arc(150,150,120,correctAngle,2*Math.PI)
+ctx.fillStyle="#e74c3c"
+ctx.fill()
 
 }
 
