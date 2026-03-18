@@ -5,30 +5,112 @@
 <title>QUIZ CLASSROOM</title>
 
 <style>
-body{font-family:Arial;background:#eef4ff;margin:0;text-align:center}
-.card{max-width:900px;margin:auto;margin-top:30px;background:white;padding:30px;border-radius:20px;box-shadow:0 10px 25px rgba(0,0,0,.15)}
-.answers{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:20px}
-.answer{padding:18px;border-radius:12px;font-size:18px;cursor:pointer;transition:.3s}
-.a0{background:#ff7675}.a1{background:#74b9ff}.a2{background:#ffeaa7}.a3{background:#55efc4}
-.correct{background:#2ecc71!important;transform:scale(1.15)}
-.wrong{opacity:.3}
-.timer{font-size:22px;color:#e74c3c}
-</style>
 
+body{
+font-family:Arial;
+background:linear-gradient(135deg,#6c5ce7,#74b9ff);
+margin:0;
+text-align:center
+}
+
+.card{
+max-width:900px;
+margin:auto;
+margin-top:30px;
+background:white;
+padding:30px;
+border-radius:20px;
+box-shadow:0 10px 30px rgba(0,0,0,.25)
+}
+
+.answers{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:15px;
+margin-top:20px
+}
+
+.answer{
+padding:18px;
+border-radius:12px;
+font-size:18px;
+cursor:pointer;
+font-weight:bold;
+transition:.3s
+}
+
+.answer:hover{transform:scale(1.05)}
+
+.a0{background:#ff7675}
+.a1{background:#74b9ff}
+.a2{background:#ffeaa7}
+.a3{background:#55efc4}
+
+.correct{
+background:#2ecc71!important;
+transform:scale(1.1)
+}
+
+.wrong{
+opacity:.3
+}
+
+.timer{
+font-size:22px;
+color:#e74c3c;
+font-weight:bold
+}
+
+#progressBar{
+width:100%;
+height:12px;
+background:#ddd;
+border-radius:20px;
+margin-top:15px;
+overflow:hidden
+}
+
+#progress{
+height:100%;
+width:0%;
+background:#2ecc71
+}
+
+button{
+padding:12px 25px;
+font-size:16px;
+border:none;
+border-radius:10px;
+background:#0984e3;
+color:white;
+cursor:pointer
+}
+
+button:hover{
+background:#0652dd
+}
+
+</style>
 </head>
 
-<body oncontextmenu="return false">
+<body>
 
 <div class="card">
 
 <h2>Tin học 5 - Bài 3-Thông tin trong giải quyết vấn đề</h2>
 
-<input id="name" placeholder="Họ tên học sinh"><br><br>
+<input id="name" placeholder="Họ tên học sinh">
+<br><br>
+
 <button onclick="start()">BẮT ĐẦU</button>
 
 <div id="quiz" style="display:none">
 
-<div class="timer">30:00</div>
+<div class="timer" id="time">30:00</div>
+
+<div id="progressBar">
+<div id="progress"></div>
+</div>
 
 <h3 id="question"></h3>
 
@@ -38,14 +120,15 @@ body{font-family:Arial;background:#eef4ff;margin:0;text-align:center}
 
 </div>
 
+<div id="result"></div>
+
 </div>
 
 <script>
 
-document.onkeydown=function(e){
-if(e.ctrlKey && e.key=="c") return false
-if(e.key=="F12") return false
-}
+let studentName=""
+
+/* câu hỏi */
 
 let questions=[
 
@@ -101,45 +184,150 @@ let questions=[
 
 questions.sort(()=>Math.random()-0.5)
 
+/* biến */
+
 let current=0
+let correctCount=0
+let wrongCount=0
+let lock=false
+
+/* timer */
+
+let totalTime=1800
+let timer
+
+function startTimer(){
+
+timer=setInterval(()=>{
+
+totalTime--
+
+let m=Math.floor(totalTime/60)
+let s=totalTime%60
+
+time.innerText=
+String(m).padStart(2,'0')+":"+
+String(s).padStart(2,'0')
+
+if(totalTime<=0){
+
+finish()
+
+}
+
+},1000)
+
+}
+
+/* start */
 
 function start(){
-quiz.style.display="block"
-load()
+
+studentName=document.getElementById("name").value.trim()
+
+if(studentName==""){
+alert("Nhập tên học sinh")
+return
 }
+
+quiz.style.display="block"
+
+startTimer()
+
+load()
+
+}
+
+/* load câu hỏi */
 
 function load(){
 
+lock=false
+
+correctText.innerText=""
+
+progress.style.width=(current/questions.length*100)+"%"
+
 question.innerText="Câu "+(current+1)+": "+questions[current][0]
 
-let ans=questions[current][1]
+let ans=
+questions[current][1]
 .map((a,i)=>({t:a,i}))
 .sort(()=>Math.random()-0.5)
 
 answers.innerHTML=""
 
 ans.forEach((a,k)=>{
-answers.innerHTML+=`<div class="answer a${k}" onclick="choose(${a.i})">${a.t}</div>`
+
+answers.innerHTML+=
+`<div class="answer a${k}" onclick="choose(${a.i})">${a.t}</div>`
+
 })
 
 }
 
+/* chọn đáp án */
+
 function choose(i){
 
+if(lock) return
+
+lock=true
+
 let correct=questions[current][2]
+
 let correctAns=questions[current][1][correct]
 
 document.querySelectorAll(".answer").forEach(el=>{
-if(el.innerText===correctAns) el.classList.add("correct")
-else el.classList.add("wrong")
+
+if(el.innerText===correctAns)
+el.classList.add("correct")
+else
+el.classList.add("wrong")
+
 })
+
+if(i===correct){
+correctCount++
+}else{
+wrongCount++
+}
 
 correctText.innerText="Đáp án đúng: "+correctAns
 
 setTimeout(()=>{
+
 current++
-if(current<50) load()
+
+if(current<questions.length){
+load()
+}else{
+finish()
+}
+
 },1200)
+
+}
+
+/* kết thúc */
+
+function finish(){
+
+clearInterval(timer)
+
+quiz.style.display="none"
+
+let total=questions.length
+
+let percent=Math.round(correctCount/total*100)
+
+result.innerHTML=
+"<h2>Hoàn thành bài</h2>"+
+"<p>Học sinh: "+studentName+"</p>"+
+"<h3>Tổng câu: "+total+"</h3>"+
+"<h3>Đúng: "+correctCount+"</h3>"+
+"<h3>Sai: "+wrongCount+"</h3>"+
+"<h3>Tỷ lệ đúng: "+percent+"%</h3>"
 
 }
 
