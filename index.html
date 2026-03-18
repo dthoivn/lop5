@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tin học lớp 3</title>
+<title>GV: Trần Đức Thới</title>
 
 <style>
 
@@ -11,6 +11,9 @@ body{
 font-family:Arial, sans-serif;
 margin:0;
 background:#f2f2f2;
+height: 100vh;
+position: relative;
+z-index: 1;
 }
 
 /* HEADER */
@@ -118,6 +121,25 @@ text-align:center;
 margin-top:40px;
 color:#666;
 }
+/* Background image */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url("ttnh.jpg") no-repeat center center/cover;
+    opacity: 0.9; /* 70% độ mờ */
+    z-index: -1;
+}
+
+/* Nội dung phía trên */
+.content {
+    color: white;
+    text-align: center;
+    padding-top: 40vh;
+}    
 
 </style>
 
@@ -151,12 +173,12 @@ cards[i].style.display=text.includes(input) ? "block":"none";
 
 <img src="https://cdn-icons-png.flaticon.com/512/29/29302.png">
 
-<h1>Tin học lớp 3</h1>
+<h1>tinyurl.com/lop5ttnh</h1>
 
 </div>
 
 <div class="subtitle">
-Website học tập & thực hành
+Tin học lớp 5 - Website học tập & thực hành
 </div>
 
 </div>
@@ -216,7 +238,7 @@ Website học tập & thực hành
 </div>
 
 <div class="footer">
-© Website học Tin học lớp 3 - GV: Trần Đức Thới
+© Website học Tin học lớp 5 - GV: Trần Đức Thới
 </div>
 
 </div>
