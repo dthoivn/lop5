@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>🎮 Game kiểm tra Tin học – Soạn thảo văn bản tiếng Việt 2</title>
+<style>
+body{margin:0;font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#74b9ff,#a29bfe)}
+#app{max-width:1000px;margin:20px auto;background:#fff;border-radius:18px;padding:25px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+h1{text-align:center;color:#2d3436}
+#top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+#progress{flex:1;height:12px;background:#dfe6e9;border-radius:10px;overflow:hidden;margin:0 15px}
+#bar{height:100%;width:0%;background:linear-gradient(90deg,#ffeaa7,#00b894);transition:.4s}
+#timer{font-weight:bold;color:#d63031}
+.question{font-size:20px;margin:20px 0}
+.answers button{display:block;width:100%;margin:10px 0;padding:12px;border:none;border-radius:14px;font-size:16px;cursor:pointer;background:#f1f2f6;transition:.25s}
+.answers button:hover{background:#dff9fb;transform:scale(1.02)}
+.correct{background:#c8e6c9 !important}
+.wrong{background:#ffcdd2 !important}
+#next{display:none;margin:20px auto;padding:10px 40px;font-size:16px;border:none;border-radius:20px;background:#0984e3;color:#fff;cursor:pointer}
+#result{display:none;text-align:center;font-size:22px}
+#report{display:none;margin-top:20px}
+#report table{width:100%;border-collapse:collapse}
+#report th,#report td{border:1px solid #ccc;padding:6px;text-align:center}
+</style>
+</head>
+<body>
+<div id="app">
+<h1>🎮 GAME KIỂM TRA – SOẠN THẢO VĂN BẢN TIẾNG VIỆT 2</h1>
+<div id="top">
+  <div id="timer">⏱️ 15:00</div>
+  <div id="progress"><div id="bar"></div></div>
+</div>
+<div id="quiz">
+  <div class="question" id="question"></div>
+  <div class="answers" id="answers"></div>
+</div>
+<button id="next">Câu tiếp theo ▶</button>
+<div id="result"></div>
+<div id="report"></div>
+</div>
+<script>
+// ====== NGÂN HÀNG 50 CÂU (KHÔNG TRÙNG – KHÔNG CÂU MẪU) ======
+const questions = [
+{q:"Trước khi định dạng kí tự, em cần làm gì?",a:["Đổi màu chữ","Chọn đoạn văn bản","Đổi phông chữ","Đổi cỡ chữ"],c:1},
+{q:"Công cụ nào dùng để thay đổi cỡ chữ?",a:["Font Color","Font Size","Highlight","Font"],c:1},
+{q:"Công cụ nào dùng để thay đổi phông chữ?",a:["Font Size","Font Color","Font","Bold"],c:2},
+{q:"Công cụ nào dùng để thay đổi màu chữ?",a:["Highlight","Font Size","Font Color","Italic"],c:2},
+{q:"Nút Bold dùng để làm gì?",a:["In nghiêng","Đổi màu","In đậm","Gạch chân"],c:2},
+{q:"Nút Italic dùng để làm gì?",a:["In đậm","In nghiêng","Gạch chân","Đổi cỡ"],c:1},
+{q:"Nút Underline dùng để làm gì?",a:["In đậm","Tô màu","Gạch chân","In nghiêng"],c:2},
+{q:"Thẻ nào chứa các công cụ định dạng kí tự?",a:["Insert","View","Home","Design"],c:2},
+{q:"Ctrl + ] có tác dụng gì?",a:["Giảm cỡ chữ","Sao chép","Tăng cỡ chữ","Dán"],c:2},
+{q:"Ctrl + [ có tác dụng gì?",a:["In nghiêng","Tăng cỡ chữ","Giảm cỡ chữ","In đậm"],c:2},
+
+{q:"Highlight dùng để làm gì?",a:["Tô màu nền chữ","Đổi phông","Đổi cỡ chữ","Gạch chân"],c:0},
+{q:"Font Color có chức năng gì?",a:["Đổi màu chữ","Đổi cỡ chữ","Tô nền","Đổi phông"],c:0},
+{q:"Muốn đổi phông chữ, em nháy vào đâu?",a:["Italic","Font","Bold","Font Size"],c:1},
+{q:"Muốn đổi cỡ chữ, em nháy vào đâu?",a:["Underline","Font Size","Font Color","Highlight"],c:1},
+{q:"Định dạng kí tự giúp gì?",a:["Trang trí văn bản đẹp hơn","Lưu văn bản","Xóa văn bản","In văn bản"],c:0},
+
+{q:"Để định dạng nhanh, cần chọn gì trước?",a:["Trang giấy","Hình ảnh","Đoạn văn bản","File"],c:2},
+{q:"In nghiêng tương ứng nút nào?",a:["U","B","A","I"],c:3},
+{q:"In đậm tương ứng nút nào?",a:["I","B","U","A"],c:1},
+{q:"Gạch chân tương ứng nút nào?",a:["I","B","U","A"],c:2},
+{q:"Thanh công cụ chứa Font nằm ở đâu?",a:["File","Insert","View","Home"],c:3},
+
+{q:"Muốn đổi màu chữ, chọn công cụ nào?",a:["Bold","Italic","Font Color","Font Size"],c:2},
+{q:"Định dạng kí tự áp dụng cho?",a:["Bảng","Chữ","Trang","Hình ảnh"],c:1},
+{q:"Sau khi chọn chữ, bước tiếp theo là gì?",a:["Xóa","Định dạng","Lưu","In"],c:1},
+{q:"Cỡ chữ càng lớn thì?",a:["Chữ càng to","Mờ hơn","Không đổi","Chữ càng nhỏ"],c:0},
+{q:"Phông chữ là gì?",a:["Kích thước","Màu chữ","Kiểu chữ","Độ đậm"],c:2},
+
+{q:"Font Size nghĩa là gì?",a:["Phông chữ","Cỡ chữ","Kiểu chữ","Màu chữ"],c:1},
+{q:"Bold nghĩa là gì?",a:["Gạch chân","In nghiêng","Đổi màu","In đậm"],c:3},
+{q:"Italic nghĩa là gì?",a:["In đậm","In nghiêng","Đổi màu","Gạch chân"],c:1},
+{q:"Underline nghĩa là gì?",a:["Đổi màu","In nghiêng","Gạch chân","In đậm"],c:2},
+{q:"Highlight nghĩa là gì?",a:["Đổi màu chữ","Tô nền","In đậm","Gạch chân"],c:1},
+
+{q:"Định dạng kí tự giúp văn bản?",a:["Không đổi","Đẹp hơn","Khó đọc","Xấu hơn"],c:1},
+{q:"Chọn văn bản bằng cách nào?",a:["Nhấn Ctrl","Kéo chuột","Nhấn Enter","Nhấn Alt"],c:1},
+{q:"Phần mềm dùng trong bài là gì?",a:["Paint","Excel","Word","Scratch"],c:2},
+{q:"Định dạng kí tự có cần chọn văn bản không?",a:["Không","Có","Tùy","Không biết"],c:1},
+{q:"Font nằm trong nhóm nào?",a:["Insert","Font","Paragraph","View"],c:1},
+
+{q:"Đổi màu chữ làm văn bản?",a:["To hơn","Sinh động hơn","Nhỏ hơn","Mờ hơn"],c:1},
+{q:"Đổi cỡ chữ giúp?",a:["Ẩn chữ","Dễ đọc","Xóa chữ","Khó đọc"],c:1},
+{q:"Đổi phông chữ giúp?",a:["Xóa chữ","Đa dạng kiểu chữ","Ẩn chữ","In chữ"],c:1},
+{q:"Nhấn Ctrl + ] nhiều lần sẽ?",a:["Đổi màu","Tăng cỡ chữ","Xóa chữ","Giảm cỡ chữ"],c:1},
+{q:"Nhấn Ctrl + [ nhiều lần sẽ?",a:["Tăng cỡ chữ","Giảm cỡ chữ","Đổi màu","In đậm"],c:1},
+
+{q:"Muốn chữ nổi bật, nên dùng?",a:["Italic","Underline","Bold","Font Size"],c:2},
+{q:"Muốn chữ mềm mại, nên dùng?",a:["Highlight","Bold","Underline","Italic"],c:3},
+{q:"Muốn nhấn mạnh đoạn, nên dùng?",a:["Font","Font Size","Highlight","Italic"],c:2},
+{q:"Định dạng kí tự có thể áp dụng cho?",a:["Không áp dụng","Một phần văn bản","Toàn bộ văn bản","Cả hai"],c:3},
+{q:"Sau khi định dạng, văn bản sẽ?",a:["Mất chữ","Không đổi","Đẹp hơn","Xóa chữ"],c:2},
+
+{q:"Font Color nằm ở đâu?",a:["Insert","File","Home","View"],c:2},
+{q:"Bold nằm trong thẻ nào?",a:["Design","Insert","Home","View"],c:2},
+{q:"Font Size nằm trong nhóm nào?",a:["Paragraph","Insert","Font","View"],c:2},
+{q:"Highlight giúp gì?",a:["Xóa chữ","Đổi phông","Làm nổi bật chữ","Đổi cỡ"],c:2},
+{q:"Khi chưa chọn chữ, định dạng sẽ?",a:["Ẩn chữ","Áp dụng","Xóa chữ","Không áp dụng"],c:3}
+];
+// TRỘN CÂU HỎI
+questions.sort(()=>Math.random()-0.5);
+
+let index=0,score=0;
+let details=[];
+const qEl=document.getElementById('question');
+const aEl=document.getElementById('answers');
+const bar=document.getElementById('bar');
+const next=document.getElementById('next');
+const result=document.getElementById('result');
+const report=document.getElementById('report');
+
+// ====== ĐẾM NGƯỢC 15 PHÚT ======
+let total=15*60;
+const timerEl=document.getElementById('timer');
+const countdown=setInterval(()=>{
+  total--;
+  let m=Math.floor(total/60), s=total%60;
+  timerEl.textContent=`⏱️ ${m}:${s.toString().padStart(2,'0')}`;
+  if(total<=0){clearInterval(countdown);finish();}
+},1000);
+
+function shuffle(arr){return arr.map(v=>[Math.random(),v]).sort((a,b)=>a[0]-b[0]).map(v=>v[1]);}
+
+function load(){
+  next.style.display='none';
+  const q=questions[index];
+  qEl.textContent=`Câu ${index+1}: ${q.q}`;
+  aEl.innerHTML='';
+  const answers=shuffle(q.a.map((t,i)=>({t,i})));
+  answers.forEach(obj=>{
+    const b=document.createElement('button');
+    b.textContent=obj.t;
+    b.onclick=()=>choose(b,obj.i,q.c,q.q,obj.t);
+    aEl.appendChild(b);
+  });
+  bar.style.width=(index/questions.length*100)+'%';
+}
+
+function choose(btn,choice,correct,qtext,ans){
+  [...aEl.children].forEach(b=>b.disabled=true);
+  const ok=choice===correct;
+  btn.classList.add(ok?'correct':'wrong');
+  if(!ok){[...aEl.children].find(b=>b.textContent===questions[index].a[correct]).classList.add('correct');}
+  if(ok) score++;
+  details.push({q:qtext,choose:ans,correct:questions[index].a[correct],ok});
+  next.style.display='block';
+}
+
+next.onclick=()=>{index++;if(index<questions.length)load();else finish();};
+
+function finish(){
+  clearInterval(countdown);
+  document.getElementById('quiz').style.display='none';
+  next.style.display='none';
+  bar.style.width='100%';
+  result.style.display='block';
+  result.innerHTML=`🎉 Hoàn thành!<br>Điểm: <b>${score}/${questions.length}</b>`;
+  // BÁO CÁO GIÁO VIÊN
+  report.style.display='block';
+  let html='<h3>📊 BÁO CÁO CHI TIẾT</h3><table><tr><th>Câu</th><th>Đáp án HS</th><th>Đáp án đúng</th><th>Kết quả</th></tr>';
+  details.forEach((d,i)=>{html+=`<tr><td>${i+1}</td><td>${d.choose}</td><td>${d.correct}</td><td>${d.ok?'✔':'✘'}</td></tr>`});
+  html+='</table>';
+  report.innerHTML=html;
+}
+load();
+</script>
+</body>
+</html>
