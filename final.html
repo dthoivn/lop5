@@ -269,8 +269,10 @@ function tinhDiem() {
         if (q && q.value === dapAn['q'+i]) diem++;
     }
 
+    let ten = document.getElementById("hoten").value;
+
     document.getElementById("result").innerHTML =
-        "🎉 Bạn đạt " + diem + "/9 (" + (diem*10/9).toFixed(1) + " điểm)";
+    "🎉 " + ten + " đạt " + diem + "/9 (" + (diem*10/9).toFixed(1) + " điểm)";
 }
 </script>
 
