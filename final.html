@@ -1,131 +1,232 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <title>Đề kiểm tra Tin học lớp 5</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 40px;
-        }
-        h1, h2 {
-            text-align: center;
-        }
-        .info {
-            margin-bottom: 20px;
-        }
-        .question {
-            margin-bottom: 15px;
-        }
-    </style>
+<meta charset="UTF-8">
+<title>Đề kiểm tra Tin học lớp 5</title>
+
+<style>
+    body {
+        font-family: 'Segoe UI', sans-serif;
+        margin: 0;
+        background: linear-gradient(135deg, #74ebd5, #9face6);
+    }
+
+    .container {
+        max-width: 900px;
+        margin: 40px auto;
+        background: white;
+        padding: 30px;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        animation: fadeIn 1s ease;
+    }
+
+    h1, h2 {
+        text-align: center;
+        color: #333;
+    }
+
+    .question {
+        background: #f8f9ff;
+        padding: 15px;
+        border-radius: 12px;
+        margin-bottom: 15px;
+        transition: 0.3s;
+    }
+
+    .question:hover {
+        transform: scale(1.02);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    label {
+        display: block;
+        padding: 6px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    label:hover {
+        background: #e0e7ff;
+    }
+
+    input[type="radio"] {
+        margin-right: 8px;
+    }
+
+    button {
+        display: block;
+        margin: 20px auto;
+        padding: 12px 25px;
+        font-size: 16px;
+        border: none;
+        border-radius: 10px;
+        background: linear-gradient(45deg, #4facfe, #00f2fe);
+        color: white;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    button:hover {
+        transform: scale(1.1);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    #result {
+        text-align: center;
+        font-size: 20px;
+        font-weight: bold;
+        margin-top: 20px;
+        color: #2ecc71;
+        animation: pop 0.5s ease;
+    }
+
+    ul {
+        background: #f1f5ff;
+        padding: 15px;
+        border-radius: 10px;
+    }
+
+    @keyframes fadeIn {
+        from {opacity: 0; transform: translateY(20px);}
+        to {opacity: 1; transform: translateY(0);}
+    }
+
+    @keyframes pop {
+        from {transform: scale(0.5);}
+        to {transform: scale(1);}
+    }
+</style>
 </head>
+
 <body>
+
+<div class="container">
 
 <h1>KIỂM TRA CUỐI NĂM</h1>
 <h2>MÔN TIN HỌC – LỚP 5</h2>
 
-<div class="info">
-    <p>Họ và tên: .......................................................</p>
-    <p>Lớp: ...............................................................</p>
-    <p>Thời gian làm bài: 35 phút</p>
-</div>
+<p>Họ và tên: .......................................................</p>
+<p>Lớp: ...............................................................</p>
 
-<h2>I. PHẦN TRẮC NGHIỆM</h2>
-<p>Em hãy khoanh tròn chữ cái (A, B, C, D) trước câu trả lời đúng nhất.</p>
+<h2>PHẦN A: TRẮC NGHIỆM</h2>
+
+<form id="quizForm">
 
 <div class="question">
-    <p><b>Câu 1:</b> Cấu trúc tuần tự là gì?</p>
-    <p>A. Thực hiện theo thứ tự</p>
-    <p>B. Lặp lại nhiều lần</p>
-    <p>C. Chọn 1 trong 2</p>
-    <p>D. Không có thứ tự</p>
+<p><b>Câu 1:</b> Cấu trúc tuần tự là gì?</p>
+<label><input type="radio" name="q1" value="A"> A. Thực hiện theo thứ tự</label>
+<label><input type="radio" name="q1" value="B"> B. Lặp lại nhiều lần</label>
+<label><input type="radio" name="q1" value="C"> C. Chọn 1 trong 2</label>
+<label><input type="radio" name="q1" value="D"> D. Không có thứ tự</label>
 </div>
 
 <div class="question">
-    <p><b>Câu 2:</b> Đúng ghi Đ, sai ghi S</p>
-    <p>A. Lệnh Move là di chuyển ☐</p>
-    <p>B. Lệnh Wait là chờ ☐</p>
-    <p>C. Lệnh Repeat forever là lặp 10 lần ☐</p>
-    <p>D. Lệnh Join là nối 2 nội dung ☐</p>
+<p><b>Câu 2:</b> Lệnh nào đúng?</p>
+<label><input type="radio" name="q2" value="A"> A. Move là di chuyển</label>
+<label><input type="radio" name="q2" value="B"> B. Wait là chờ</label>
+<label><input type="radio" name="q2" value="C"> C. Repeat forever là lặp 10 lần</label>
+<label><input type="radio" name="q2" value="D"> D. Join là nối nội dung</label>
 </div>
 
 <div class="question">
-    <p><b>Câu 3:</b> Kịch bản chương trình gồm mấy phần?</p>
-    <p>A. 1</p>
-    <p>B. 2</p>
-    <p>C. 3</p>
+<p><b>Câu 3:</b> Kịch bản chương trình gồm mấy phần?</p>
+<label><input type="radio" name="q3" value="A"> A. 1</label>
+<label><input type="radio" name="q3" value="B"> B. 2</label>
+<label><input type="radio" name="q3" value="C"> C. 3</label>
+<label><input type="radio" name="q3" value="D"> D. 4</label>
 </div>
 
 <div class="question">
-    <p><b>Câu 4:</b> Nút cờ xanh dùng để làm gì?</p>
-    <p>A. Lưu</p>
-    <p>B. Chạy chương trình</p>
-    <p>C. Tắt</p>
-    <p>D. Xóa</p>
+<p><b>Câu 4:</b> Nút cờ xanh dùng để làm gì?</p>
+<label><input type="radio" name="q4" value="A"> A. Lưu</label>
+<label><input type="radio" name="q4" value="B"> B. Chạy chương trình</label>
+<label><input type="radio" name="q4" value="C"> C. Tắt</label>
+<label><input type="radio" name="q4" value="D"> D. Xóa</label>
 </div>
 
 <div class="question">
-    <p><b>Câu 5:</b> Cấu trúc “Nếu…thì…” là:</p>
-    <p>A. Tuần tự</p>
-    <p>B. Rẽ nhánh</p>
-    <p>C. Lặp</p>
-    <p>D. Tính toán</p>
+<p><b>Câu 5:</b> Cấu trúc “Nếu…thì…” là:</p>
+<label><input type="radio" name="q5" value="A"> A. Tuần tự</label>
+<label><input type="radio" name="q5" value="B"> B. Rẽ nhánh</label>
+<label><input type="radio" name="q5" value="C"> C. Lặp</label>
+<label><input type="radio" name="q5" value="D"> D. Tính toán</label>
 </div>
 
 <div class="question">
-    <p><b>Câu 6:</b> Chạy thử chương trình để làm gì?</p>
-    <p>A. Kiểm tra chương trình</p>
-    <p>B. Tìm lỗi</p>
-    <p>C. Hoàn thiện chương trình</p>
-    <p>D. Tất cả các ý trên</p>
+<p><b>Câu 6:</b> Chạy thử chương trình để làm gì?</p>
+<label><input type="radio" name="q6" value="A"> A. Kiểm tra</label>
+<label><input type="radio" name="q6" value="B"> B. Tìm lỗi</label>
+<label><input type="radio" name="q6" value="C"> C. Hoàn thiện</label>
+<label><input type="radio" name="q6" value="D"> D. Tất cả</label>
 </div>
 
 <div class="question">
-    <p><b>Câu 7:</b> Đổi tên thư mục bằng cách nào?</p>
-    <p>A. Chuột phải → Rename</p>
-    <p>B. Nhấn F1</p>
-    <p>C. Nhấn Delete</p>
-    <p>D. Nhấn Enter</p>
+<p><b>Câu 7:</b> Đổi tên thư mục?</p>
+<label><input type="radio" name="q7" value="A"> A. Chuột phải → Rename</label>
+<label><input type="radio" name="q7" value="B"> B. F1</label>
+<label><input type="radio" name="q7" value="C"> C. Delete</label>
+<label><input type="radio" name="q7" value="D"> D. Enter</label>
 </div>
 
 <div class="question">
-    <p><b>Câu 8:</b> Máy tính giúp em làm gì?</p>
-    <p>A. Học tập</p>
-    <p>B. Tìm thông tin</p>
-    <p>C. Giải trí</p>
-    <p>D. Tất cả các ý trên</p>
+<p><b>Câu 8:</b> Máy tính giúp gì?</p>
+<label><input type="radio" name="q8" value="A"> A. Học tập</label>
+<label><input type="radio" name="q8" value="B"> B. Tìm thông tin</label>
+<label><input type="radio" name="q8" value="C"> C. Giải trí</label>
+<label><input type="radio" name="q8" value="D"> D. Tất cả</label>
 </div>
 
 <div class="question">
-    <p><b>Câu 9:</b> Để định dạng chữ in đậm, em làm thế nào?</p>
-    <p>A. Chọn văn bản và nhấn nút B</p>
-    <p>B. Chọn văn bản và nhấn nút I</p>
-    <p>C. Chọn văn bản và nhấn nút U</p>
-    <p>D. Không làm được</p>
+<p><b>Câu 9:</b> In đậm văn bản?</p>
+<label><input type="radio" name="q9" value="A"> A. Nhấn B</label>
+<label><input type="radio" name="q9" value="B"> B. Nhấn I</label>
+<label><input type="radio" name="q9" value="C"> C. Nhấn U</label>
+<label><input type="radio" name="q9" value="D"> D. Không làm được</label>
 </div>
 
-<h2>II. PHẦN THỰC HÀNH</h2>
+<button type="button" onclick="tinhDiem()">Nộp bài</button>
 
-<div class="question">
-    <p><b>Câu 1:</b> Tạo thư mục với tên:</p>
-    <p><i>Tên em_Lớp 5_KTHK2</i></p>
+</form>
+
+<p id="result"></p>
+
+<h2>PHẦN B: THỰC HÀNH</h2>
+
+<ul>
+<li>Tạo thư mục: Tên em_Lớp 5_KTHK2</li>
+<li>Tạo chương trình Scratch theo yêu cầu</li>
+<li>Giải thích cấu trúc tuần tự</li>
+</ul>
+
 </div>
 
-<div class="question">
-    <p><b>Câu 2:</b> Tạo chương trình gồm các bước:</p>
-    <ul>
-        <li>Nhấn cờ xanh</li>
-        <li>Nhân vật nói: “Xin chào”</li>
-        <li>Di chuyển 10 bước</li>
-        <li>Xoay trái 90 độ</li>
-    </ul>
-</div>
+<script>
+function tinhDiem() {
+    let dapAn = {
+        q1: "A",
+        q2: "A",
+        q3: "C",
+        q4: "B",
+        q5: "B",
+        q6: "D",
+        q7: "A",
+        q8: "D",
+        q9: "A"
+    };
 
-<div class="question">
-    <p><b>Câu 3:</b> Việc tính diện tích hình vuông có phải là cấu trúc tuần tự không? Giải thích.</p>
-    <p>Trả lời: .....................................................................................</p>
-    <p>.......................................................................................................</p>
-</div>
+    let diem = 0;
+
+    for (let i = 1; i <= 9; i++) {
+        let q = document.querySelector('input[name="q'+i+'"]:checked');
+        if (q && q.value === dapAn['q'+i]) diem++;
+    }
+
+    document.getElementById("result").innerHTML =
+        "🎉 Bạn đạt " + diem + "/9 (" + (diem*10/9).toFixed(1) + " điểm)";
+}
+</script>
 
 </body>
 </html>
