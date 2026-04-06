@@ -265,8 +265,31 @@ function tinhDiem() {
     let diem = 0;
 
     for (let i = 1; i <= 9; i++) {
-        let q = document.querySelector('input[name="q'+i+'"]:checked');
-        if (q && q.value === dapAn['q'+i]) diem++;
+        let options = document.querySelectorAll('input[name="q'+i+'"]');
+
+        options.forEach(opt => {
+            let label = opt.parentElement;
+
+            // reset màu trước
+            label.style.background = "";
+
+            // nếu là đáp án đúng → tô xanh
+            if (opt.value === dapAn['q'+i]) {
+                label.style.background = "#2ecc71";
+                label.style.color = "white";
+            }
+
+            // nếu người dùng chọn sai → tô đỏ
+            if (opt.checked && opt.value !== dapAn['q'+i]) {
+                label.style.background = "#e74c3c";
+                label.style.color = "white";
+            }
+
+            // tính điểm
+            if (opt.checked && opt.value === dapAn['q'+i]) {
+                diem++;
+            }
+        });
     }
 
     let ten = document.getElementById("hoten").value;
