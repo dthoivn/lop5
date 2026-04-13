@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Hình học - Diện tích</title>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #43cea2, #185a9d);
+        margin: 0;
+        color: white;
+        text-align: center;
+    }
+
+    h1 {
+        padding: 20px;
+    }
+
+    .gallery {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        padding: 20px;
+    }
+
+    .card {
+        background: rgba(255,255,255,0.1);
+        padding: 15px;
+        border-radius: 15px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        transition: transform 0.3s;
+    }
+
+    .card:hover {
+        transform: scale(1.05);
+    }
+
+    img {
+        width: 100%;
+        border-radius: 10px;
+    }
+
+    h2 {
+        margin-top: 10px;
+        color: #ffd700;
+    }
+</style>
+
+</head>
+
+<body>
+
+<h1>📐 Công thức tính diện tích các hình</h1>
+
+<div class="gallery">
+
+    <div class="card">
+        <img src="https://i.postimg.cc/tCWLSVxf/Dt-Hinh-Vuong.png">
+        <h2>🟦 Hình vuông</h2>
+    </div>
+
+    <div class="card">
+        <img src="https://i.postimg.cc/CLkWPfqr/Dt-HCN.png">
+        <h2>🟩 Hình chữ nhật</h2>
+    </div>
+
+    <div class="card">
+        <img src="https://i.postimg.cc/Fs32WJL6/Dt-Tam-Giac.png">
+        <h2>🔺 Hình tam giác</h2>
+    </div>
+
+    <div class="card">
+        <img src="https://i.postimg.cc/X7dTHyCD/Dt-Hinh-Tron.png">
+        <h2>⚪ Hình tròn</h2>
+    </div>
+
+</div>
+
+</body>
+</html>
