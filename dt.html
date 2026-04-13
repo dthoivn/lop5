@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Thực hành Scratch - Tính diện tích</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #4facfe, #00f2fe);
+        margin: 0;
+        padding: 0;
+        color: #333;
+    }
+
+    header {
+        text-align: center;
+        padding: 20px;
+        color: white;
+    }
+
+    h1 {
+        margin: 0;
+        font-size: 32px;
+    }
+
+    .container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        padding: 20px;
+    }
+
+    .card {
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        transition: transform 0.3s;
+    }
+
+    .card:hover {
+        transform: scale(1.05);
+    }
+
+    .card h2 {
+        color: #0077ff;
+    }
+
+    ul {
+        padding-left: 20px;
+    }
+
+    .steps {
+        background: #f5f5f5;
+        padding: 10px;
+        border-radius: 10px;
+        margin-top: 10px;
+    }
+
+    button {
+        background: #0077ff;
+        color: white;
+        border: none;
+        padding: 10px;
+        border-radius: 8px;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+
+    button:hover {
+        background: #0056cc;
+    }
+
+    .result {
+        margin-top: 10px;
+        font-weight: bold;
+        color: green;
+    }
+
+    footer {
+        text-align: center;
+        padding: 10px;
+        color: white;
+    }
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>🎮 Thực hành Scratch - Tính diện tích</h1>
+    <p>⏱ Thời gian: 35 phút | 💡 Làm lần lượt 4 bài</p>
+</header>
+
+<div class="container">
+
+    <!-- Hình vuông -->
+    <div class="card">
+        <h2>🟦 Bài 1: Hình vuông</h2>
+
+        <ul>
+            <li>Nhập độ dài cạnh a</li>
+            <li>Tính diện tích: S = a × a</li>
+        </ul>
+
+        <div class="steps">
+            <b>Các bước làm Scratch:</b>
+            <ol>
+                <li>Tạo biến: cạnh</li>
+                <li>Hỏi người dùng nhập cạnh</li>
+                <li>Tính: diện tích = cạnh × cạnh</li>
+                <li>Hiển thị kết quả</li>
+            </ol>
+        </div>
+
+        <input type="number" id="square" placeholder="Nhập cạnh">
+        <button onclick="squareArea()">Tính</button>
+        <div class="result" id="resultSquare"></div>
+    </div>
+
+    <!-- Hình chữ nhật -->
+    <div class="card">
+        <h2>🟩 Bài 2: Hình chữ nhật</h2>
+
+        <ul>
+            <li>Nhập chiều dài và chiều rộng</li>
+            <li>Tính: S = dài × rộng</li>
+        </ul>
+
+        <div class="steps">
+            <b>Các bước làm Scratch:</b>
+            <ol>
+                <li>Tạo biến: dài, rộng</li>
+                <li>Nhập dữ liệu</li>
+                <li>Tính diện tích</li>
+                <li>Hiển thị kết quả</li>
+            </ol>
+        </div>
+
+        <input type="number" id="length" placeholder="Chiều dài">
+        <input type="number" id="width" placeholder="Chiều rộng">
+        <button onclick="rectangleArea()">Tính</button>
+        <div class="result" id="resultRectangle"></div>
+    </div>
+
+    <!-- Tam giác -->
+    <div class="card">
+        <h2>🔺 Bài 3: Tam giác</h2>
+
+        <ul>
+            <li>Nhập đáy và chiều cao</li>
+            <li>Tính: S = (đáy × cao) / 2</li>
+        </ul>
+
+        <div class="steps">
+            <b>Các bước làm Scratch:</b>
+            <ol>
+                <li>Tạo biến: đáy, cao</li>
+                <li>Nhập dữ liệu</li>
+                <li>Tính diện tích</li>
+                <li>Hiển thị kết quả</li>
+            </ol>
+        </div>
+
+        <input type="number" id="base" placeholder="Đáy">
+        <input type="number" id="height" placeholder="Chiều cao">
+        <button onclick="triangleArea()">Tính</button>
+        <div class="result" id="resultTriangle"></div>
+    </div>
+
+    <!-- Hình tròn -->
+    <div class="card">
+        <h2>⚪ Bài 4: Hình tròn</h2>
+
+        <ul>
+            <li>Nhập bán kính r</li>
+            <li>Tính: S = π × r²</li>
+        </ul>
+
+        <div class="steps">
+            <b>Các bước làm Scratch:</b>
+            <ol>
+                <li>Tạo biến: bán kính</li>
+                <li>Nhập dữ liệu</li>
+                <li>Tính diện tích</li>
+                <li>Hiển thị kết quả</li>
+            </ol>
+        </div>
+
+        <input type="number" id="radius" placeholder="Bán kính">
+        <button onclick="circleArea()">Tính</button>
+        <div class="result" id="resultCircle"></div>
+    </div>
+
+</div>
+
+<footer>
+    🚀 Hoàn thành đủ 4 bài trong 35 phút để đạt điểm tối đa!
+</footer>
+
+<script>
+function squareArea() {
+    let a = document.getElementById("square").value;
+    document.getElementById("resultSquare").innerText =
+        "Diện tích = " + (a * a);
+}
+
+function rectangleArea() {
+    let l = document.getElementById("length").value;
+    let w = document.getElementById("width").value;
+    document.getElementById("resultRectangle").innerText =
+        "Diện tích = " + (l * w);
+}
+
+function triangleArea() {
+    let b = document.getElementById("base").value;
+    let h = document.getElementById("height").value;
+    document.getElementById("resultTriangle").innerText =
+        "Diện tích = " + (b * h / 2);
+}
+
+function circleArea() {
+    let r = document.getElementById("radius").value;
+    document.getElementById("resultCircle").innerText =
+        "Diện tích = " + (Math.PI * r * r).toFixed(2);
+}
+</script>
+
+</body>
+</html>
