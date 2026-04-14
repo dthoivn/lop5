@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Kiểm tra Tin học Lớp 5</title>
+
+<style>
+body {
+    font-family: Arial;
+    background: linear-gradient(120deg, #f6d365, #fda085);
+    text-align: center;
+}
+
+.container {
+    background: white;
+    padding: 20px;
+    margin: 20px auto;
+    width: 85%;
+    border-radius: 20px;
+    box-shadow: 0 0 15px gray;
+}
+
+h1 { color: #d6336c; }
+
+.question {
+    text-align: left;
+    margin: 15px 0;
+    padding: 10px;
+    border-radius: 10px;
+    background: #f1f3f5;
+    transition: 0.3s;
+}
+
+.question:hover {
+    background: #ffe066;
+    transform: scale(1.02);
+}
+
+button {
+    background: #28a745;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: red;
+    transform: scale(1.1);
+}
+
+#timer {
+    color: red;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+ul {
+    text-align: left;
+}
+textarea {
+    width: 100%;
+    height: 100px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🔥 KIỂM TRA TIN HỌC LỚP 5 🔥</h1>
+
+<p id="timer">⏰ 35:00</p>
+
+<p>👦 Họ và tên: <input type="text"></p>
+
+<div id="quiz"></div>
+
+<hr>
+
+<h2>🛠 PHẦN THỰC HÀNH</h2>
+
+<h3>🎮 Bài 1: Scratch</h3>
+<ul>
+<li>🔹 Mở Scratch</li>
+<li>🔹 Khi bấm cờ xanh</li>
+<li>🔹 Nhân vật nói: “Em yêu Tin học”</li>
+<li>🔹 Di chuyển 15 bước</li>
+<li>🔹 Xoay phải 90 độ</li>
+<li>🔹 Lặp lại 2 lần</li>
+<li>🔹 Lưu: <b>Scratch_L5</b></li>
+</ul>
+
+<h3>📐 Bài 2: Lập trình tính toán</h3>
+<ul>
+<li>🔹 Nhập chiều dài và chiều rộng</li>
+<li>🔹 Tính chu vi: (dài + rộng) × 2</li>
+<li>🔹 Hiển thị kết quả</li>
+<li>🔹 Chạy thử chương trình</li>
+<li>🔹 Lưu: <b>ChuViHCN</b></li>
+</ul>
+
+<h3>🧠 Câu tự luận</h3>
+<p>Tại sao cần chạy thử chương trình sau khi viết xong?</p>
+<textarea placeholder="Nhập câu trả lời..."></textarea>
+
+<p>📁 Upload bài: <input type="file"></p>
+
+<br>
+<button onclick="submitQuiz()">🚀 Nộp bài</button>
+
+<p id="result"></p>
+
+</div>
+
+<script>
+
+// CÂU HỎI KHÔNG TRÙNG
+const questions = [
+{
+q:"Cấu trúc lặp dùng để làm gì?",
+a:["A. Thực hiện 1 lần","B. Lặp lại nhiều lần","C. So sánh","D. Lưu file"],
+correct:"B"
+},
+{
+q:"Trong Scratch, khối điều kiện là?",
+a:["A. If","B. Move","C. Say","D. Wait"],
+correct:"A"
+},
+{
+q:"Lệnh Wait có chức năng gì?",
+a:["A. Di chuyển","B. Chờ","C. Lặp","D. Xóa"],
+correct:"B"
+},
+{
+q:"Để đổi tên thư mục ta?",
+a:["A. Delete","B. Rename","C. Copy","D. Open"],
+correct:"B"
+},
+{
+q:"Cấu trúc rẽ nhánh là gì?",
+a:["A. Lặp","B. Tuần tự","C. Nếu...thì","D. Tính toán"],
+correct:"C"
+},
+{
+q:"Trong Scratch, lệnh xoay thuộc nhóm?",
+a:["A. Âm thanh","B. Chuyển động","C. Điều khiển","D. Sự kiện"],
+correct:"B"
+},
+{
+q:"Chạy thử chương trình để?",
+a:["A. Trang trí","B. Kiểm tra lỗi","C. Xóa","D. Đóng"],
+correct:"B"
+},
+{
+q:"Máy tính KHÔNG giúp em?",
+a:["A. Học","B. Giải trí","C. Ăn cơm","D. Tìm thông tin"],
+correct:"C"
+}
+];
+
+// RANDOM
+function shuffle(arr){
+    return arr.sort(()=>Math.random()-0.5);
+}
+
+let selected = shuffle(questions).slice(0,6);
+
+let html="";
+
+selected.forEach((q,i)=>{
+    html+=`<div class="question">
+    <p>${i+1}. ${q.q}</p>`;
+    
+    q.a.forEach(opt=>{
+        let v=opt.charAt(0);
+        html+=`<input type="radio" name="q${i}" value="${v}"> ${opt}<br>`;
+    });
+
+    html+=`</div>`;
+});
+
+document.getElementById("quiz").innerHTML=html;
+
+
+// CHẤM ĐIỂM
+function submitQuiz(){
+    let score=0;
+
+    selected.forEach((q,i)=>{
+        let c=document.querySelector(`input[name="q${i}"]:checked`);
+        if(c && c.value===q.correct){
+            score++;
+        }
+    });
+
+    document.getElementById("result").innerHTML=
+        `🎉 Điểm trắc nghiệm: ${score}/6`;
+}
+
+
+// TIMER
+let time=35*60;
+
+let t=setInterval(()=>{
+    let m=Math.floor(time/60);
+    let s=time%60;
+
+    document.getElementById("timer").innerHTML=
+        `⏰ ${m}:${s<10?"0":""}${s}`;
+
+    time--;
+
+    if(time<0){
+        clearInterval(t);
+        alert("⏰ Hết giờ!");
+        submitQuiz();
+    }
+
+},1000);
+
+</script>
+
+</body>
+</html>
