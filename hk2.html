@@ -2,202 +2,140 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Kiểm tra Tin học Lớp 5</title>
-
+<title>Đề Tin học Lớp 5</title>
 <style>
-body {
-    font-family: Arial;
-    margin: 20px;
-}
-
-h1, h2 {
-    text-align: center;
-}
-
-.question {
-    margin: 15px 0;
-    padding: 10px;
-    border-radius: 8px;
-}
-
-.correct {
-    background-color: #c8f7c5;
-}
-
-.wrong {
-    background-color: #f7c5c5;
-}
-
-#timer {
-    font-size: 20px;
-    text-align: center;
-    color: red;
-    font-weight: bold;
-}
-
-button {
-    padding: 10px 20px;
-    font-size: 16px;
-    display: block;
-    margin: 20px auto;
-}
+    body {
+        font-family: Arial;
+        margin: 20px;
+        line-height: 1.6;
+    }
+    h1, h2 {
+        text-align: center;
+    }
+    .question {
+        margin-bottom: 15px;
+    }
+    .practice {
+        background: #f5f5f5;
+        padding: 15px;
+        border-radius: 8px;
+    }
+    .step {
+        margin-left: 20px;
+    }
 </style>
 </head>
 
 <body>
 
-<h1>KIỂM TRA TIN HỌC LỚP 5</h1>
-<p id="timer">Thời gian còn lại: 35:00</p>
+<h1>ĐỀ KIỂM TRA TIN HỌC LỚP 5</h1>
+<p><b>Thời gian:</b> 35 phút</p>
 
 <h2>PHẦN I: TRẮC NGHIỆM</h2>
 
-<form id="quiz">
-
-<div class="question" id="q1">
-<b>Câu 1:</b><br>
-<input type="radio" name="q1" value="A"> A<br>
-<input type="radio" name="q1" value="B"> B<br>
-<input type="radio" name="q1" value="C"> C<br>
-<input type="radio" name="q1" value="D"> D<br>
+<div class="question">
+<b>Câu 1:</b> Cấu trúc chương trình dưới đây là gì?<br>
+<input type="radio"> A. Rẽ nhánh<br>
+<input type="radio"> B. Tuần tự<br>
+<input type="radio"> C. Lặp<br>
+<input type="radio"> D. Tính toán<br>
 </div>
 
-<div class="question" id="q2">
-<b>Câu 2:</b><br>
-<input type="checkbox" name="q2" value="A"> A<br>
-<input type="checkbox" name="q2" value="B"> B<br>
-<input type="checkbox" name="q2" value="C"> C<br>
-<input type="checkbox" name="q2" value="D"> D<br>
+<div class="question">
+<b>Câu 2:</b> Đúng/Sai:<br>
+<input type="checkbox"> A. Lệnh Turn là di chuyển<br>
+<input type="checkbox"> B. Lệnh Wait là chờ<br>
+<input type="checkbox"> C. Repeat forever lặp 10 lần<br>
+<input type="checkbox"> D. Join là nối nội dung<br>
 </div>
 
-<div class="question" id="q3">
-<b>Câu 3:</b><br>
-<input type="radio" name="q3" value="A"> A<br>
-<input type="radio" name="q3" value="B"> B<br>
-<input type="radio" name="q3" value="C"> C<br>
-<input type="radio" name="q3" value="D"> D<br>
+<div class="question">
+<b>Câu 3:</b> Kịch bản Scratch có mấy phần?<br>
+<input type="radio"> A. 1<br>
+<input type="radio"> B. 2<br>
+<input type="radio"> C. 3<br>
+<input type="radio"> D. 4<br>
 </div>
 
-<div class="question" id="q4">
-<b>Câu 4:</b><br>
-<input type="radio" name="q4" value="A"> A<br>
-<input type="radio" name="q4" value="B"> B<br>
-<input type="radio" name="q4" value="C"> C<br>
-<input type="radio" name="q4" value="D"> D<br>
+<div class="question">
+<b>Câu 4:</b> Khối lệnh là gì?<br>
+<input type="radio"> A. Rẽ nhánh đủ<br>
+<input type="radio"> B. Lặp có số lần<br>
+<input type="radio"> C. Rẽ nhánh thiếu<br>
+<input type="radio"> D. Lặp vô hạn<br>
 </div>
 
-<div class="question" id="q5">
-<b>Câu 5:</b><br>
-<input type="radio" name="q5" value="A"> A<br>
-<input type="radio" name="q5" value="B"> B<br>
-<input type="radio" name="q5" value="C"> C<br>
-<input type="radio" name="q5" value="D"> D<br>
+<div class="question">
+<b>Câu 5:</b> Nhóm lệnh toán học trong Scratch là:<br>
+<input type="radio"> A. Biến số<br>
+<input type="radio"> B. Điều khiển<br>
+<input type="radio"> C. Chuyển động<br>
+<input type="radio"> D. Phép toán<br>
 </div>
 
-<div class="question" id="q6">
-<b>Câu 6:</b><br>
-<input type="radio" name="q6" value="A"> A<br>
-<input type="radio" name="q6" value="B"> B<br>
-<input type="radio" name="q6" value="C"> C<br>
-<input type="radio" name="q6" value="D"> D<br>
+<div class="question">
+<b>Câu 6:</b> Phát biểu sai khi chạy chương trình:<br>
+<input type="radio"> A. Kiểm tra chương trình<br>
+<input type="radio"> B. Sửa lỗi<br>
+<input type="radio"> C. Cải tiến<br>
+<input type="radio"> D. Không cần chạy<br>
 </div>
 
-<div class="question" id="q7">
-<b>Câu 7:</b> (tự luận - không chấm tự động)
+<div class="question">
+<b>Câu 7:</b> Kết quả phép toán: ________
 </div>
 
-<div class="question" id="q8">
-<b>Câu 8:</b><br>
-<input type="radio" name="q8" value="A"> A<br>
-<input type="radio" name="q8" value="B"> B<br>
-<input type="radio" name="q8" value="C"> C<br>
-<input type="radio" name="q8" value="D"> D<br>
+<div class="question">
+<b>Câu 8:</b> Đổi tên thư mục:<br>
+<input type="radio"> A. Chuột trái Rename<br>
+<input type="radio"> B. Chuột phải Rename<br>
+<input type="radio"> C. F1<br>
+<input type="radio"> D. F3<br>
 </div>
 
-<div class="question" id="q9">
-<b>Câu 9:</b><br>
-<input type="radio" name="q9" value="A"> A<br>
-<input type="radio" name="q9" value="B"> B<br>
-<input type="radio" name="q9" value="C"> C<br>
-<input type="radio" name="q9" value="D"> D<br>
+<div class="question">
+<b>Câu 9:</b> In đậm văn bản:<br>
+<input type="radio"> A. B<br>
+<input type="radio"> B. B (Bold)<br>
+<input type="radio"> C. I<br>
+<input type="radio"> D. U<br>
 </div>
 
-<button type="button" onclick="submitQuiz()">Nộp bài</button>
+<h2>PHẦN II: THỰC HÀNH</h2>
 
-</form>
+<div class="practice">
 
-<h2 id="result"></h2>
+<h3>Bài 1: Tạo thư mục</h3>
+<p><b>Yêu cầu:</b> Tạo thư mục theo tên</p>
 
-<script>
+<div class="step">
+Bước 1: Mở This PC → vào ổ D<br>
+Bước 2: Tạo thư mục "Khối 5"<br>
+Bước 3: Chuột phải → New → Folder<br>
+Bước 4: Đặt tên: HọTên_Lớp_Kiểm tra học kỳ 2
+</div>
 
-// Đáp án (ẩn)
-const answers = {
-    q1: "B",
-    q2: ["B","D"],
-    q3: "C",
-    q4: "A",
-    q5: "D",
-    q6: "D",
-    q8: "B",
-    q9: "B"
-};
+<h3>Bài 2: Lập trình Scratch</h3>
 
-// TIMER 35 phút
-let time = 35 * 60;
+<p><b>Yêu cầu:</b> Tính chu vi hình chữ nhật</p>
 
-const timer = setInterval(() => {
-    let min = Math.floor(time / 60);
-    let sec = time % 60;
+<div class="step">
+<b>Bước 1:</b> Mở Scratch<br>
+<b>Bước 2:</b> Tạo biến: chiều dài, chiều rộng<br>
+<b>Bước 3:</b> Nhập dữ liệu từ bàn phím<br>
+<b>Bước 4:</b> Tính chu vi:
+<br>Chu vi = (dài + rộng) × 2<br>
+<b>Bước 5:</b> Hiển thị kết quả<br>
+<b>Bước 6:</b> Nhấn cờ xanh để chạy<br>
+<b>Bước 7:</b> Lưu file: chuvihinhchunhat
+</div>
 
-    document.getElementById("timer").innerText =
-        "Thời gian còn lại: " + min + ":" + (sec < 10 ? "0" : "") + sec;
+</div>
 
-    time--;
-
-    if (time < 0) {
-        clearInterval(timer);
-        submitQuiz();
-    }
-}, 1000);
-
-// CHẤM ĐIỂM
-function submitQuiz() {
-
-    let score = 0;
-
-    for (let q in answers) {
-
-        let correct = answers[q];
-        let user;
-
-        if (Array.isArray(correct)) {
-            user = Array.from(document.querySelectorAll(`input[name=${q}]:checked`)).map(e => e.value);
-
-            if (JSON.stringify(user.sort()) === JSON.stringify(correct.sort())) {
-                score++;
-                document.getElementById(q).classList.add("correct");
-            } else {
-                document.getElementById(q).classList.add("wrong");
-            }
-
-        } else {
-            let selected = document.querySelector(`input[name=${q}]:checked`);
-
-            if (selected && selected.value === correct) {
-                score++;
-                document.getElementById(q).classList.add("correct");
-            } else {
-                document.getElementById(q).classList.add("wrong");
-            }
-        }
-    }
-
-    document.getElementById("result").innerText = "Điểm: " + score + "/8";
-
-    // khóa không cho sửa
-    document.querySelectorAll("input").forEach(e => e.disabled = true);
-}
-
-</script>
+<h2>ĐÁP ÁN</h2>
+<p>
+1.B | 2.B,D đúng | 3.C | 4.A | 5.D | 6.D | 7.50=50 | 8.B | 9.B
+</p>
 
 </body>
 </html>
