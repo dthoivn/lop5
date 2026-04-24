@@ -3,139 +3,262 @@
 <head>
 <meta charset="UTF-8">
 <title>Đề Tin học Lớp 5</title>
+
 <style>
-    body {
-        font-family: Arial;
-        margin: 20px;
-        line-height: 1.6;
-    }
-    h1, h2 {
-        text-align: center;
-    }
-    .question {
-        margin-bottom: 15px;
-    }
-    .practice {
-        background: #f5f5f5;
-        padding: 15px;
-        border-radius: 8px;
-    }
-    .step {
-        margin-left: 20px;
-    }
+body {
+    font-family: Arial;
+    margin: 0;
+    background: linear-gradient(-45deg, #74ebd5, #9face6, #fbc2eb, #a6c1ee);
+    background-size: 400% 400%;
+    animation: gradientBG 10s ease infinite;
+}
+
+@keyframes gradientBG {
+    0% {background-position: 0% 50%;}
+    50% {background-position: 100% 50%;}
+    100% {background-position: 0% 50%;}
+}
+
+.container {
+    max-width: 900px;
+    margin: 30px auto;
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+h1, h2 { text-align: center; }
+
+/* ===== TRẮC NGHIỆM NÂNG CẤP ===== */
+.question {
+    margin: 18px 0;
+    padding: 18px;
+    border-radius: 15px;
+    background: linear-gradient(135deg,#f3f6ff,#e0e7ff);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: 0.3s;
+}
+
+.question:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+.question label {
+    display: block;
+    padding: 10px 12px;
+    margin: 6px 0;
+    border-radius: 10px;
+    background: white;
+    border: 2px solid #dbeafe;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.question label:hover {
+    background: #e0f2fe;
+    border-color: #38bdf8;
+}
+
+.question label:active {
+    transform: scale(0.97);
+}
+
+input[type="radio"], input[type="checkbox"] {
+    margin-right: 8px;
+    accent-color: #4facfe;
+}
+
+.correct {
+    background: #bbf7d0 !important;
+    border-color: #22c55e !important;
+    box-shadow: 0 0 10px #22c55e;
+}
+
+.wrong {
+    background: #fecaca !important;
+    border-color: #ef4444 !important;
+    box-shadow: 0 0 10px #ef4444;
+}
+
+/* ===== BUTTON ===== */
+button {
+    display: block;
+    margin: 20px auto;
+    padding: 12px 30px;
+    border-radius: 10px;
+    background: linear-gradient(45deg,#4facfe,#00f2fe);
+    color: white;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+/* ===== THỰC HÀNH (GIỮ NGUYÊN STYLE) ===== */
+.practice-box {
+    background: #fff7e6;
+    border-left: 6px solid #ff9800;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.step span {
+    display: block;
+    padding: 5px;
+}
 </style>
 </head>
 
 <body>
 
+<div class="container">
+
 <h1>ĐỀ KIỂM TRA TIN HỌC LỚP 5</h1>
-<p><b>Thời gian:</b> 35 phút</p>
+
+<p>Họ tên: <input id="hoten"></p>
+<p>Lớp: <input id="lop"></p>
 
 <h2>PHẦN I: TRẮC NGHIỆM</h2>
 
-<div class="question">
-<b>Câu 1:</b> Cấu trúc chương trình dưới đây là gì?<br>
-<input type="radio"> A. Rẽ nhánh<br>
-<input type="radio"> B. Tuần tự<br>
-<input type="radio"> C. Lặp<br>
-<input type="radio"> D. Tính toán<br>
+<div class="question" id="q1">
+<b>Câu 1:</b>
+<label><input type="radio" name="q1" value="A"><span>Rẽ nhánh</span></label>
+<label><input type="radio" name="q1" value="B"><span>Tuần tự</span></label>
+<label><input type="radio" name="q1" value="C"><span>Lặp</span></label>
+<label><input type="radio" name="q1" value="D"><span>Tính toán</span></label>
 </div>
 
-<div class="question">
-<b>Câu 2:</b> Đúng/Sai:<br>
-<input type="checkbox"> A. Lệnh Turn là di chuyển<br>
-<input type="checkbox"> B. Lệnh Wait là chờ<br>
-<input type="checkbox"> C. Repeat forever lặp 10 lần<br>
-<input type="checkbox"> D. Join là nối nội dung<br>
+<div class="question" id="q2">
+<b>Câu 2:</b>
+<label><input type="checkbox" value="A"><span>Turn là di chuyển</span></label>
+<label><input type="checkbox" value="B"><span>Wait là chờ</span></label>
+<label><input type="checkbox" value="C"><span>Repeat forever lặp 10 lần</span></label>
+<label><input type="checkbox" value="D"><span>Join là nối nội dung</span></label>
 </div>
 
-<div class="question">
-<b>Câu 3:</b> Kịch bản Scratch có mấy phần?<br>
-<input type="radio"> A. 1<br>
-<input type="radio"> B. 2<br>
-<input type="radio"> C. 3<br>
-<input type="radio"> D. 4<br>
+<div class="question" id="q3">
+<b>Câu 3:</b>
+<label><input type="radio" name="q3" value="A"><span>1</span></label>
+<label><input type="radio" name="q3" value="B"><span>2</span></label>
+<label><input type="radio" name="q3" value="C"><span>3</span></label>
+<label><input type="radio" name="q3" value="D"><span>4</span></label>
 </div>
 
-<div class="question">
-<b>Câu 4:</b> Khối lệnh là gì?<br>
-<input type="radio"> A. Rẽ nhánh đủ<br>
-<input type="radio"> B. Lặp có số lần<br>
-<input type="radio"> C. Rẽ nhánh thiếu<br>
-<input type="radio"> D. Lặp vô hạn<br>
+<div class="question" id="q4">
+<b>Câu 4:</b>
+<label><input type="radio" name="q4" value="A"><span>Rẽ nhánh đủ</span></label>
+<label><input type="radio" name="q4" value="B"><span>Lặp có số lần</span></label>
+<label><input type="radio" name="q4" value="C"><span>Rẽ nhánh thiếu</span></label>
+<label><input type="radio" name="q4" value="D"><span>Lặp vô hạn</span></label>
 </div>
 
-<div class="question">
-<b>Câu 5:</b> Nhóm lệnh toán học trong Scratch là:<br>
-<input type="radio"> A. Biến số<br>
-<input type="radio"> B. Điều khiển<br>
-<input type="radio"> C. Chuyển động<br>
-<input type="radio"> D. Phép toán<br>
+<div class="question" id="q5">
+<b>Câu 5:</b>
+<label><input type="radio" name="q5" value="A"><span>Biến số</span></label>
+<label><input type="radio" name="q5" value="B"><span>Điều khiển</span></label>
+<label><input type="radio" name="q5" value="C"><span>Chuyển động</span></label>
+<label><input type="radio" name="q5" value="D"><span>Phép toán</span></label>
 </div>
 
-<div class="question">
-<b>Câu 6:</b> Phát biểu sai khi chạy chương trình:<br>
-<input type="radio"> A. Kiểm tra chương trình<br>
-<input type="radio"> B. Sửa lỗi<br>
-<input type="radio"> C. Cải tiến<br>
-<input type="radio"> D. Không cần chạy<br>
+<div class="question" id="q6">
+<b>Câu 6:</b>
+<label><input type="radio" name="q6" value="A"><span>Kiểm tra</span></label>
+<label><input type="radio" name="q6" value="B"><span>Sửa lỗi</span></label>
+<label><input type="radio" name="q6" value="C"><span>Cải tiến</span></label>
+<label><input type="radio" name="q6" value="D"><span>Không cần chạy</span></label>
 </div>
 
-<div class="question">
-<b>Câu 7:</b> Kết quả phép toán: ________
+<div class="question" id="q8">
+<b>Câu 8:</b>
+<label><input type="radio" name="q8" value="A"><span>Chuột trái</span></label>
+<label><input type="radio" name="q8" value="B"><span>Chuột phải Rename</span></label>
+<label><input type="radio" name="q8" value="C"><span>F1</span></label>
+<label><input type="radio" name="q8" value="D"><span>F3</span></label>
 </div>
 
-<div class="question">
-<b>Câu 8:</b> Đổi tên thư mục:<br>
-<input type="radio"> A. Chuột trái Rename<br>
-<input type="radio"> B. Chuột phải Rename<br>
-<input type="radio"> C. F1<br>
-<input type="radio"> D. F3<br>
+<div class="question" id="q9">
+<b>Câu 9:</b>
+<label><input type="radio" name="q9" value="A"><span>B</span></label>
+<label><input type="radio" name="q9" value="B"><span>B (Bold)</span></label>
+<label><input type="radio" name="q9" value="C"><span>I</span></label>
+<label><input type="radio" name="q9" value="D"><span>U</span></label>
 </div>
 
-<div class="question">
-<b>Câu 9:</b> In đậm văn bản:<br>
-<input type="radio"> A. B<br>
-<input type="radio"> B. B (Bold)<br>
-<input type="radio"> C. I<br>
-<input type="radio"> D. U<br>
-</div>
+<button onclick="chamBai()">NỘP BÀI</button>
+<h2 id="result"></h2>
 
+<!-- ===== THỰC HÀNH GIỮ NGUYÊN ===== -->
 <h2>PHẦN II: THỰC HÀNH</h2>
 
-<div class="practice">
-
-<h3>Bài 1: Tạo thư mục</h3>
-<p><b>Yêu cầu:</b> Tạo thư mục theo tên</p>
-
+<div class="practice-box">
+<h3>📁 Bài 1: Tạo thư mục</h3>
 <div class="step">
-Bước 1: Mở This PC → vào ổ D<br>
-Bước 2: Tạo thư mục "Khối 5"<br>
-Bước 3: Chuột phải → New → Folder<br>
-Bước 4: Đặt tên: HọTên_Lớp_Kiểm tra học kỳ 2
+<span>👉 Mở This PC</span>
+<span>👉 Chọn ổ D</span>
+<span>👉 Chuột phải → New → Folder</span>
+<span>👉 Đặt tên: HọTên_Lớp_Kiểm tra học kỳ 2</span>
+</div>
 </div>
 
-<h3>Bài 2: Lập trình Scratch</h3>
-
-<p><b>Yêu cầu:</b> Tính chu vi hình chữ nhật</p>
-
+<div class="practice-box">
+<h3>💻 Bài 2: Scratch</h3>
 <div class="step">
-<b>Bước 1:</b> Mở Scratch<br>
-<b>Bước 2:</b> Tạo biến: chiều dài, chiều rộng<br>
-<b>Bước 3:</b> Nhập dữ liệu từ bàn phím<br>
-<b>Bước 4:</b> Tính chu vi:
-<br>Chu vi = (dài + rộng) × 2<br>
-<b>Bước 5:</b> Hiển thị kết quả<br>
-<b>Bước 6:</b> Nhấn cờ xanh để chạy<br>
-<b>Bước 7:</b> Lưu file: chuvihinhchunhat
+<span>👉 Mở Scratch</span>
+<span>👉 Tạo biến chiều dài, chiều rộng</span>
+<span>👉 Nhập dữ liệu</span>
+<span>👉 Tính (dài + rộng) × 2</span>
+<span>👉 Hiển thị kết quả</span>
+</div>
 </div>
 
 </div>
 
-<h2>ĐÁP ÁN</h2>
-<p>
-1.B | 2.B,D đúng | 3.C | 4.A | 5.D | 6.D | 7.50=50 | 8.B | 9.B
-</p>
+<script>
+function chamBai(){
+let dapAn={q1:"B",q3:"C",q4:"A",q5:"D",q6:"D",q8:"B",q9:"B"};
+let diem=0;
+
+Object.keys(dapAn).forEach(q=>{
+let div=document.getElementById(q);
+let sel=div.querySelector("input:checked");
+let ops=div.querySelectorAll("input");
+
+ops.forEach(o=>{
+let lb=o.parentElement;
+if(o.value===dapAn[q]) lb.classList.add("correct");
+if(o.checked && o.value!==dapAn[q]) lb.classList.add("wrong");
+});
+
+if(sel && sel.value===dapAn[q]) diem++;
+});
+
+let dung=["B","D"];
+let cbs=document.querySelectorAll("#q2 input");
+let ok=true;
+
+cbs.forEach(cb=>{
+let lb=cb.parentElement;
+if(dung.includes(cb.value)) lb.classList.add("correct");
+if(cb.checked && !dung.includes(cb.value)){
+lb.classList.add("wrong");
+ok=false;
+}
+if(!cb.checked && dung.includes(cb.value)) ok=false;
+});
+
+if(ok) diem++;
+
+document.querySelectorAll("input").forEach(i=>i.disabled=true);
+
+let ten=document.getElementById("hoten").value;
+let lop=document.getElementById("lop").value;
+
+document.getElementById("result").innerHTML=
+"🎯 "+ten+" ("+lop+") đạt "+diem+"/8 điểm";
+}
+</script>
 
 </body>
 </html>
